@@ -9,3 +9,6 @@ __pycache__/
 *.key
 id_rsa
 id_rsa.pub
+public/api/data/*
+!public/api/data/.gitkeep
+!public/api/data/.htaccess
