@@ -5,11 +5,11 @@
   "vendor": "ExcellonIT",
   "environment": "sandbox",
   "host": "haqqline.excellonit.net",
-  "phase": 3,
+  "phase": 4,
   "channels": {
     "web_shell": true,
     "playground": true,
-    "voice": false,
+    "voice": true,
     "whatsapp": false,
     "sms": false
   },

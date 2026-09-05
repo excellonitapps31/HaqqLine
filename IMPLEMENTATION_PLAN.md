@@ -1,6 +1,6 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Phase 3 complete (`phase-03`). Awaiting **Approve Phase 03** before Phase 4.  
+**Status:** Phase 4 in flight (`phase/04-elevenlabs`).  
 **Applicant:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
