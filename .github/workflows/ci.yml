@@ -29,7 +29,11 @@ jobs:
           php -l public/api/v1/HaqqLineApi.php
           php -l public/router.php
       - name: Tests
-        run: pytest -q tests/phase1 tests/phase2
+        run: pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py
+      - name: Playwright
+        run: |
+          python -m playwright install --with-deps chromium
+          pytest -q tests/phase3/test_playground.py
 
   deploy:
     needs: verify
@@ -71,7 +75,7 @@ jobs:
           status, body = get("https://haqqline.excellonit.net/health")
           assert status == 200 and body["phase"] >= 1
           status, body = get("https://haqqline.excellonit.net/api/v1/health")
-          assert status == 200 and body["phase"] == 2
+          assert status == 200 and body["phase"] >= 2
           key = "haqqline_sandbox_preview"
           req = urllib.request.Request(
               "https://haqqline.excellonit.net/api/v1/tools/lookup_rera_band",
@@ -98,4 +102,23 @@ jobs:
           echo "$html" | grep -q "ليس خدمة حكومية"
           curl -fsS https://haqqline.excellonit.net/api/v1/docs | grep -q "haqqline_sandbox_preview"
           curl -fsS https://haqqline.excellonit.net/api/v1/openapi.json | grep -q lookup_rera_band
+          curl -fsS https://haqqline.excellonit.net/play/ | grep -q "Try a case"
+          curl -fsS https://haqqline.excellonit.net/play/ | grep -q "جرّب حالة"
           echo home_ok
+
+  playwright-live:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Playwright against production
+        env:
+          HAQQLINE_PLAY_BASE: https://haqqline.excellonit.net
+        run: |
+          pip install -r requirements-dev.txt
+          python -m playwright install --with-deps chromium
+          pytest -q tests/phase3/test_playground.py
+
