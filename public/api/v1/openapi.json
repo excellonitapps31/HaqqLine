@@ -1,0 +1,146 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "HaqqLine sandbox API",
+    "version": "1.0.0",
+    "description": "Signed-off sandbox tools for a Dubai rental rights-check agent. Not legal advice. Not a government service. Synthetic Ejari records only.",
+    "contact": { "name": "ExcellonIT", "url": "https://excellonit.net" }
+  },
+  "servers": [
+    { "url": "https://haqqline.excellonit.net", "description": "Live sandbox" }
+  ],
+  "tags": [{ "name": "tools" }, { "name": "system" }],
+  "components": {
+    "securitySchemes": {
+      "sandboxKey": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Demo key for investors: haqqline_sandbox_preview"
+      }
+    },
+    "schemas": {
+      "Disclaimer": {
+        "type": "object",
+        "required": ["disclaimer"],
+        "properties": {
+          "disclaimer": { "type": "string" }
+        }
+      }
+    }
+  },
+  "security": [{ "sandboxKey": [] }],
+  "paths": {
+    "/api/v1/health": {
+      "get": {
+        "tags": ["system"],
+        "security": [],
+        "summary": "API health",
+        "responses": { "200": { "description": "OK" } }
+      }
+    },
+    "/api/v1/audit": {
+      "get": {
+        "tags": ["system"],
+        "summary": "Recent audit entries",
+        "responses": {
+          "200": { "description": "Tail of the audit log" },
+          "401": { "description": "Missing or wrong key" }
+        }
+      }
+    },
+    "/api/v1/tools/lookup_rera_band": {
+      "post": {
+        "tags": ["tools"],
+        "summary": "Match a proposed rent to the sandbox Decree 43/2013-style band",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["area", "current_rent", "proposed_rent"],
+                "properties": {
+                  "area": { "type": "string", "examples": ["jlt"] },
+                  "current_rent": { "type": "number" },
+                  "proposed_rent": { "type": "number" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Band cited from the signed-off pack" },
+          "401": { "description": "Unauthorized" },
+          "404": { "description": "Unknown area — escalate; no invented index" }
+        }
+      }
+    },
+    "/api/v1/tools/lookup_ejari": {
+      "post": {
+        "tags": ["tools"],
+        "summary": "Look up a synthetic Ejari record",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["ejari_id"],
+                "properties": { "ejari_id": { "type": "string", "examples": ["EJ-1001"] } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "found true or false; never invents a contract" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/v1/tools/submit_to_human_queue": {
+      "post": {
+        "tags": ["tools"],
+        "summary": "Queue a filing for a human. Status is always pending_human.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "caller_confirmed": { "type": "boolean" },
+                  "packet": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Queued" },
+          "400": { "description": "confirmation_required" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/v1/tools/escalate_human": {
+      "post": {
+        "tags": ["tools"],
+        "summary": "Hand to a human when the pack is silent or advice is requested",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": { "reason": { "type": "string" } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Escalated, pending_human" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    }
+  }
+}
