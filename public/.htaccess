@@ -1,0 +1,4 @@
+DirectoryIndex index.html
+RewriteEngine On
+RewriteRule ^health$ health.json [L]
+Header set X-Robots-Tag "noindex, nofollow"
