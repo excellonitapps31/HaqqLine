@@ -1,0 +1,26 @@
+{
+  "EJ-1001": {
+    "found": true,
+    "area": "downtown_dubai",
+    "annual_rent_aed": 100000,
+    "start": "2025-01-01",
+    "end": "2026-12-31",
+    "status": "registered"
+  },
+  "EJ-1002": {
+    "found": true,
+    "area": "jlt",
+    "annual_rent_aed": 78000,
+    "start": "2024-09-01",
+    "end": "2026-08-31",
+    "status": "registered"
+  },
+  "EJ-1003": {
+    "found": true,
+    "area": "dubai_marina",
+    "annual_rent_aed": 95000,
+    "start": "2025-03-15",
+    "end": "2027-03-14",
+    "status": "registered"
+  }
+}

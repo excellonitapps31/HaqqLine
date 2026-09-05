@@ -1,4 +1,4 @@
-name: Phase 1 — verify and deploy
+name: Verify and deploy
 
 on:
   push:
@@ -18,12 +18,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install
+      - name: PHP CLI
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq php-cli
+      - name: Install Python deps
         run: pip install -r requirements-dev.txt
-      - name: Lint Python
-        run: python -m compileall tests scripts
-      - name: Phase 1 tests
-        run: pytest -q tests/phase1
+      - name: Lint
+        run: |
+          python -m compileall tests scripts
+          php -l public/api/v1/index.php
+          php -l public/api/v1/HaqqLineApi.php
+          php -l public/router.php
+      - name: Tests
+        run: pytest -q tests/phase1 tests/phase2
 
   deploy:
     needs: verify
@@ -47,30 +53,49 @@ jobs:
             -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
             --exclude 'cgi-bin' \
             --exclude '.well-known' \
+            --exclude 'api/data' \
             public/ \
             "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/"
-      - name: Smoke HTTPS health
+          ssh -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+            "mkdir -p '${{ secrets.DEPLOY_PATH }}/api/data' && chmod 770 '${{ secrets.DEPLOY_PATH }}/api/data'"
+      - name: Smoke HTTPS health and API
         run: |
           curl -fsS --retry 8 --retry-delay 2 https://haqqline.excellonit.net/health
           echo
           python3 - <<'PY'
-          import json, urllib.request
-          with urllib.request.urlopen("https://haqqline.excellonit.net/health") as res:
-              body = json.load(res)
-          assert res.status == 200
-          assert body["status"] == "ok"
-          assert body["phase"] == 1
-          print("https health schema ok")
+          import json, urllib.request, urllib.error
+          def get(url, headers=None):
+              req = urllib.request.Request(url, headers=headers or {})
+              with urllib.request.urlopen(req) as res:
+                  return res.status, json.loads(res.read().decode())
+          status, body = get("https://haqqline.excellonit.net/health")
+          assert status == 200 and body["phase"] >= 1
+          status, body = get("https://haqqline.excellonit.net/api/v1/health")
+          assert status == 200 and body["phase"] == 2
+          key = "haqqline_sandbox_preview"
+          req = urllib.request.Request(
+              "https://haqqline.excellonit.net/api/v1/tools/lookup_rera_band",
+              data=json.dumps({"area":"jlt","current_rent":80000,"proposed_rent":80000}).encode(),
+              headers={"Content-Type":"application/json","Authorization":"Bearer "+key},
+              method="POST",
+          )
+          with urllib.request.urlopen(req) as res:
+              payload = json.loads(res.read().decode())
+              assert res.status == 200
+              assert "index_aed" in payload
+          print("live api ok")
           PY
 
   https-home:
     needs: deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Smoke HTTPS home and disclaimer
+      - name: Smoke HTTPS home, docs, openapi
         run: |
           html=$(curl -fsS https://haqqline.excellonit.net/)
           echo "$html" | grep -q "not a government service"
           echo "$html" | grep -q "HaqqLine"
           echo "$html" | grep -q "ليس خدمة حكومية"
+          curl -fsS https://haqqline.excellonit.net/api/v1/docs | grep -q "haqqline_sandbox_preview"
+          curl -fsS https://haqqline.excellonit.net/api/v1/openapi.json | grep -q lookup_rera_band
           echo home_ok
