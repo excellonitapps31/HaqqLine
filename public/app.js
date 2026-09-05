@@ -17,6 +17,7 @@
     } catch (e) {
       /* ignore */
     }
+    document.dispatchEvent(new CustomEvent("haqqline:lang", { detail: { lang: next } }));
   }
 
   buttons.forEach(function (btn) {

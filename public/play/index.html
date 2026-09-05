@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0f0e0c">
+  <title>Try a case — HaqqLine sandbox</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Newsreader:opsz,wght@6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body data-api-key="haqqline_sandbox_preview">
+  <a class="skip" href="#content">Skip to content</a>
+  <div class="banner">
+    <span data-pane="en"><strong>Sandbox.</strong> This is an ExcellonIT demonstration, not a government service. Not affiliated with DLD, RERA, or the Rental Disputes Center. No live resident data.</span>
+    <span data-pane="ar" hidden><strong>بيئة تجريبية.</strong> هذا عرض من ExcellonIT وليس خدمة حكومية. لا يتبع دائرة الأراضي والأملاك ولا مؤسسة التنظيم العقاري ولا مركز فض المنازعات الإيجارية. لا تُستخدم بيانات سكان حقيقية.</span>
+  </div>
+  <div class="top">
+    <a class="mark" href="/">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#14110d"/><path d="M18 14v36M46 14v36M18 32h28" stroke="#c4a574" stroke-width="4" stroke-linecap="square"/></svg>
+      <span>ExcellonIT</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang-switch="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang-switch="ar" aria-pressed="false">العربية</button>
+    </div>
+  </div>
+
+  <main id="content" class="play">
+    <div data-pane="en">
+      <h1>Try a case</h1>
+      <p class="deck">Four synthetic paths. The agent does not decide. Labels are scenario codes, not people.</p>
+    </div>
+    <div data-pane="ar" hidden>
+      <h1>جرّب حالة</h1>
+      <p class="deck">أربعة مسارات اصطناعية. الوكيل لا يبتّ. التسميات رموز سيناريو وليست أشخاصاً.</p>
+    </div>
+
+    <div class="scenarios" role="list">
+      <button type="button" class="scenario" data-scenario="within" data-testid="scenario-within">
+        <span data-pane="en">Within band · JLT</span>
+        <span data-pane="ar" hidden>ضمن الحد · أبراج بحيرات جميرا</span>
+        <small data-pane="en">Current 80,000 · proposed 80,000. Expect a citation, no increase.</small>
+        <small data-pane="ar" hidden>الإيجار 80,000 والمقترح 80,000. اقتباس من الجدول، بلا زيادة.</small>
+      </button>
+      <button type="button" class="scenario" data-scenario="overband" data-testid="scenario-overband">
+        <span data-pane="en">Over band · JLT</span>
+        <span data-pane="ar" hidden>فوق الحد · أبراج بحيرات جميرا</span>
+        <small data-pane="en">Proposed 95,000 against a 0% band. Still information, not a ruling.</small>
+        <small data-pane="ar" hidden>المقترح 95,000 مقابل حد 0٪. معلومات، وليست حكماً.</small>
+      </button>
+      <button type="button" class="scenario" data-scenario="unknown" data-testid="scenario-unknown">
+        <span data-pane="en">Unknown area</span>
+        <span data-pane="ar" hidden>منطقة غير موجودة في الجدول</span>
+        <small data-pane="en">The pack is silent. Escalate. No invented index.</small>
+        <small data-pane="ar" hidden>الجدول صامت. تحويل لإنسان. لا يُختلق مؤشر.</small>
+      </button>
+      <button type="button" class="scenario" data-scenario="advice" data-testid="scenario-advice">
+        <span data-pane="en">“Will I win?”</span>
+        <span data-pane="ar" hidden>«هل سأكسب؟»</span>
+        <small data-pane="en">Advice-seeking. Hand to a human. Do not answer.</small>
+        <small data-pane="ar" hidden>طلب مشورة. يُحال لإنسان. لا يُجاب.</small>
+      </button>
+    </div>
+
+    <h2 data-pane="en">Filing gate</h2>
+    <h2 data-pane="ar" hidden>بوابة التقديم</h2>
+    <div class="actions">
+      <button type="button" class="ghost" data-testid="file-blocked" id="file-blocked">
+        <span data-pane="en">File without confirmation</span>
+        <span data-pane="ar" hidden>قدّم دون تأكيد</span>
+        <small data-pane="en">Must be refused.</small>
+        <small data-pane="ar" hidden>يجب أن يُرفض.</small>
+      </button>
+      <button type="button" class="ghost" data-testid="file-confirm" id="file-confirm">
+        <span data-pane="en">File with confirmation</span>
+        <span data-pane="ar" hidden>قدّم بعد التأكيد</span>
+        <small data-pane="en">Queues as pending_human.</small>
+        <small data-pane="ar" hidden>يُدرج pending_human.</small>
+      </button>
+      <button type="button" class="ghost" data-testid="refresh-ledger" id="refresh-ledger">
+        <span data-pane="en">Refresh ledger</span>
+        <span data-pane="ar" hidden>حدّث السجل</span>
+        <small data-pane="en">Last audit lines on this host.</small>
+        <small data-pane="ar" hidden>آخر سطور التدقيق على هذا الخادم.</small>
+      </button>
+    </div>
+
+    <h2 data-pane="en">Result</h2>
+    <h2 data-pane="ar" hidden>النتيجة</h2>
+    <div class="result" id="result" data-testid="result" aria-live="polite"></div>
+
+    <h2 data-pane="en">Ledger</h2>
+    <h2 data-pane="ar" hidden>السجل</h2>
+    <div class="ledger" id="ledger" data-testid="ledger"></div>
+  </main>
+
+  <footer class="foot">
+    <a href="/">Home</a>
+    <a href="/api/v1/docs">API</a>
+    <a href="/health">Health</a>
+  </footer>
+  <script src="/app.js" defer></script>
+  <script src="/play/play.js" defer></script>
+</body>
+</html>
