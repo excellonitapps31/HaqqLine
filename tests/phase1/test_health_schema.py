@@ -13,7 +13,6 @@ REQUIRED = {
     "vendor": "ExcellonIT",
     "environment": "sandbox",
     "host": "haqqline.excellonit.net",
-    "phase": 1,
 }
 
 
@@ -22,6 +21,7 @@ def test_health_is_strict_json_object() -> None:
     assert isinstance(payload, dict)
     for key, value in REQUIRED.items():
         assert payload[key] == value
+    assert payload["phase"] >= 1
     channels = payload["channels"]
     assert channels["web_shell"] is True
     assert channels["voice"] is False

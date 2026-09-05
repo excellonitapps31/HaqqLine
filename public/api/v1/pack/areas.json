@@ -1,0 +1,7 @@
+{
+  "downtown_dubai": { "label": "Downtown Dubai", "index_aed": 120000 },
+  "jlt": { "label": "Jumeirah Lakes Towers", "index_aed": 85000 },
+  "international_city": { "label": "International City", "index_aed": 42000 },
+  "dubai_marina": { "label": "Dubai Marina", "index_aed": 110000 },
+  "al_barsha": { "label": "Al Barsha", "index_aed": 90000 }
+}
