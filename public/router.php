@@ -6,6 +6,12 @@ if (!is_string($uri)) {
     $uri = '/';
 }
 
+if ($uri === '/play' || $uri === '/play/') {
+    header('Content-Type: text/html; charset=utf-8');
+    readfile(__DIR__ . '/play/index.html');
+    return true;
+}
+
 if ($uri === '/health') {
     header('Content-Type: application/json; charset=utf-8');
     readfile(__DIR__ . '/health.json');

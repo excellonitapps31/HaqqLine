@@ -27,6 +27,7 @@ def test_bilingual_shell_and_honest_scope() -> None:
     assert 'document.documentElement.dir' in JS
     assert '"rtl"' in JS
     assert "The agent, telephone line, WhatsApp, and SMS are not connected here yet." in HTML
+    assert "Try a case" in HTML
     assert "noindex" in HTML
 
 
