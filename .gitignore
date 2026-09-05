@@ -12,3 +12,4 @@ id_rsa.pub
 public/api/data/*
 !public/api/data/.gitkeep
 !public/api/data/.htaccess
+reports/phase-04-eval.json

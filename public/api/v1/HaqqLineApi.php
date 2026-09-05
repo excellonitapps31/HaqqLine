@@ -20,10 +20,14 @@ final class HaqqLineApi
         $this->ejari = $this->readJson($root . '/pack/ejari.json');
     }
 
+    /** @var string */
+    private $rawInput = '';
+
     public function handle(): void
     {
         $method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET';
         $path = $this->path();
+        $this->rawInput = (string) file_get_contents('php://input');
 
         if ($method === 'OPTIONS') {
             $this->send(204, null);
@@ -34,10 +38,15 @@ final class HaqqLineApi
             $this->send(200, array(
                 'status' => 'ok',
                 'service' => 'haqqline',
-                'phase' => 3,
+                'phase' => 4,
                 'pack_id' => $this->config['pack_id'],
                 'environment' => 'sandbox',
             ));
+            return;
+        }
+
+        if ($method === 'POST' && $path === '/api/v1/webhooks/elevenlabs') {
+            $this->elevenLabsWebhook();
             return;
         }
 
@@ -51,6 +60,11 @@ final class HaqqLineApi
 
         if ($method === 'GET' && $path === '/api/v1/audit') {
             $this->send(200, array('entries' => $this->readAuditTail(20)));
+            return;
+        }
+
+        if ($method === 'GET' && $path === '/api/v1/conversations') {
+            $this->send(200, array('entries' => $this->readJsonlTail($this->dataDir() . '/conversations.jsonl', 10)));
             return;
         }
 
@@ -272,14 +286,106 @@ final class HaqqLineApi
         return 20;
     }
 
+    private function elevenLabsWebhook(): void
+    {
+        $secret = $this->webhookSecret();
+        if ($secret === '') {
+            $this->send(503, array('error' => 'webhook_secret_missing'));
+            return;
+        }
+        $header = isset($_SERVER['HTTP_ELEVENLABS_SIGNATURE']) ? (string) $_SERVER['HTTP_ELEVENLABS_SIGNATURE'] : '';
+        if (!$this->verifyElevenLabsSignature($this->rawInput, $header, $secret)) {
+            $this->send(401, array('error' => 'invalid_signature'));
+            return;
+        }
+        $event = json_decode($this->rawInput, true);
+        if (!is_array($event)) {
+            $this->send(400, array('error' => 'invalid_json'));
+            return;
+        }
+        $type = isset($event['type']) ? (string) $event['type'] : '';
+        $data = isset($event['data']) && is_array($event['data']) ? $event['data'] : array();
+        $conversationId = isset($data['conversation_id']) ? (string) $data['conversation_id'] : '';
+        $stored = array(
+            'id' => $conversationId !== '' ? $conversationId : $this->nextId('CALL'),
+            'type' => $type,
+            'agent_id' => isset($data['agent_id']) ? $data['agent_id'] : null,
+            'status' => isset($data['status']) ? $data['status'] : null,
+            'transcript' => isset($data['transcript']) ? $data['transcript'] : array(),
+            'analysis' => isset($data['analysis']) ? $data['analysis'] : null,
+            'received_at' => gmdate('c'),
+        );
+        $this->appendJsonl($this->dataDir() . '/conversations.jsonl', $stored);
+        $this->audit('post_call_transcription', 200, array(
+            'conversation_id' => $stored['id'],
+            'type' => $type,
+        ));
+        $this->send(200, array('received' => true, 'id' => $stored['id']));
+    }
+
+    private function webhookSecret(): string
+    {
+        $file = $this->dataDir() . '/elevenlabs_webhook.secret';
+        if (!is_file($file)) {
+            return '';
+        }
+        $raw = file_get_contents($file);
+        return is_string($raw) ? trim($raw) : '';
+    }
+
+    private function verifyElevenLabsSignature(string $rawBody, string $sigHeader, string $secret): bool
+    {
+        if ($sigHeader === '' || $secret === '') {
+            return false;
+        }
+        $timestamp = null;
+        $signature = null;
+        foreach (explode(',', $sigHeader) as $part) {
+            $part = trim($part);
+            if (strpos($part, 't=') === 0) {
+                $timestamp = substr($part, 2);
+            } elseif (strpos($part, 'v0=') === 0) {
+                $signature = $part;
+            }
+        }
+        if ($timestamp === null || $signature === null || !ctype_digit($timestamp)) {
+            return false;
+        }
+        if (abs(time() - (int) $timestamp) > 30 * 60) {
+            return false;
+        }
+        $digest = 'v0=' . hash_hmac('sha256', $timestamp . '.' . $rawBody, $secret);
+        return hash_equals($digest, $signature);
+    }
+
     private function jsonBody(): array
     {
-        $raw = file_get_contents('php://input');
-        if (!is_string($raw) || trim($raw) === '') {
+        $raw = $this->rawInput;
+        if (trim($raw) === '') {
             return array();
         }
         $data = json_decode($raw, true);
         return is_array($data) ? $data : array();
+    }
+
+    private function readJsonlTail(string $file, int $limit): array
+    {
+        if (!is_file($file)) {
+            return array();
+        }
+        $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if ($lines === false) {
+            return array();
+        }
+        $slice = array_slice($lines, -1 * $limit);
+        $out = array();
+        foreach ($slice as $line) {
+            $row = json_decode($line, true);
+            if (is_array($row)) {
+                $out[] = $row;
+            }
+        }
+        return $out;
     }
 
     private function send(int $code, $payload): void

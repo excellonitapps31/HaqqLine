@@ -29,7 +29,7 @@ jobs:
           php -l public/api/v1/HaqqLineApi.php
           php -l public/router.php
       - name: Tests
-        run: pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py
+        run: pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4
       - name: Playwright
         run: |
           python -m playwright install --with-deps chromium
@@ -104,7 +104,66 @@ jobs:
           curl -fsS https://haqqline.excellonit.net/api/v1/openapi.json | grep -q lookup_rera_band
           curl -fsS https://haqqline.excellonit.net/play/ | grep -q "Try a case"
           curl -fsS https://haqqline.excellonit.net/play/ | grep -q "جرّب حالة"
+          echo "$html" | grep -q "Talk"
+          echo "$html" | grep -q "convai-widget-embed"
           echo home_ok
+
+  elevenlabs-sync:
+    needs: deploy
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/phase/'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install rsync
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq rsync
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Trust host key
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+      - name: Sync ElevenLabs agent, tests, webhook
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_WEBHOOK_SECRET: ${{ secrets.ELEVENLABS_WEBHOOK_SECRET }}
+          HAQQLINE_WEBHOOK_SECRET_FILE: /tmp/elevenlabs_webhook.secret
+        run: |
+          if [ -z "$ELEVENLABS_API_KEY" ]; then
+            echo "Add GitHub secret ELEVENLABS_API_KEY to finish Phase 4."
+            exit 1
+          fi
+          if [ -n "$ELEVENLABS_WEBHOOK_SECRET" ]; then
+            printf '%s' "$ELEVENLABS_WEBHOOK_SECRET" > "$HAQQLINE_WEBHOOK_SECRET_FILE"
+          fi
+          python3 scripts/sync_elevenlabs.py
+          rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
+            public/elevenlabs.json \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/elevenlabs.json"
+          if [ -s "$HAQQLINE_WEBHOOK_SECRET_FILE" ]; then
+            ssh -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+              "mkdir -p '${{ secrets.DEPLOY_PATH }}/api/data' && cat > '${{ secrets.DEPLOY_PATH }}/api/data/elevenlabs_webhook.secret' && chmod 600 '${{ secrets.DEPLOY_PATH }}/api/data/elevenlabs_webhook.secret'" \
+              < "$HAQQLINE_WEBHOOK_SECRET_FILE"
+          fi
+          python3 - <<'PY'
+          import json, urllib.request
+          with urllib.request.urlopen("https://haqqline.excellonit.net/elevenlabs.json") as res:
+              cfg = json.loads(res.read().decode())
+          assert cfg.get("agent_id", "").startswith("agent_"), cfg
+          print("live agent", cfg["agent_id"])
+          PY
+      - name: Upload eval
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: phase-04-eval
+          path: reports/phase-04-eval.json
+          if-no-files-found: ignore
 
   playwright-live:
     needs: deploy

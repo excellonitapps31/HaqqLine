@@ -1,0 +1,6 @@
+{
+  "agent_id": "",
+  "name": "HaqqLine sandbox",
+  "pack_id": "sandbox_decree_43_2013_table_v1",
+  "widget_script": "https://unpkg.com/@elevenlabs/convai-widget-embed"
+}
