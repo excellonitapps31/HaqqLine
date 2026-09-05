@@ -1,34 +1,80 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0f0e0c">
   <title>HaqqLine — ExcellonIT sandbox</title>
-  <style>
-    :root { color-scheme: light; --ink: #0f172a; --muted: #475569; --line: #e2e8f0; --accent: #0f766e; }
-    body { margin: 0; font-family: ui-sans-serif, system-ui, sans-serif; background: #f8fafc; color: var(--ink); }
-    header, main { max-width: 40rem; margin: 0 auto; padding: 1.5rem; }
-    .banner { background: #fff7ed; border-bottom: 1px solid #fdba74; color: #9a3412; padding: 0.75rem 1.5rem; font-size: 0.9rem; text-align: center; }
-    h1 { font-size: 1.75rem; margin: 0 0 0.5rem; }
-    p { line-height: 1.55; color: var(--muted); }
-    .card { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 1.25rem; }
-    a { color: var(--accent); }
-    footer { margin-top: 2rem; font-size: 0.85rem; color: var(--muted); }
-  </style>
+  <meta name="description" content="HaqqLine is an ExcellonIT sandbox for a multilingual rights-check voice agent. Not a government service.">
+  <link rel="canonical" href="https://haqqline.excellonit.net/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <meta property="og:title" content="HaqqLine">
+  <meta property="og:description" content="A rights-check voice agent, demonstrated in sandbox. Not a government service.">
+  <meta property="og:url" content="https://haqqline.excellonit.net/">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500&family=IBM+Plex+Sans:wght@400;500&family=Newsreader:opsz,wght@6..72,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <div class="banner"><strong>Sandbox only.</strong> This is an ExcellonIT investor demo, not a government service. Synthetic data. Not affiliated with DLD, RERA, or RDC.</div>
-  <header>
-    <h1>HaqqLine</h1>
-    <p lang="ar" dir="rtl">خط حق — فحص الحقوق الصوتية (بيئة تجريبية)</p>
-  </header>
-  <main>
-    <div class="card">
-      <p>Multilingual rights-check voice agent for published Dubai rental rules. Voice, WhatsApp, and SMS channels are staged; this host is the public demo shell.</p>
-      <p>Health: <a href="/health">/health</a></p>
-      <p>Source: <a href="https://github.com/excellonitapps31/HaqqLine">github.com/excellonitapps31/HaqqLine</a></p>
+  <a class="skip" href="#content">Skip to content</a>
+
+  <div class="banner" data-banner>
+    <span data-pane="en"><strong>Sandbox.</strong> This is an ExcellonIT demonstration, not a government service. Not affiliated with DLD, RERA, or the Rental Disputes Center. No live resident data.</span>
+    <span data-pane="ar" hidden><strong>بيئة تجريبية.</strong> هذا عرض من ExcellonIT وليس خدمة حكومية. لا يتبع دائرة الأراضي والأملاك ولا مؤسسة التنظيم العقاري ولا مركز فض المنازعات الإيجارية. لا تُستخدم بيانات سكان حقيقية.</span>
+  </div>
+
+  <div class="top">
+    <a class="mark" href="/">
+      <svg viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="#14110d"/><path d="M18 14v36M46 14v36M18 32h28" stroke="#c4a574" stroke-width="4" stroke-linecap="square"/></svg>
+      <span>ExcellonIT</span>
+    </a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang-switch="en" aria-pressed="true">EN</button>
+      <button type="button" data-lang-switch="ar" aria-pressed="false">العربية</button>
     </div>
-    <footer>ExcellonIT · excellonit.net · haqqline.excellonit.net</footer>
+  </div>
+
+  <main id="content" class="hero">
+    <div data-pane="en">
+      <h1>HaqqLine</h1>
+      <p class="deck">A voice agent that checks a rental situation against published Dubai rules — and never decides the case.</p>
+      <div class="grid meta">
+        <div>
+          <dt>On this host</dt>
+          <dd>Public demo shell only. The agent, telephone line, WhatsApp, and SMS are not connected here yet.</dd>
+        </div>
+        <div>
+          <dt>For review</dt>
+          <dd>Investors and challenge judges. Synthetic scenarios. Every later channel will repeat this sandbox notice.</dd>
+        </div>
+      </div>
+    </div>
+
+    <div data-pane="ar" hidden>
+      <h1>حقّ لاين</h1>
+      <p class="deck">وكيل صوتي يطابق حالة الإيجار بالقواعد المنشورة في دبي — ولا يبتّ في النزاع.</p>
+      <div class="grid meta">
+        <div>
+          <dt>على هذا الموقع</dt>
+          <dd>واجهة العرض العامة فقط. الوكيل والخط الهاتفي وواتساب والرسائل النصية غير موصولة هنا بعد.</dd>
+        </div>
+        <div>
+          <dt>لمن يراجع</dt>
+          <dd>المستثمرون ولجان التحكيم. سيناريوهات اصطناعية. وستُعاد هذه العبارة على كل قناة لاحقة.</dd>
+        </div>
+      </div>
+    </div>
   </main>
+
+  <footer class="foot">
+    <a href="https://excellonit.net">excellonit.net</a>
+    <a href="https://github.com/excellonitapps31/HaqqLine">Source</a>
+    <a href="/health">Health</a>
+    <span>haqqline.excellonit.net</span>
+  </footer>
+  <script src="/app.js" defer></script>
 </body>
 </html>

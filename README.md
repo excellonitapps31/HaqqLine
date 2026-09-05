@@ -1,37 +1,41 @@
-# HaqqLine — Ignyte × ElevenLabs Future of Voice AI Challenge 2026
+# HaqqLine
 
-**Track:** Government Services  
-**Use case:** Rights Checks & Dispute Prevention  
-**Stage 1 due:** 23 September 2026  
-**Submit on:** [Ignyte challenge page](https://app.ignyte.ae/public/challenges/C1607A40-2F9A-F111-9B33-6045BD14DEC9)
+**ExcellonIT** · multilingual rights-check voice agent for published Dubai rental rules.
 
-The **Idea Canvas is the only format they assess.** Copy the text in `stage-1/IDEA_CANVAS.md` into the official five-page template after you download it (Join Now → Download the Template Idea Canvas). Do not submit this markdown file, a deck, or a video in its place.
+Live sandbox (Phase 1 shell): **[https://haqqline.excellonit.net](https://haqqline.excellonit.net)**  
+This host is a demonstration, **not a government service**. It is not affiliated with DLD, RERA, or the Rental Disputes Center.
 
-## Why this use case
+[Repository](https://github.com/excellonitapps31/HaqqLine) · Applicant: ExcellonIT · Product: HaqqLine
 
-Fraud intervention is the example Ignyte already used in marketing and the use case several public competitors have already claimed. Rights Checks scores the same Stage 1 weights, is easier to prove with **published rules + source attribution**, and maps to the legal / “information not advice” work already in JustNow.
+## What this is
 
-Must-haves this concept covers: ElevenLabs-native agent, English + Arabic, API/webhooks, full recording and transcript, government population-scale path.
+HaqqLine checks a caller’s situation against signed-off published rules, answers in their language, and queues filings for a human. It does not decide cases and does not give legal advice.
 
-**HaqqLine is not a new citizen app.** See `stage-2/PRODUCT_SHAPE.md`. The scored build is the agent on a test number and/or web widget; production sits on the authority’s existing phone line and website. JustNow is not the host.
+The Ignyte × ElevenLabs Future of Voice AI Challenge Stage 1 submission is the official Idea Canvas only (`stage-1/IDEA_CANVAS.md` is the draft to paste). [Apply on Ignyte](https://app.ignyte.ae/public/challenges/C1607A40-2F9A-F111-9B33-6045BD14DEC9) by 23 September 2026.
 
-## Repo layout
+## Phase 1 (this increment)
 
-| Path | What it is |
+Public HTTPS shell, English and Arabic, health endpoint, tests, and GitHub Actions deploy to cPanel. No voice agent, no Twilio, no WhatsApp, no SMS.
+
+```bash
+python3 -m pip install -r requirements-dev.txt
+python3 -m pytest -q tests/phase1
+```
+
+## Layout
+
+| Path | Purpose |
 | --- | --- |
-| `IMPLEMENTATION_PLAN.md` | Gated phased DevOps plan (one phase at a time; `haqqline.excellonit.net`) |
-| `stage-1/IDEA_CANVAS.md` | Boxes A–N, ready to paste, with word counts |
-| `stage-1/SOURCES.md` | Citations for box D / J numbers |
-| `stage-2/PRODUCT_SHAPE.md` | Agent vs full app — what we are actually building |
-| `stage-2/BUILD_PLAN.md` | Challenge sprint notes (superseded as sequence by the implementation plan) |
-| `sandbox/` | Local mock (replaced by Phase 2 live APIs; do not extend in later phases) |
-| `reports/` | Phase summary reports after each completed phase |
+| `public/` | Files served at haqqline.excellonit.net |
+| `tests/phase1/` | Health schema and landing tests |
+| `IMPLEMENTATION_PLAN.md` | Gated phases |
+| `stage-1/` | Idea Canvas draft |
+| `stage-2/` | Product shape (agent, not an app) |
+| `sandbox/` | Local API sketch — replaced in Phase 2 |
+| `reports/` | Phase completion reports |
 
-## What you must do this week
+## Conventions
 
-1. Create or log into an Ignyte account and **join the challenge**.
-2. Download the official Idea Canvas and paste the boxes. Trim anything over the template’s printed limit.
-3. Fill remaining `[BRACKET]` placeholders (phone, country, Ignyte profile, public GitHub URL).
-4. Publish this HaqqLine repo so box N can list **both** https://excellonit.net and a public GitHub URL.
-5. Submit as **ExcellonIT**, product **HaqqLine**. Do not list JustNow as the applicant.
-6. Submit before 23 September. No late entries.
+- One phase at a time. Branch `phase/NN-…`, then merge to `main` after written approval.
+- No secrets in git. Deploy uses GitHub Actions secrets over SSH.
+- Host of record: cPanel at `haqqline.excellonit.net` (not Cloud Run).
