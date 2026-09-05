@@ -25,7 +25,8 @@ def _free_port() -> int:
 def play_base() -> str:
     env = os.environ.get("HAQQLINE_PLAY_BASE")
     if env:
-        return env.rstrip("/")
+        yield env.rstrip("/")
+        return
     port = _free_port()
     proc = subprocess.Popen(
         ["php", "-S", f"127.0.0.1:{port}", "-t", str(ROOT / "public"), str(ROOT / "public" / "router.php")],
