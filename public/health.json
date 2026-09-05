@@ -1,1 +1,15 @@
-{"status":"ok","service":"haqqline","environment":"sandbox","host":"haqqline.excellonit.net"}
+{
+  "status": "ok",
+  "service": "haqqline",
+  "product": "HaqqLine",
+  "vendor": "ExcellonIT",
+  "environment": "sandbox",
+  "host": "haqqline.excellonit.net",
+  "phase": 1,
+  "channels": {
+    "web_shell": true,
+    "voice": false,
+    "whatsapp": false,
+    "sms": false
+  }
+}

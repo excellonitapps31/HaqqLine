@@ -1,4 +1,25 @@
+Options -Indexes
 DirectoryIndex index.html
-RewriteEngine On
-RewriteRule ^health$ health.json [L]
-Header set X-Robots-Tag "noindex, nofollow"
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^health$ health.json [L]
+  RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set X-Content-Type-Options "nosniff"
+  Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+</IfModule>
+
+AddDefaultCharset UTF-8
+AddType application/json .json
+AddType image/svg+xml .svg
+
+<FilesMatch "\.(html|css|js|json|svg)$">
+  Header set Cache-Control "public, max-age=300"
+</FilesMatch>

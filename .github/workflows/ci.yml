@@ -1,0 +1,76 @@
+name: Phase 1 — verify and deploy
+
+on:
+  push:
+    branches: [main, "phase/**"]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: haqqline-sandbox
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: pip install -r requirements-dev.txt
+      - name: Lint Python
+        run: python -m compileall tests scripts
+      - name: Phase 1 tests
+        run: pytest -q tests/phase1
+
+  deploy:
+    needs: verify
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/phase/'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install rsync
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq rsync
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Trust host key
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+      - name: Rsync public/ to document root
+        run: |
+          rsync -avz --delete \
+            -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
+            --exclude 'cgi-bin' \
+            --exclude '.well-known' \
+            public/ \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/"
+      - name: Smoke HTTPS health
+        run: |
+          curl -fsS --retry 8 --retry-delay 2 https://haqqline.excellonit.net/health
+          echo
+          python3 - <<'PY'
+          import json, urllib.request
+          with urllib.request.urlopen("https://haqqline.excellonit.net/health") as res:
+              body = json.load(res)
+          assert res.status == 200
+          assert body["status"] == "ok"
+          assert body["phase"] == 1
+          print("https health schema ok")
+          PY
+
+  https-home:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Smoke HTTPS home and disclaimer
+        run: |
+          html=$(curl -fsS https://haqqline.excellonit.net/)
+          echo "$html" | grep -q "not a government service"
+          echo "$html" | grep -q "HaqqLine"
+          echo "$html" | grep -q "ليس خدمة حكومية"
+          echo home_ok

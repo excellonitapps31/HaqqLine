@@ -1,6 +1,6 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Draft — **no engineering starts until you approve this document (Gate 0).**  
+**Status:** Gate 0 approved. Phase 1 in flight (`phase/01-platform`).  
 **Applicant:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
@@ -70,8 +70,8 @@ phase branch → CI (lint, unit, contract, phase tests) → deploy to haqqline.e
 | --- | --- |
 | Public URL | `https://haqqline.excellonit.net` (you create DNS + folder/host; we deploy into it) |
 | TLS | Valid certificate; HTTP → HTTPS |
-| Compute | Docker on Cloud Run (matches ExcellonIT’s stated stack) unless you direct otherwise **before Phase 1** |
-| Regions | Document in Phase 1; demo may be `europe-west` or `me-central` — pick one and keep it |
+| Compute | **cPanel + LiteSpeed** on excellonit.net (decided Phase 1). GitHub Actions rsyncs `public/` to the subdomain document root. |
+| Regions | Hosting region is the excellonit.net cPanel cluster (US-east as observed on the server). Keep it. |
 | Data | Demo database only; wipeable; no real resident PII |
 | Identity | Demo PIN or magic-link for investors; separate from excellonit.net marketing site |
 
@@ -111,7 +111,7 @@ You supply or confirm:
 
 - Repo layout, `README`, licence, `CODEOWNERS`, branch protection  
 - CI: install, lint, test job, deploy job  
-- Container that serves a **complete** demo landing: product name, sandbox banner, “not a government service”, English + Arabic chrome, `/health` JSON  
+- Static site (cPanel document root) that serves a **complete** demo landing: product name, sandbox banner, “not a government service”, English + Arabic chrome, `/health` JSON  
 - Deploy to `haqqline.excellonit.net`  
 - Uptime/health check in CI against the live host after deploy  
 
