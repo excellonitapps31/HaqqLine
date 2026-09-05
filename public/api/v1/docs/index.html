@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>HaqqLine API — sandbox</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=Newsreader:opsz,wght@6..72,400&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#0f0e0c; --ink:#f3efe6; --muted:#b7b0a3; --line:rgba(243,239,230,.12); --metal:#c4a574; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font-family:"IBM Plex Sans",system-ui,sans-serif; }
+    .banner { text-align:center; padding:.85rem 1.25rem; border-bottom:1px solid var(--line); color:#e8d5c4; font-size:.8rem; }
+    .banner strong { color:var(--metal); font-weight:500; }
+    main { max-width:44rem; margin:0 auto; padding:3rem 1.5rem 4rem; }
+    h1 { font-family:Newsreader,serif; font-weight:400; font-size:2.6rem; letter-spacing:-.03em; margin:0 0 .75rem; }
+    p, li { color:var(--muted); line-height:1.55; }
+    a { color:var(--metal); }
+    code { color:var(--ink); font-size:.86em; }
+    section { border-top:1px solid var(--line); padding-top:1.5rem; margin-top:1.5rem; }
+    dt { color:var(--metal); font-size:.68rem; letter-spacing:.16em; text-transform:uppercase; margin-bottom:.35rem; }
+    dd { margin:0 0 1rem; }
+    pre { background:#181612; padding:1rem; overflow:auto; font-size:.8rem; line-height:1.45; }
+    .try { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:1rem; }
+    button, input { font:inherit; }
+    input { background:#181612; border:1px solid var(--line); color:var(--ink); padding:.55rem .7rem; min-width:16rem; }
+    button { background:var(--ink); color:var(--bg); border:0; padding:.55rem .9rem; cursor:pointer; }
+    #out { min-height:4rem; }
+  </style>
+</head>
+<body>
+  <div class="banner"><strong>Sandbox.</strong> Not a government service. Demo key is public by design. Synthetic data only.</div>
+  <main>
+    <p><a href="/">HaqqLine</a> · API v1</p>
+    <h1>Rule tools</h1>
+    <p>These endpoints are what the voice agent will call. Rate limit: 120 requests per minute per address. Documented demo throughput: 2 requests per second, not UAE production scale.</p>
+    <p>Contract: <a href="/api/v1/openapi.json">openapi.json</a></p>
+
+    <section>
+      <dt>Authentication</dt>
+      <dd><code>Authorization: Bearer haqqline_sandbox_preview</code></dd>
+      <dt>POST /api/v1/tools/lookup_rera_band</dt>
+      <dd>Cite the sandbox rent band. Unknown <code>area</code> returns 404 with <code>escalate: true</code> and no index.</dd>
+      <dt>POST /api/v1/tools/lookup_ejari</dt>
+      <dd>Synthetic records <code>EJ-1001</code> … <code>EJ-1003</code>. Anything else is <code>found: false</code>. Nothing is invented.</dd>
+      <dt>POST /api/v1/tools/submit_to_human_queue</dt>
+      <dd>Requires <code>caller_confirmed: true</code>. Status is always <code>pending_human</code>.</dd>
+      <dt>POST /api/v1/tools/escalate_human</dt>
+      <dd>Hands silence or advice-seeking to a human queue.</dd>
+    </section>
+
+    <section>
+      <dt>Try lookup_rera_band</dt>
+      <div class="try">
+        <input id="key" value="haqqline_sandbox_preview" aria-label="API key">
+        <button type="button" id="run">Run JLT example</button>
+      </div>
+      <pre id="out">{}</pre>
+    </section>
+  </main>
+  <script>
+    document.getElementById("run").addEventListener("click", async function () {
+      var out = document.getElementById("out");
+      out.textContent = "…";
+      try {
+        var res = await fetch("/api/v1/tools/lookup_rera_band", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + document.getElementById("key").value
+          },
+          body: JSON.stringify({ area: "jlt", current_rent: 80000, proposed_rent: 80000 })
+        });
+        var body = await res.json();
+        out.textContent = res.status + "\n" + JSON.stringify(body, null, 2);
+      } catch (err) {
+        out.textContent = String(err);
+      }
+    });
+  </script>
+</body>
+</html>
