@@ -165,11 +165,6 @@ def upsert_webhook() -> tuple[str, str | None]:
 
 def agent_payload(kb_id: str, tool_ids: dict[str, str], webhook_id: str) -> dict:
     prompt = (ROOT / "elevenlabs/prompt.md").read_text(encoding="utf-8")
-    tools = [
-        {"type": "system", "name": "language_detection", "description": "Switch English and Arabic to match the caller."},
-        {"type": "system", "name": "knowledge_base", "params": {"system_tool_type": "knowledge_base"}},
-        {"type": "system", "name": "end_call", "params": {"system_tool_type": "end_call"}},
-    ]
     workflow = {
         "nodes": {
             "start_node": {"type": "start", "edge_order": ["to_intake"]},
@@ -254,7 +249,11 @@ def agent_payload(kb_id: str, tool_ids: dict[str, str], webhook_id: str) -> dict
                     "llm": "gemini-2.5-flash",
                     "temperature": 0.2,
                     "tool_ids": list(tool_ids.values()),
-                    "tools": tools,
+                    "built_in_tools": {
+                        "end_call": {},
+                        "language_detection": {},
+                        "knowledge_base": {},
+                    },
                     "knowledge_base": [{"type": "text", "name": "HaqqLine RERA pack v1", "id": kb_id, "usage_mode": "auto"}],
                 },
             },
