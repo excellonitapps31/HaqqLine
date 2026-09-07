@@ -226,6 +226,12 @@ html[dir="rtl"] .deck {
   margin-top: 1rem;
 }
 
+.did-meta {
+  color: var(--muted);
+  font-size: 0.9rem;
+  max-width: 40rem;
+}
+
 .cta {
   display: inline-block;
   padding: 0.7rem 1.15rem;

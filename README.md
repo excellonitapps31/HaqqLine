@@ -13,17 +13,17 @@ HaqqLine checks a caller’s situation against signed-off published rules, answe
 
 The Ignyte × ElevenLabs Future of Voice AI Challenge Stage 1 submission is the official Idea Canvas only (`stage-1/IDEA_CANVAS.md` is the draft to paste). [Apply on Ignyte](https://app.ignyte.ae/public/challenges/C1607A40-2F9A-F111-9B33-6045BD14DEC9) by 23 September 2026.
 
-## Phase 1–4
+## Phase 1–5
 
-HTTPS shell, sandbox APIs, playground, and the ElevenLabs web voice widget. Phone, WhatsApp, and SMS are later phases.
+HTTPS shell, sandbox APIs, playground, ElevenLabs web voice, and an inbound Twilio test DID (secrets required). WhatsApp and SMS are later phases.
 
-The widget is created by `scripts/sync_elevenlabs.py` using GitHub secret `ELEVENLABS_API_KEY`. Do not put that key in git.
+The widget is created by `scripts/sync_elevenlabs.py` (`ELEVENLABS_API_KEY`). The test number is imported by `scripts/sync_twilio.py` (`TWILIO_ACCOUNT_SID`, `TWILIO_AUTH_TOKEN`, `TWILIO_VOICE_NUMBER`). Do not put secrets in git.
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
 php -S 127.0.0.1:8787 -t public public/router.php
 # other terminal:
-HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4
+HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5
 ```
 
 ## Layout

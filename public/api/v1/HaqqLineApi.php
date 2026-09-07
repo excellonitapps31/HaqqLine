@@ -38,7 +38,7 @@ final class HaqqLineApi
             $this->send(200, array(
                 'status' => 'ok',
                 'service' => 'haqqline',
-                'phase' => 4,
+                'phase' => 5,
                 'pack_id' => $this->config['pack_id'],
                 'environment' => 'sandbox',
             ));
