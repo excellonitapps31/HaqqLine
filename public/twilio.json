@@ -1,0 +1,7 @@
+{
+  "phone_number": "",
+  "label": "HaqqLine sandbox test DID",
+  "inbound_only": true,
+  "hours": "Sandbox test DID — any hour. Not a government hotline.",
+  "failover": "If this number does not ring, use Talk on this page. Twilio 5xx is not a second product."
+}
