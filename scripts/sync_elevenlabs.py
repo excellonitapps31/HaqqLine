@@ -250,9 +250,9 @@ def agent_payload(kb_id: str, tool_ids: dict[str, str], webhook_id: str) -> dict
                     "temperature": 0.2,
                     "tool_ids": list(tool_ids.values()),
                     "built_in_tools": {
-                        "end_call": {},
-                        "language_detection": {},
-                        "knowledge_base": {},
+                        "end_call": {"name": "end_call", "params": {"system_tool_type": "end_call"}},
+                        "language_detection": {"name": "language_detection", "params": {"system_tool_type": "language_detection"}},
+                        "knowledge_base": {"name": "knowledge_base", "params": {"system_tool_type": "knowledge_base"}},
                     },
                     "knowledge_base": [{"type": "text", "name": "HaqqLine RERA pack v1", "id": kb_id, "usage_mode": "auto"}],
                 },
@@ -292,6 +292,7 @@ def upsert_agent(payload: dict) -> str:
     slimmer = json.loads(json.dumps(slim))
     slimmer["conversation_config"].pop("language_presets", None)
     slimmer["platform_settings"].pop("widget", None)
+    slimmer["conversation_config"]["agent"]["prompt"].pop("built_in_tools", None)
     candidates.append(slimmer)
     last_error = None
     for body in candidates:
