@@ -34,4 +34,3 @@ def test_no_pii_fields() -> None:
     assert "ليس خدمة حكومية" in HTML
     assert HEALTH["phase"] >= 3
     assert HEALTH["channels"]["playground"] is True
-    assert HEALTH["channels"]["voice"] is False

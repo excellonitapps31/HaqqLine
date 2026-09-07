@@ -28,6 +28,8 @@ $apiPrefixes = array(
     '/api/v1/tools',
     '/api/v1/health',
     '/api/v1/audit',
+    '/api/v1/conversations',
+    '/api/v1/webhooks',
 );
 foreach ($apiPrefixes as $prefix) {
     if ($uri === $prefix || strpos($uri, $prefix . '/') === 0) {

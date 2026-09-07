@@ -184,9 +184,50 @@ html[dir="rtl"] .deck {
   }
 }
 
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 0 2.5rem;
+}
+
+.cta-row .cta {
+  margin: 0;
+}
+
+.ghost-cta {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.ghost-cta:hover,
+.ghost-cta:focus-visible {
+  background: var(--bg-elev);
+}
+
+.talk {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0 1.5rem 3rem;
+}
+
+.talk h2 {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--metal);
+  font-weight: 500;
+}
+
+.voice-widget {
+  min-height: 8rem;
+  margin-top: 1rem;
+}
+
 .cta {
   display: inline-block;
-  margin: 0 0 2.5rem;
   padding: 0.7rem 1.15rem;
   background: var(--ink);
   color: var(--bg);

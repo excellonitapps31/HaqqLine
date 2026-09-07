@@ -41,11 +41,11 @@
     <div data-pane="en">
       <h1>HaqqLine</h1>
       <p class="deck">A voice agent that checks a rental situation against published Dubai rules — and never decides the case.</p>
-      <p><a class="cta" href="/play/">Try a case</a></p>
+      <p class="cta-row"><a class="cta" href="#talk">Talk</a> <a class="cta ghost-cta" href="/play/">Try a case</a></p>
       <div class="grid meta">
         <div>
           <dt>On this host</dt>
-          <dd>Try a case in the browser. The agent, telephone line, WhatsApp, and SMS are not connected here yet.</dd>
+          <dd>Talk with the sandbox voice agent, or try a case without a microphone. The telephone line, WhatsApp, and SMS are not connected here yet.</dd>
         </div>
         <div>
           <dt>For review</dt>
@@ -57,11 +57,11 @@
     <div data-pane="ar" hidden>
       <h1>حقّ لاين</h1>
       <p class="deck">وكيل صوتي يطابق حالة الإيجار بالقواعد المنشورة في دبي — ولا يبتّ في النزاع.</p>
-      <p><a class="cta" href="/play/">جرّب حالة</a></p>
+      <p class="cta-row"><a class="cta" href="#talk">تحدّث</a> <a class="cta ghost-cta" href="/play/">جرّب حالة</a></p>
       <div class="grid meta">
         <div>
           <dt>على هذا الموقع</dt>
-          <dd>جرّب حالة من المتصفح. الوكيل والخط الهاتفي وواتساب والرسائل النصية غير موصولة هنا بعد.</dd>
+          <dd>تحدّث مع الوكيل التجريبي أو جرّب حالة بلا ميكروفون. الخط الهاتفي وواتساب والرسائل النصية غير موصولة هنا بعد.</dd>
         </div>
         <div>
           <dt>لمن يراجع</dt>
@@ -71,6 +71,18 @@
     </div>
   </main>
 
+  <section id="talk" class="talk">
+    <div data-pane="en">
+      <h2>Talk</h2>
+      <p class="deck">Official ElevenLabs widget. Microphone required. Same sandbox rules as the rest of this host.</p>
+    </div>
+    <div data-pane="ar" hidden>
+      <h2>تحدّث</h2>
+      <p class="deck">ودجة ElevenLabs الرسمية. يلزم ميكروفون. نفس قواعد البيئة التجريبية.</p>
+    </div>
+    <div id="voice-widget" class="voice-widget" aria-live="polite"></div>
+  </section>
+
   <footer class="foot">
     <a href="/play/">Play</a>
     <a href="https://excellonit.net">excellonit.net</a>
@@ -79,6 +91,8 @@
     <a href="/health">Health</a>
     <span>haqqline.excellonit.net</span>
   </footer>
+  <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
   <script src="/app.js" defer></script>
+  <script src="/voice.js" defer></script>
 </body>
 </html>
