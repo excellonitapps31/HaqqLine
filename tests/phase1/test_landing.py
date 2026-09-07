@@ -26,8 +26,11 @@ def test_bilingual_shell_and_honest_scope() -> None:
     assert 'data-lang-switch="ar"' in HTML
     assert 'document.documentElement.dir' in JS
     assert '"rtl"' in JS
-    assert "The agent, telephone line, WhatsApp, and SMS are not connected here yet." in HTML
+    assert "The telephone line, WhatsApp, and SMS are not connected here yet." in HTML
+    assert "Talk" in HTML
     assert "Try a case" in HTML
+    assert "convai-widget-embed" in HTML
+    assert 'src="/voice.js"' in HTML
     assert "noindex" in HTML
 
 
