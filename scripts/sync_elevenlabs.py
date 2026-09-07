@@ -39,7 +39,7 @@ def api(method: str, path: str, body: dict | None = None) -> dict:
             return json.loads(raw) if raw else {}
     except urllib.error.HTTPError as exc:
         detail = exc.read().decode()
-        raise SystemExit(f"{method} {path} -> {exc.code}: {detail[:2000]}") from exc
+        raise RuntimeError(f"{method} {path} -> {exc.code}: {detail[:4000]}") from exc
 
 
 def find_named(items: list, name: str, id_key: str) -> str | None:
@@ -146,9 +146,15 @@ def upsert_tools() -> dict[str, str]:
 def upsert_webhook() -> tuple[str, str | None]:
     listing = api("GET", "/v1/workspace/webhooks")
     rows = listing.get("webhooks") or listing.get("items") or []
+    secret_path = os.environ.get("HAQQLINE_WEBHOOK_SECRET_FILE")
+    have_secret = bool(secret_path and Path(secret_path).is_file() and Path(secret_path).stat().st_size > 0)
     for row in rows:
         if row.get("webhook_url") == WEBHOOK_URL or row.get("name") == "HaqqLine post-call":
-            return row.get("webhook_id") or row["id"], None
+            wid = row.get("webhook_id") or row["id"]
+            if have_secret:
+                return wid, None
+            api("DELETE", f"/v1/workspace/webhooks/{wid}")
+            break
     created = api(
         "POST",
         "/v1/workspace/webhooks",
@@ -270,7 +276,7 @@ def agent_payload(kb_id: str, tool_ids: dict[str, str], webhook_id: str) -> dict
             "auth": {"enable_auth": False, "allowlist": [{"hostname": "haqqline.excellonit.net"}]},
             "privacy": {"record_voice": True},
             "webhooks": {"post_call_webhook_id": webhook_id, "events": ["transcript"]},
-            "widget": {"variant": "expanded", "expandable": "never", "text_contents": {"main_label": "Talk"}},
+            "widget": {"variant": "full"},
         },
         "tags": ["haqqline", "sandbox", "excellonit"],
     }
@@ -280,11 +286,26 @@ def upsert_agent(payload: dict) -> str:
     listing = api("GET", "/v1/convai/agents")
     agents = listing.get("agents") or listing.get("items") or []
     existing = find_named(agents, AGENT_NAME, "agent_id")
-    if existing:
-        api("PATCH", f"/v1/convai/agents/{existing}", payload)
-        return existing
-    created = api("POST", "/v1/convai/agents/create", payload)
-    return created["agent_id"]
+    candidates = [payload]
+    slim = json.loads(json.dumps(payload))
+    slim["conversation_config"].pop("workflow", None)
+    candidates.append(slim)
+    slimmer = json.loads(json.dumps(slim))
+    slimmer["conversation_config"].pop("language_presets", None)
+    slimmer["platform_settings"].pop("widget", None)
+    candidates.append(slimmer)
+    last_error = None
+    for body in candidates:
+        try:
+            if existing:
+                api("PATCH", f"/v1/convai/agents/{existing}", body)
+                return existing
+            created = api("POST", "/v1/convai/agents/create", body)
+            return created["agent_id"]
+        except RuntimeError as exc:
+            last_error = exc
+            print(str(exc), file=sys.stderr)
+    raise SystemExit(last_error)
 
 
 def upsert_tests(tool_ids: dict[str, str]) -> list[str]:
@@ -378,6 +399,9 @@ def main() -> None:
     payload = agent_payload(kb_id, tool_ids, webhook_id)
     agent_id = upsert_agent(payload)
     write_public_config(agent_id)
+    if os.environ.get("HAQQLINE_SKIP_AGENT_TESTS") == "1":
+        print(json.dumps({"agent_id": agent_id, "tools": tool_ids, "webhook_id": webhook_id, "tests": []}, indent=2))
+        return
     test_ids = upsert_tests(tool_ids)
     result = attach_and_run(agent_id, test_ids)
     summary = summarize_runs(result)

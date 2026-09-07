@@ -141,14 +141,20 @@ jobs:
           if [ -n "$ELEVENLABS_WEBHOOK_SECRET" ]; then
             printf '%s' "$ELEVENLABS_WEBHOOK_SECRET" > "$HAQQLINE_WEBHOOK_SECRET_FILE"
           fi
+          set +e
           python3 scripts/sync_elevenlabs.py
+          sync_rc=$?
+          set -e
           rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
             public/elevenlabs.json \
-            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/elevenlabs.json"
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/elevenlabs.json" || true
           if [ -s "$HAQQLINE_WEBHOOK_SECRET_FILE" ]; then
             ssh -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
               "mkdir -p '${{ secrets.DEPLOY_PATH }}/api/data' && cat > '${{ secrets.DEPLOY_PATH }}/api/data/elevenlabs_webhook.secret' && chmod 600 '${{ secrets.DEPLOY_PATH }}/api/data/elevenlabs_webhook.secret'" \
               < "$HAQQLINE_WEBHOOK_SECRET_FILE"
+          fi
+          if [ "$sync_rc" -ne 0 ]; then
+            exit "$sync_rc"
           fi
           python3 - <<'PY'
           import json, urllib.request
