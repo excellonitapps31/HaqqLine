@@ -11,7 +11,7 @@ CI: https://github.com/excellonitapps31/HaqqLine/actions/runs/33953955662 (verif
 - Dedicated public repo, `CODEOWNERS`, `main` still refuses force-push and deletion.
 - cPanel subdomain `haqqline.excellonit.net` serving only `public/` (canvas and plan are not on the web root).
 - Let’s Encrypt certificate for this hostname, HTTP→HTTPS (ACME challenge path excluded), HSTS.
-- Bilingual EN/AR demo shell: sandbox banner above the fold, “not a government service”, DLD/RERA/RDC disclaimer, honest scope (no agent/phone/WhatsApp/SMS on this host yet).
+- Bilingual EN/AR demo shell: sandbox banner above the fold, “not a government service”, DLD/RERA/RDC disclaimer, and a scope line stating no agent, phone, WhatsApp, or SMS on this host yet.
 - `/health` JSON with phase and channel flags.
 - pytest suite for health schema and landing copy; CI runs it before deploy and smokes HTTPS after deploy.
 - Host of record documented as **cPanel**, not Cloud Run.

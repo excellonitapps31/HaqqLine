@@ -20,7 +20,7 @@ A reviewer, with no dashboard login, can:
 
 No resident data. No live DLD, RERA, or RDC credentials. No outbound campaigns.
 
-If the purchased DID is blocked (KYC, stock, or credentials), the web path still stands. The DID is the stronger proof and stays the Phase 5 exit. It does not become a reason to invent a second product.
+If the purchased DID is blocked by KYC, stock, or credentials, the web path remains the Stage 2 deployment. The DID is still the Phase 5 exit criterion.
 
 ## 2. Baseline already on main
 
@@ -32,13 +32,13 @@ If the purchased DID is blocked (KYC, stock, or credentials), the web path still
 | ConvAI widget, workflow, knowledge pack, agent tests | Talk on the host; `elevenlabs/` | Live since Phase 4. Agent `agent_5601m1xp22apfdcbwbb8h9y5zzqt` |
 | Inbound DID | `public/twilio.json`, `scripts/sync_twilio.py` | Page and import script are in the tree. `phone_number` is still empty |
 
-Do not rebuild Phases 1–4 inside this window. Defects found while recording go back to the phase that owns them.
+Phases 1–4 are out of scope for rework in this window. A defect found while recording is fixed against the phase that owns it.
 
 ## 3. Work in this window
 
 ### Telephony
 
-Import one purchased Twilio Voice number into ElevenLabs and assign the existing agent. Prefer a Standard API key (`SK` + secret). Account SID + auth token is the fallback. `enable_sms` stays false.
+One purchased Twilio Voice number is imported into ElevenLabs and assigned to the existing agent. Credentials are a Standard API key (`SK` + secret), with Account SID + auth token as the fallback. `enable_sms` is false.
 
 Exit: `public/twilio.json` has an E.164 number, the Call section on the host shows it with the sandbox disclaimer, one English inbound and one Arabic inbound are logged, and a Twilio failure sends the caller back to Talk on the same page.
 
@@ -46,7 +46,7 @@ Exit: `public/twilio.json` has an E.164 number, the Call section on the host sho
 
 `elevenlabs/tests.json` already defines disclosure, the JLT lookup, the unconfirmed-submit absence, and the EN/AR simulations. Phase 4 invoked the suite. The sync summary did not parse a pass rate (reported as 0). The dashboard remains the source of truth until `scripts/sync_elevenlabs.py` writes a real fraction.
 
-Exit: `reports/phase-05.md` states passed/total. The unconfirmed-submit test is quoted, not described from memory. A skipped disclosure fails the run.
+Exit: `reports/phase-05.md` states passed/total and quotes the unconfirmed-submit test result verbatim. A skipped disclosure fails the run.
 
 ### Recorded paths
 
@@ -59,7 +59,7 @@ Exit: transcript links in the phase report. Recordings stay on the ElevenLabs si
 
 ### Freeze
 
-11–14 October is evidence only. No new tools, no new channel, no prompt experiments that are not a defect fix.
+11–14 October is reserved for evidence. Tools, channels, and the prompt change only to fix a defect.
 
 ## 4. Acceptance
 
@@ -86,7 +86,7 @@ Exit: transcript links in the phase report. Recordings stay on the ElevenLabs si
 
 Promotion is the phase branch, green CI, smoke of the live URL, `reports/phase-05.md`, sign-off, merge, tag `phase-05`.
 
-## 6. Controls that do not move
+## 6. Fixed controls
 
 - Synthetic Ejari ids only: EJ-1001, EJ-1002, EJ-1003. Any other id is `found: false` and `invented: false`.
 - The demo API key in `public/api/v1/pack/config.json` is public. The control is the rate limit, not secrecy.
@@ -98,11 +98,11 @@ Promotion is the phase branch, green CI, smoke of the live URL, `reports/phase-0
 
 | Risk | What it does to the date | Response |
 | --- | --- | --- |
-| Twilio number not purchased, or extra KYC on the chosen country | DID missing on 14 October | Keep the web path. Do not substitute a verified caller id. |
-| Eval payload shape still unparsed | Pass rate cannot be quoted | Use the ElevenLabs dashboard count and fix the parser only if the payload is stable |
+| Twilio number not purchased, or extra KYC on the chosen country | DID missing on 14 October | Web path is the deployment of record. A verified caller ID is not a substitute. |
+| Eval payload shape still unparsed | Pass rate cannot be quoted | ElevenLabs dashboard count is quoted. The parser changes once the payload shape is stable. |
 | Arabic path never heard by a native listener | AR evidence is weaker than EN | One listen-through before the recording day |
 | Scope pulled in from WhatsApp or SMS | Voice evidence slips | Those channels stay Phase 6 and Phase 7 |
 
 ## 8. After 14 October
 
-WhatsApp (official WABA only), then SMS for receipts and status, then hardening and the runbook drill. None of that starts because the evidence pack feels thin. A thin pack is a defect in this window, not a reason to open the next channel.
+WhatsApp (official WABA only), then SMS for receipts and status, then hardening and the runbook drill. Each starts after Phase 5 sign-off. Gaps in the evidence pack are defects in this window.

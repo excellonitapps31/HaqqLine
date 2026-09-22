@@ -2,7 +2,7 @@
 
 HaqqLine is a **voice agent product**, not a consumer mobile/web app, and not a module inside JustNow.
 
-ExcellonIT is the vendor. The authority’s existing phone line, website, or super-app is the host. JustNow is a separate government product and is not required to demo or to sell this.
+ExcellonIT is the vendor. The authority’s existing phone line, website, or super-app is the host. JustNow is a separate government product and not a dependency.
 
 ## Stage 2 delivery
 
@@ -19,29 +19,30 @@ Caller  →  Phone (Twilio test DID)  ─┐
                                      │
                                      └─→  ExcellonIT sandbox APIs
                                            lookup_rera_band
+                                           lookup_ejari
                                            submit_to_human_queue
                                            escalate_human
 ```
 
-That stack is the product. A separate Flutter or React app is out of scope for this build.
+That stack is the product. A separate mobile or web app is out of scope for this build.
 
-## What a real buyer installs
+## Production deployment
 
-DLD / RDC already have:
+DLD and RDC already run:
 
 - inbound numbers and IVR
 - public pages (Ejari, RERA index explainers)
 - a human case queue
 
-They do not need residents to download ExcellonIT software. Production looks like:
+Residents install nothing from ExcellonIT. A production rollout is:
 
-1. Point a published information DID (or Dubai Now voice entry) at the agent.
-2. Embed the same widget on the RERA/Ejari page.
-3. Connect webhooks to their APIs and officer queue (same contracts as the sandbox).
+1. A published information DID (or a Dubai Now voice entry) routed to the agent.
+2. The same widget embedded on the RERA/Ejari page.
+3. Webhooks connected to the authority’s APIs and officer queue, on the sandbox contracts.
 
-Native iOS/Android SDKs exist on ElevenLabs for a later embed inside Dubai Now or a DLD app. They are out of scope for 14 October.
+ElevenLabs native iOS/Android SDKs cover a later embed inside Dubai Now or a DLD app. That embed is outside the 14 October scope.
 
-## What ExcellonIT still has to build
+## Build scope
 
 | Build | Needed? |
 | --- | --- |
@@ -49,6 +50,5 @@ Native iOS/Android SDKs exist on ElevenLabs for a later embed inside Dubai Now o
 | Sandbox tools + confirmation gate | Yes |
 | Demo page with the official widget | Yes — Talk and the test number |
 | Full mobile + web citizen app | No |
-| JustNow as a host | No |
 
-excellonit.net is the production portfolio. Residents do not open HaqqLine there.
+

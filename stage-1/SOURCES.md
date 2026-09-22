@@ -4,7 +4,7 @@ Figures behind canvas boxes D and J. Secondary citations are labelled. A DLD or 
 
 | Claim | Source |
 | --- | --- |
-| RDC processed over 25,000 cases in 2024, 93% resolution | Oliva explainer citing RDSC (secondary). Treat as directional unless DLD confirms. |
+| RDC processed over 25,000 cases in 2024, 93% resolution | Oliva explainer citing RDSC (secondary). Directional until DLD confirms. |
 | Q2 2025: 443 reconciliation agreements, AED 190.7m, average settlement 6 days | Dubai Rental Disputes Center via Zawya / Khaleej Times |
 | Most common disputes: eviction for non-payment, rent renewal, compensation | Dr Yousef Al Mansoori, RDC, Khaleej Times |
 | Decree No. 43 of 2013 sets rent-increase bands against the RERA index | UAE legislation / DLD Ejari awareness materials |
