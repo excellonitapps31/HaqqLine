@@ -82,7 +82,7 @@ Exit: transcript links in the phase report. Recordings stay on the ElevenLabs si
 | --- | --- | --- |
 | Local | `php -S 127.0.0.1:8787 -t public public/router.php`, pytest | Pack JSON in the repo |
 | CI | `.github/workflows/ci.yml` on `main` and `phase/**` | Secrets injected. Not printed. |
-| Sandbox host | GitHub Actions rsync of `public/` to the cPanel document root | `public/api/data/` on the host only. Wipeable. Not in git. |
+| Sandbox host | GitHub Actions rsync of `public/` to the HestiaCP document root | `public/api/data/` on the host only. Wipeable. Not in git. |
 
 Promotion is the phase branch, green CI, smoke of the live URL, `reports/phase-05.md`, sign-off, merge, tag `phase-05`.
 
@@ -90,7 +90,7 @@ Promotion is the phase branch, green CI, smoke of the live URL, `reports/phase-0
 
 - Synthetic Ejari ids only: EJ-1001, EJ-1002, EJ-1003. Any other id is `found: false` and `invented: false`.
 - The demo API key in `public/api/v1/pack/config.json` is public. The control is the rate limit, not secrecy.
-- Webhook signatures are HMAC, with a 30-minute clock skew. The secret file is on the host, mode 600.
+- Webhook signatures are HMAC, with a 30-minute clock skew. The secret file is on the host, mode 640, outside git.
 - There is no `decide_case` tool.
 - Rollback of the site is the previous git tag and a redeploy. A bad agent sync is corrected by running `scripts/sync_elevenlabs.py` from the last good commit. The host data directory is not rolled back by git.
 
