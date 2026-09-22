@@ -1,6 +1,6 @@
 # Sources for boxes D and J
 
-Figures used in boxes D and J. Secondary citations stay labelled. Replace them with DLD or RDC figures when those are in hand.
+Figures behind canvas boxes D and J. Secondary citations are labelled. A DLD or RDC primary figure replaces a secondary one when it is in hand.
 
 | Claim | Source |
 | --- | --- |
@@ -13,11 +13,11 @@ Figures used in boxes D and J. Secondary citations stay labelled. Replace them w
 | UAE population ~10.33m mid-2024; ~88.9% expatriate | UAE statistics / WE THE UAE 2031 compilation of FCSC figures |
 | Large non-Arabic/English speaker base (e.g. Malayalam ~1.06m users) | Ethnologue figures summarised on Wikipedia *Demographics of the UAE* |
 | DLD Ejari awareness campaign (index, notice, registration) | DLD public campaign reporting, 2026 |
-| Challenge brief: cases reach RDC that an Ejari/index check would have resolved | Ignyte × ElevenLabs brief (use as problem statement, not a statistic) |
+| Cases reach RDC that an Ejari/index check would have resolved | Ignyte × ElevenLabs brief. Problem statement. Not a statistic. |
 
 **Box D/J contract used in the canvas**
 
-No invented “% of preventable filings.” The baselines are what is observable:
+The canvas states no percentage of preventable filings. The baselines are what is observable:
 
 1. Staffed voice languages today: English and Arabic (2).
 2. Automated, source-attributed rule-check on that voice channel: not a productised service (0 per 100 contacts).

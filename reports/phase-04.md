@@ -37,7 +37,7 @@ Open https://haqqline.excellonit.net/, allow the microphone, click Talk, complet
 ## Risks / residual defects
 
 - Demo API key remains public (intentional).
-- ElevenLabs eval JSON summary was not parsed into a numeric pass rate; treat dashboard runs as the source of truth until the parser is tightened.
+- ElevenLabs eval JSON summary was not parsed into a numeric pass rate. Dashboard runs are the source of truth until the parser records a fraction.
 - Webhook HMAC secret lives only on the host (`api/data/elevenlabs_webhook.secret`), not in git.
 
 ## Status

@@ -5,13 +5,11 @@
 Live sandbox: **[https://haqqline.excellonit.net](https://haqqline.excellonit.net)** · **[Try a case](https://haqqline.excellonit.net/play/)**  
 This host is a demonstration, **not a government service**. It is not affiliated with DLD, RERA, or the Rental Disputes Center.
 
-[Repository](https://github.com/excellonitapps31/HaqqLine) · Applicant: ExcellonIT · Product: HaqqLine
-
 ## What this is
 
 HaqqLine checks a caller’s situation against signed-off published rules, answers in their language, and queues filings for a human. It does not decide cases and does not give legal advice.
 
-The Ignyte × ElevenLabs Future of Voice AI Challenge Stage 1 submission is the filled official Idea Canvas only: `stage-1/ElevenLabs_Idea_Canvas.docx` (upload that Word file on Ignyte — not markdown, not a deck). [Apply on Ignyte](https://app.ignyte.ae/public/challenges/C1607A40-2F9A-F111-9B33-6045BD14DEC9) by 23 September 2026.
+This repository is ExcellonIT’s HaqqLine sandbox: the public host, the sandbox APIs, and the ElevenLabs agent behind Talk. The Stage 1 Idea Canvas for the Ignyte × ElevenLabs Future of Voice AI Challenge is `stage-1/ElevenLabs_Idea_Canvas.docx`.
 
 ## Phase 1–5
 

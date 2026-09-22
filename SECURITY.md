@@ -4,7 +4,7 @@ HaqqLine on haqqline.excellonit.net is an ExcellonIT sandbox. It is not a govern
 
 ## Reporting
 
-Email swissknife@excellonit.net. Include the URL, the time, and what you expected to happen. Do not include a live Ejari, a passport, or a recording of a real caller.
+Email swissknife@excellonit.net. Include the URL, the time, and the expected result. Leave out a live Ejari, a passport, or a recording of a real caller.
 
 ## What is public on purpose
 

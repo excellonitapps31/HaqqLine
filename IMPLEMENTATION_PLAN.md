@@ -1,12 +1,12 @@
 # HaqqLine — Phased DevOps implementation plan
 
 **Status:** Phase 4 complete (`phase-04`). Phase 5 in flight after merge (`phase/05-twilio`).  
-**Applicant:** ExcellonIT  
+**Owner:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
 **Rule:** one phase in flight. A phase is built, deployed, tested, reported, and signed off in writing before the next phase starts. Two phases never share a change set, branch, or deploy.
 
-This plan supersedes `stage-2/BUILD_PLAN.md` as the delivery sequence. The 14-day challenge sprint is a **subset** of Phases 1–5, not a licence to skip gates.
+This plan is the delivery sequence. `stage-2/BUILD_PLAN.md` covers the 30 September – 14 October window inside it. That window still passes the same gates.
 
 ---
 
@@ -138,7 +138,7 @@ In place before Phase 1:
 **In scope**
 
 - `lookup_rera_band`  
-- `lookup_ejari` (registered / not, synthetic contract dates — matches the brief’s Ejari check)  
+- `lookup_ejari` (registered or not, synthetic contract dates)  
 - `submit_to_human_queue` (reject unless `caller_confirmed=true`; status always `pending_human`)  
 - `escalate_human`  
 - OpenAPI 3.1 served at `/api/v1/openapi.json` and a **read-only** docs UI  
@@ -185,7 +185,7 @@ In place before Phase 1:
 - A11y smoke on the two languages  
 - No PII fields beyond synthetic labels  
 
-**Live-ready means:** a judge can complete a rights-check without a call.
+**Live-ready means:** a rights-check completes in the browser, with no call.
 
 **Report:** `reports/phase-03.md`
 
@@ -193,7 +193,7 @@ In place before Phase 1:
 
 ### Phase 4 — ElevenLabs agent + web voice on the subdomain
 
-**Intent:** the scored challenge web deployment: agent behaviour, voice, knowledge, evaluation **on ElevenLabs**, callable from `haqqline.excellonit.net`.
+**Intent:** web voice on the sandbox. Agent behaviour, voice, knowledge, and evaluation run on ElevenLabs and are callable from `haqqline.excellonit.net`.
 
 **In scope**
 
@@ -205,7 +205,7 @@ In place before Phase 1:
 - Server tools pointed at **live** Phase 2 APIs  
 - Official web widget (or React SDK) **on the demo site**  
 - Agent Testing: multi-run pass rate + tool-call test (unconfirmed filing must not submit)  
-- Conversation recording + post-call webhook into our audit store  
+- Conversation recording + post-call webhook into the audit store  
 
 **Out of scope**
 
@@ -246,7 +246,7 @@ In place before Phase 1:
 
 - Inbound EN and AR: disclosure heard, citation spoken, confirm-gate on filing  
 - Failure path: advice question → escalate  
-- Number **not** reachable without disclaimer page listing it (avoid surprise production)  
+- The test number appears only on the sandbox page, with the disclaimer  
 
 **Live-ready means:** an inbound call to the test DID completes the gold path.
 
@@ -290,7 +290,7 @@ In place before Phase 1:
 
 **Report:** `reports/phase-06.md`
 
-Stage 1 box G leaves WhatsApp unticked on purpose. WhatsApp stays in product scope here. Do not file a second canvas after Stage 1 is in.
+WhatsApp is Phase 6. It is outside the Stage 1 canvas scope.
 
 ---
 
@@ -334,7 +334,7 @@ Stage 1 box G leaves WhatsApp unticked on purpose. WhatsApp stays in product sco
 - Rate limits and WAF/CDN in front of the subdomain  
 - Structured logs, traces, alerts on 5xx and tool failures  
 - Backup/restore drill of demo DB  
-- Load test numbers written (concurrent widget + API) — honest, not “UAE population” fiction  
+- Load test numbers for concurrent widget and API calls, labelled as sandbox figures  
 - Investor runbook: 15-minute script (web, voice, WhatsApp, SMS)  
 - Dependency list and licence scan  
 
@@ -439,15 +439,14 @@ WhatsApp and SMS are last among **channels** so Meta approval and Twilio SMS can
 
 ---
 
-## 9. Challenge vs this plan
+## 9. Where this plan sits against the competition
 
-| Challenge page | This plan |
+| Constraint | Programme |
 | --- | --- |
-| Official Idea Canvas is Stage 1 | Upload filled `stage-1/ElevenLabs_Idea_Canvas.docx` (their template name, Word format only) |
-| Web **or** test number for Stage 2 | Phase 4 then 5 — both live-ready, still gated |
-| Not live government production | Sandbox banner + synthetic data on `haqqline.excellonit.net` |
-| WhatsApp listed as a platform option | Phase 6, after voice. WhatsApp is the primary message channel. |
-| Box G “don’t tick everything” | Canvas can stay lean; WhatsApp is earned in Phase 6 |
+| Stage 1 is the Idea Canvas | `stage-1/ElevenLabs_Idea_Canvas.docx` |
+| Stage 2 is the hosted page or a test number | Phase 4, then Phase 5. Both stay gated. |
+| Not a live government deployment | Sandbox banner and synthetic data on `haqqline.excellonit.net` |
+| WhatsApp is a later channel | Phase 6, after voice |
 
 ---
 

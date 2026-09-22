@@ -4,9 +4,9 @@ HaqqLine is a **voice agent product**, not a consumer mobile/web app, and not a 
 
 ExcellonIT is the vendor. The authority’s existing phone line, website, or super-app is the host. JustNow is a separate government product and is not required to demo or to sell this.
 
-## What Stage 2 actually requires
+## Stage 2 delivery
 
-The brief asks for a live agent on **test numbers** or a **hosted web or chat** deployment, plus recordings, tests, and transcripts. It does not ask for App Store apps, user accounts, or a new citizen portal.
+A live agent on a test number or on the hosted page, plus recordings, tests, and transcripts. No App Store app, no user accounts, and no new citizen portal.
 
 ## Three layers
 
@@ -45,9 +45,9 @@ Native iOS/Android SDKs exist on ElevenLabs for a later embed inside Dubai Now o
 
 | Build | Needed? |
 | --- | --- |
-| ElevenLabs agent, voices, knowledge, evals | Yes — this is the scored work |
+| ElevenLabs agent, voices, knowledge, evals | Yes |
 | Sandbox tools + confirmation gate | Yes |
-| Thin demo page with the official widget | Yes — so a reviewer can click or call |
+| Demo page with the official widget | Yes — Talk and the test number |
 | Full mobile + web citizen app | No |
 | JustNow as a host | No |
 
