@@ -23,7 +23,7 @@ CI: https://github.com/excellonitapps31/HaqqLine/actions/runs/34110709328 (verif
 | Widget markup + HMAC webhook unit tests | pass |
 | CI verify, deploy, live playground | pass |
 | Live `elevenlabs.json` agent_id | pass |
-| ElevenLabs agent test suite, re-run 22 September 2026 (invocation `suite_3201m35capx8ffct44qhfcvx60mt`) | 11/13 passed |
+| ElevenLabs agent test suite, re-run 22 September 2026 (invocation `suite_8301m35dwvwhe6q8qc0190mh279w`, agent version `agtvrsn_2501m35dwvkxedqv18zhtq4f9rj6`) | 13/13 passed |
 
 ## What an investor can do now
 
@@ -39,7 +39,8 @@ Open https://haqqline.excellonit.net/, allow the microphone, click Talk, complet
 - Demo API key remains public (intentional).
 - The 7 September sync read test results before they finished and recorded 0. `scripts/sync_elevenlabs.py` now waits for the invocation to finish and writes passed/total to the job summary and the `phase-04-eval` artifact.
 - 22 September 2026: agent tool calls reached the API without the demo key (HTTP 401), because ElevenLabs now reads `request_headers`, not `headers`. Fixed the same day. The suite went from 6/13 to 11/13.
-- Two Arabic simulations still fail: the over-band case escalates before the lookup, and the unknown-area case answers in English. Disclosure, the advice refusal, and every unconfirmed-filing test pass.
+- The two Arabic failures were fixed the same day. The prompt and workflow now call `lookup_rera_band` before any band statement, treat an over-band result as information rather than an escalation, and reply in the caller's language. The Arabic unknown-area scenario now states that the simulated caller speaks only Arabic; before that, the simulated caller spoke English. Result: 13/13.
+- Simulation tests are model-graded. A single run is evidence, not a guarantee; a multi-run pass rate is still owed in Phase 5.
 - Webhook HMAC secret lives only on the host (`api/data/elevenlabs_webhook.secret`), not in git.
 
 ## Status
