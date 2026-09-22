@@ -18,7 +18,7 @@
       "referenced_tool": {"type": "webhook", "id": "LOOKUP_RERA_PLACEHOLDER"},
       "verify_absence": false,
       "parameters": [
-        {"path": "area", "eval": {"type": "llm", "description": "Area is JLT / jlt / Jumeirah Lakes Towers"}}
+        {"path": "body.area", "eval": {"type": "llm", "description": "Area is JLT / jlt / Jumeirah Lakes Towers"}}
       ]
     }
   },

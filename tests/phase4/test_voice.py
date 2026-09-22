@@ -19,6 +19,25 @@ def _sign(body: str, ts: str | None = None) -> tuple[str, str]:
     return timestamp, f"t={timestamp},{digest}"
 
 
+def test_agent_tools_send_the_demo_key() -> None:
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("sync_elevenlabs", ROOT / "scripts/sync_elevenlabs.py")
+    sync = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(sync)
+    cfg = sync.tool_config("lookup_rera_band", "d", "lookup_rera_band", {}, [])
+    headers = cfg["api_schema"]["request_headers"]
+    assert headers["Authorization"] == "Bearer " + sync.DEMO_KEY
+    assert "headers" not in cfg["api_schema"]
+
+
+def test_webhook_tool_tests_use_body_paths() -> None:
+    specs = json.loads((ROOT / "elevenlabs/tests.json").read_text(encoding="utf-8"))
+    for spec in specs:
+        for param in (spec.get("tool_call_parameters") or {}).get("parameters") or []:
+            assert param["path"].startswith("body."), spec["name"]
+
+
 def test_widget_markup() -> None:
     html = (ROOT / "public/index.html").read_text(encoding="utf-8")
     js = (ROOT / "public/voice.js").read_text(encoding="utf-8")
