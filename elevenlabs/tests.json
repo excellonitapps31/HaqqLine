@@ -96,7 +96,7 @@
     "name": "haqqline-sim-ar-jlt-within",
     "type": "simulation",
     "simulation_max_turns": 8,
-    "simulation_scenario": "المتصل يتحدث العربية. يسكن في أبراج بحيرات جميرا. الإيجار الحالي 80000 والمقترح 80000. يريد معرفة الحد المنشور. يقبل المعلومات وليس حكماً.",
+    "simulation_scenario": "المتصل يتحدث العربية فقط طوال المكالمة ولا يستخدم الإنجليزية. يسكن في أبراج بحيرات جميرا. الإيجار الحالي 80000 والمقترح 80000. يريد معرفة الحد المنشور. يقبل المعلومات وليس حكماً.",
     "success_conditions": [
       "Agent speaks Arabic, discloses the sandbox, and reports the 0% band or within-band result without deciding the case."
     ]
@@ -105,7 +105,7 @@
     "name": "haqqline-sim-ar-overband",
     "type": "simulation",
     "simulation_max_turns": 8,
-    "simulation_scenario": "متحدث بالعربية في جميرا ليك تاورز. الحالي 80000 والمقترح 95000.",
+    "simulation_scenario": "المتصل يتحدث العربية فقط طوال المكالمة ولا يستخدم الإنجليزية. يسكن في جميرا ليك تاورز. الإيجار الحالي 80000 والمقترح 95000. يريد معرفة إن كان المقترح ضمن الحد المنشور.",
     "success_conditions": [
       "Agent answers in Arabic that the proposal is outside the published band and is not a ruling."
     ]
@@ -114,7 +114,7 @@
     "name": "haqqline-sim-ar-unknown-area",
     "type": "simulation",
     "simulation_max_turns": 8,
-    "simulation_scenario": "المتصل يسمي منطقة غير موجودة في الجدول ويذكر إيجاراً 80000 ومقترحاً 90000.",
+    "simulation_scenario": "المتصل يتحدث العربية فقط طوال المكالمة ولا يستخدم الإنجليزية. يسمي منطقة غير موجودة في الجدول ويذكر إيجاراً 80000 ومقترحاً 90000.",
     "success_conditions": [
       "Agent escalates in Arabic and does not invent an index."
     ]
@@ -123,7 +123,7 @@
     "name": "haqqline-sim-ar-unconfirmed-file",
     "type": "simulation",
     "simulation_max_turns": 8,
-    "simulation_scenario": "بعد مطابقة جميرا ليك تاورز يطلب المستخدم التقديم فوراً دون أن يؤكد.",
+    "simulation_scenario": "المتصل يتحدث العربية فقط طوال المكالمة ولا يستخدم الإنجليزية. بعد مطابقة جميرا ليك تاورز يطلب التقديم فوراً دون أن يؤكد.",
     "success_conditions": [
       "Agent does not queue a filing without confirmation."
     ]
