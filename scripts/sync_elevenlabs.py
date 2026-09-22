@@ -7,6 +7,7 @@ import json
 import os
 import ssl
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -308,12 +309,12 @@ def upsert_agent(payload: dict) -> str:
     raise SystemExit(last_error)
 
 
-def upsert_tests(tool_ids: dict[str, str]) -> list[str]:
+def upsert_tests(tool_ids: dict[str, str]) -> dict[str, str]:
     specs = json.loads((ROOT / "elevenlabs/tests.json").read_text(encoding="utf-8"))
     listing = api("GET", "/v1/convai/agent-testing")
     rows = listing.get("tests") or listing.get("items") or []
     by_name = {row.get("name"): row.get("id") or row.get("test_id") for row in rows}
-    ids = []
+    ids: dict[str, str] = {}
     for spec in specs:
         body = json.loads(json.dumps(spec))
         params = body.get("tool_call_parameters") or {}
@@ -325,11 +326,13 @@ def upsert_tests(tool_ids: dict[str, str]) -> list[str]:
         name = body["name"]
         if name in by_name and by_name[name]:
             api("PUT", f"/v1/convai/agent-testing/{by_name[name]}", body)
-            ids.append(by_name[name])
+            test_id = by_name[name]
         else:
             created = api("POST", "/v1/convai/agent-testing/create", body)
-            ids.append(created.get("id") or created.get("test_id"))
-    return [i for i in ids if i]
+            test_id = created.get("id") or created.get("test_id")
+        if test_id:
+            ids[test_id] = name
+    return ids
 
 
 def attach_and_run(agent_id: str, test_ids: list[str]) -> dict:
@@ -363,28 +366,73 @@ def write_public_config(agent_id: str) -> None:
     )
 
 
-def summarize_runs(result: dict) -> dict:
-    runs = result.get("test_runs") or result.get("results") or result.get("tests") or []
-    passed = 0
-    total = 0
-    details = []
-    if isinstance(runs, list):
-        for row in runs:
-            total += 1
-            status = str(row.get("status") or row.get("result") or row.get("successful") or "")
-            ok = status.lower() in {"passed", "pass", "success", "successful", "true"}
-            if row.get("passed") is True:
-                ok = True
-            if ok:
-                passed += 1
-            details.append({"name": row.get("test_name") or row.get("name") or row.get("test_id"), "ok": ok, "status": status})
-    summary = {"passed": passed, "total": total or len(test_ids_fallback(result)), "raw_keys": list(result.keys()), "details": details}
+def wait_for_results(invocation: dict, timeout_s: int, poll_s: int = 15) -> dict:
+    invocation_id = invocation.get("id")
+    if not invocation_id:
+        return invocation
+    deadline = time.monotonic() + timeout_s
+    latest = invocation
+    while True:
+        runs = latest.get("test_runs") or []
+        pending = sum(1 for row in runs if row.get("status") == "pending")
+        if runs and not pending:
+            return latest
+        if time.monotonic() >= deadline:
+            print(f"warning: {pending} of {len(runs)} agent tests still pending after {timeout_s}s", file=sys.stderr)
+            return latest
+        time.sleep(poll_s)
+        latest = api("GET", f"/v1/convai/test-invocations/{invocation_id}")
+
+
+def run_reason(row: dict) -> str:
+    cond = row.get("condition_result") or {}
+    rationale = cond.get("rationale") or {}
+    return rationale.get("summary") or "; ".join(rationale.get("messages") or [])[:300]
+
+
+def summarize_runs(result: dict, names: dict[str, str]) -> dict:
+    runs = result.get("test_runs") or []
+    details = [
+        {
+            "name": names.get(row.get("test_id", ""), row.get("test_id")),
+            "status": row.get("status"),
+            "reason": run_reason(row),
+        }
+        for row in runs
+    ]
+    summary = {
+        "invocation_id": result.get("id"),
+        "agent_id": result.get("agent_id"),
+        "version_id": result.get("version_id"),
+        "finished_at": int(time.time()),
+        "passed": sum(1 for d in details if d["status"] == "passed"),
+        "failed": sum(1 for d in details if d["status"] == "failed"),
+        "pending": sum(1 for d in details if d["status"] == "pending"),
+        "total": len(details),
+        "details": details,
+    }
     (ROOT / "reports/phase-04-eval.json").write_text(json.dumps({"invocation": result, "summary": summary}, indent=2)[:500000], encoding="utf-8")
+    write_step_summary(summary)
     return summary
 
 
-def test_ids_fallback(result: dict) -> list:
-    return result.get("tests") or []
+def write_step_summary(summary: dict) -> None:
+    path = os.environ.get("GITHUB_STEP_SUMMARY")
+    if not path:
+        return
+    lines = [
+        f"### Agent tests: {summary['passed']}/{summary['total']} passed",
+        "",
+        f"Invocation `{summary['invocation_id']}` · agent version `{summary['version_id']}`",
+        "",
+        "| Test | Result | Reason |",
+        "| --- | --- | --- |",
+    ]
+    for d in summary["details"]:
+        reason = (d["reason"] or "").replace("|", "/").replace("\n", " ")
+        lines.append(f"| {d['name']} | {d['status']} | {reason} |")
+    with open(path, "a", encoding="utf-8") as fh:
+        fh.write("\n".join(lines) + "\n")
 
 
 def main() -> None:
@@ -402,11 +450,13 @@ def main() -> None:
     if os.environ.get("HAQQLINE_SKIP_AGENT_TESTS") == "1":
         print(json.dumps({"agent_id": agent_id, "tools": tool_ids, "webhook_id": webhook_id, "tests": []}, indent=2))
         return
-    test_ids = upsert_tests(tool_ids)
-    result = attach_and_run(agent_id, test_ids)
-    summary = summarize_runs(result)
-    print(json.dumps({"agent_id": agent_id, "tools": tool_ids, "webhook_id": webhook_id, "tests": test_ids, "summary": summary}, indent=2))
-    if summary["total"] and summary["passed"] < summary["total"]:
+    test_names = upsert_tests(tool_ids)
+    invocation = attach_and_run(agent_id, list(test_names))
+    result = wait_for_results(invocation, int(os.environ.get("HAQQLINE_TEST_WAIT_SECONDS", "1500")))
+    summary = summarize_runs(result, test_names)
+    print(json.dumps({"agent_id": agent_id, "tools": tool_ids, "webhook_id": webhook_id, "summary": summary}, indent=2))
+    print(f"AGENT_TESTS_PASSED={summary['passed']}/{summary['total']}")
+    if summary["passed"] < summary["total"]:
         # Partial failures stay a warning. The widget stays up.
         print("warning: some agent tests did not pass", file=sys.stderr)
 
