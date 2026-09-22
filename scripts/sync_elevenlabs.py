@@ -172,26 +172,33 @@ def agent_payload(kb_id: str, tool_ids: dict[str, str], webhook_id: str) -> dict
             "intake": {
                 "type": "override_agent",
                 "label": "Intake",
-                "additional_prompt": "Complete AI disclosure if not already said. Collect area, current rent, proposed rent. Do not file yet.",
+                "additional_prompt": "Reply in the caller's language. Complete AI disclosure if not already said. Collect area, current rent, proposed rent. Do not file yet.",
                 "edge_order": ["to_match"],
             },
             "rulematch": {
                 "type": "override_agent",
                 "label": "RuleMatch",
-                "additional_prompt": "Call lookup_rera_band. Cite the pack. If the area is unknown, go to Escalate.",
+                "additional_prompt": (
+                    "Reply in the caller's language. Call lookup_rera_band now, for any area the caller named, before saying anything about the band. "
+                    "Then state the permitted increase, the permitted new rent, and whether the proposal is within or outside the band, citing the pack. "
+                    "Outside the band is information, not a reason to escalate."
+                ),
                 "edge_order": ["to_filing", "to_escalate"],
             },
             "filing": {
                 "type": "override_agent",
                 "label": "Filing",
-                "additional_prompt": "Submit only after explicit confirmation with caller_confirmed true.",
+                "additional_prompt": "Reply in the caller's language. Submit only after explicit confirmation with caller_confirmed true.",
                 "additional_tool_ids": [tool_ids["submit_to_human_queue"]],
                 "edge_order": ["filing_end"],
             },
             "escalate": {
                 "type": "override_agent",
                 "label": "Escalate",
-                "additional_prompt": "Do not give legal advice. Call escalate_human.",
+                "additional_prompt": (
+                    "Reply in the caller's language. Do not give legal advice and do not invent an index. "
+                    "Call escalate_human, never submit_to_human_queue. Then tell the caller, in their language, that a person will take the case."
+                ),
                 "additional_tool_ids": [tool_ids["escalate_human"]],
                 "edge_order": ["escalate_end"],
             },
@@ -207,12 +214,21 @@ def agent_payload(kb_id: str, tool_ids: dict[str, str], webhook_id: str) -> dict
             "to_filing": {
                 "source": "rulematch",
                 "target": "filing",
-                "forward_condition": {"type": "llm", "condition": "The caller wants a human filing and is not asking for legal advice or a win prediction."},
+                "forward_condition": {
+                    "type": "llm",
+                    "condition": "lookup_rera_band has returned and its result was told to the caller, and the caller now asks for a human filing without asking for legal advice or a win prediction.",
+                },
             },
             "to_escalate": {
                 "source": "rulematch",
                 "target": "escalate",
-                "forward_condition": {"type": "llm", "condition": "Unknown area, legal advice, or will-I-win."},
+                "forward_condition": {
+                    "type": "llm",
+                    "condition": (
+                        "lookup_rera_band returned unknown area or escalate true, or a tool failed, or the caller asks for legal advice or whether they will win. "
+                        "A proposal outside the band is not by itself a reason to escalate."
+                    ),
+                },
             },
             "filing_end": {
                 "source": "filing",
