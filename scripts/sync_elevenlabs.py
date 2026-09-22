@@ -71,7 +71,7 @@ def tool_config(name: str, description: str, path: str, properties: dict, requir
         "api_schema": {
             "url": f"{TOOLS_BASE}/{path}",
             "method": "POST",
-            "headers": {
+            "request_headers": {
                 "Authorization": f"Bearer {DEMO_KEY}",
                 "Content-Type": "application/json",
             },
@@ -411,7 +411,7 @@ def summarize_runs(result: dict, names: dict[str, str]) -> dict:
         "total": len(details),
         "details": details,
     }
-    (ROOT / "reports/phase-04-eval.json").write_text(json.dumps({"invocation": result, "summary": summary}, indent=2)[:500000], encoding="utf-8")
+    (ROOT / "reports/phase-04-eval.json").write_text(json.dumps({"summary": summary, "invocation": result}, indent=2), encoding="utf-8")
     write_step_summary(summary)
     return summary
 
