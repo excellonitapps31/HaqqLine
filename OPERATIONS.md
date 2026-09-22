@@ -24,7 +24,7 @@ Local equivalents are in `.env.example`.
 
 ## Data on the host
 
-`public/api/data/` holds the queue, escalations, audit tail, rate-limit buckets, conversation log, and the webhook secret. It is gitignored and denied by `.htaccess`. Wiping the JSONL files resets the sandbox. Do not wipe the webhook secret unless a new one is installed in the same step.
+`public/api/data/` holds the queue, escalations, audit tail, rate-limit buckets, conversation log, and the webhook secret. It is gitignored and denied by `.htaccess`. Wiping the JSONL files resets the sandbox. The webhook secret is replaced, never just removed; a missing secret returns 503 on every webhook.
 
 ## When something fails
 

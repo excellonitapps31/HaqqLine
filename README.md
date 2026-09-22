@@ -31,7 +31,7 @@ This repository is ExcellonIT’s HaqqLine sandbox: the public host, the sandbox
 
 HTTPS shell, sandbox APIs, playground, ElevenLabs web voice, and an inbound Twilio test DID (secrets required). WhatsApp and SMS are later phases.
 
-The widget is created by `scripts/sync_elevenlabs.py` (`ELEVENLABS_API_KEY`). The test number is imported by `scripts/sync_twilio.py` (`TWILIO_API_KEY_SID` + `TWILIO_API_KEY_SECRET` preferred, or Account SID + Auth Token; plus `TWILIO_VOICE_NUMBER`). Do not put secrets in git.
+The widget is created by `scripts/sync_elevenlabs.py` (`ELEVENLABS_API_KEY`). The test number is imported by `scripts/sync_twilio.py` (`TWILIO_API_KEY_SID` + `TWILIO_API_KEY_SECRET` preferred, or Account SID + Auth Token; plus `TWILIO_VOICE_NUMBER`). Secrets live in GitHub Actions and a local `.env`, not in git.
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
@@ -59,6 +59,6 @@ HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/
 
 ## Conventions
 
-- One phase at a time. Work on `phase/NN-…`, then merge to `main` after sign-off.
+- One phase at a time. Each phase is built on `phase/NN-…` and merged to `main` after sign-off.
 - No secrets in git. Deploy uses GitHub Actions secrets over SSH.
 - Host of record: cPanel at `haqqline.excellonit.net` (not Cloud Run).

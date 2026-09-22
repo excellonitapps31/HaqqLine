@@ -6,18 +6,18 @@
 **Investor demo host:** `https://haqqline.excellonit.net`  
 **Rule:** one phase in flight. A phase is built, deployed, tested, reported, and signed off in writing before the next phase starts. Two phases never share a change set, branch, or deploy.
 
-This plan is the delivery sequence. `stage-2/BUILD_PLAN.md` covers the 30 September – 14 October window inside it. That window still passes the same gates.
+This plan is the delivery sequence. `stage-2/BUILD_PLAN.md` covers the 30 September – 14 October window inside it, under the same gates.
 
 ---
 
-## 0. Operating rules (non-negotiable)
+## 0. Operating rules
 
 1. **One phase at a time.** Phase N+1 stays closed while Phase N is open. Later-phase features stay in their own phase.
-2. **No patches.** A phase is a complete, releasable increment: versioned, deployed to `haqqline.excellonit.net` (or a path it already serves), documented, and reversible by git tag. Leaving hardening for a later phase fails the current one.
+2. **Complete increments.** A phase is releasable on its own: versioned, deployed to `haqqline.excellonit.net` (or a path it already serves), documented, and reversible by git tag. Hardening owed by a phase ships in that phase.
 3. **Tests gate merge.** CI must be green. Phase-specific tests listed below must pass. If a test cannot be automated, a signed manual test log is attached to the phase report. A failure blocks deploy and sign-off.
 4. **Sign-off, then the next phase.** Each phase ends with `reports/phase-NN.md`. Sign-off is **Approve Phase N** or **Reject** with defects. A reject stays on that phase.
 5. **Git is the system of record.** No production changes from a laptop outside CI. No `--no-verify`. No force-push to `main`.
-6. **Demo is not government production.** Every page, call, WhatsApp thread, and SMS states this is an ExcellonIT **sandbox**. Synthetic data only. No live DLD/RERA credentials. Aligns with the challenge rule: not deployed in real production settings.
+6. **Demo is not government production.** Every page, call, WhatsApp thread, and SMS states this is an ExcellonIT **sandbox**. Synthetic data only. No live DLD/RERA credentials.
 7. **WhatsApp is the primary message channel; SMS is secondary.** They are **separate phases**. Voice (web, then Twilio) lands first so the agent exists before any message channel is wired.
 8. **Twilio.** The account is ExcellonIT’s. Twilio voice starts only after a **Standard API Key** (SID starting `SK` + secret) is in the secret store, a **purchased** number has Voice (SMS when that phase starts), and 2FA is on in the Twilio console. Account SID + Auth Token is a fallback only.
 
@@ -43,7 +43,7 @@ JustNow is out of scope for every phase.
 
 ## 2. Git and promotion
 
-**Repository:** dedicated public (or investor-visible) HaqqLine repo. Do not mix JustNow or unrelated ExcellonIT sites in this tree.
+**Repository:** dedicated public HaqqLine repo. JustNow and other ExcellonIT sites live elsewhere.
 
 | Branch | Purpose |
 | --- | --- |
@@ -71,7 +71,7 @@ phase branch → CI (lint, unit, contract, phase tests) → deploy to haqqline.e
 | Public URL | `https://haqqline.excellonit.net` (DNS and document root on the excellonit.net cPanel account; deploy writes into that root) |
 | TLS | Valid certificate; HTTP → HTTPS |
 | Compute | **cPanel + LiteSpeed** on excellonit.net (decided Phase 1). GitHub Actions rsyncs `public/` to the subdomain document root. |
-| Regions | Hosting region is the excellonit.net cPanel cluster (US-east as observed on the server). Keep it. |
+| Regions | Hosting region is the excellonit.net cPanel cluster (US-east as observed on the server). |
 | Data | Demo database only; wipeable; no real resident PII |
 | Identity | Demo PIN or magic-link for investors; separate from excellonit.net marketing site |
 
@@ -98,7 +98,7 @@ In place before Phase 1:
 
 ### Gate 0 — Approve this plan
 
-**Done when:** this plan is signed off. It is. Phases 1–4 shipped from it.  
+**Done when:** this plan is signed off. Closed; Phases 1–4 shipped from it.  
 **Was out of scope at Gate 0:** application code, DNS, and CI.
 
 ---
@@ -109,7 +109,7 @@ In place before Phase 1:
 
 **In scope**
 
-- Repo layout, `README`, licence, `CODEOWNERS`, branch protection  
+- Repo layout, `README`, `CODEOWNERS`, branch protection  
 - CI: install, lint, test job, deploy job  
 - Static site (cPanel document root) that serves a **complete** demo landing: product name, sandbox banner, “not a government service”, English + Arabic chrome, `/health` JSON  
 - Deploy to `haqqline.excellonit.net`  
@@ -411,7 +411,9 @@ Sign-off that starts the next phase: `Approve Phase NN`. Anything else keeps wor
 
 ---
 
-## 8. Sequence (do not reorder without a new Gate 0)
+## 8. Sequence
+
+Reordering needs a new Gate 0.
 
 ```
 Gate 0  this plan
