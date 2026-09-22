@@ -17,7 +17,7 @@ Email swissknife@excellonit.net. Include the URL, the time, and the expected res
 - `ELEVENLABS_API_KEY`
 - Twilio API key or auth token
 - `TWILIO_VOICE_NUMBER` until the import script writes the E.164 value into `public/twilio.json`
-- The ElevenLabs webhook HMAC secret (`public/api/data/elevenlabs_webhook.secret` on the host, mode 600)
+- The ElevenLabs webhook HMAC secret (`public/api/data/elevenlabs_webhook.secret` on the host, mode 640, readable by the deploy user and the PHP pool only)
 - SSH deploy key
 - Anything under `public/api/data/` except the deny-all `.htaccess`
 
@@ -33,4 +33,4 @@ Names and empty values are in `.env.example`. Filled values go in `.env` locally
 
 ## Host
 
-Deploy is rsync of `public/` over SSH from GitHub Actions. The data directory is created on the host and is not part of the sync delete set. HTTP redirects to HTTPS.
+Deploy is rsync of `public/` over SSH from GitHub Actions, as a dedicated key-only user with write access to the HaqqLine document root and nothing else. The data directory is created on the host and is not part of the sync delete set. HTTP redirects to HTTPS, and HSTS is on.

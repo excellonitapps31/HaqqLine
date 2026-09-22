@@ -25,7 +25,7 @@ This repository is ExcellonIT’s HaqqLine sandbox: the public host, the sandbox
 | Sync scripts | Python 3.12, standard library only (`urllib`, `ssl`, `json`) |
 | Tests | pytest, Playwright (Chromium), PHP built-in server for local runs |
 | CI/CD | GitHub Actions: verify, rsync over SSH, live smoke, agent sync, number sync |
-| Host | cPanel with LiteSpeed behind nginx. TLS from Let’s Encrypt via acme.sh. |
+| Host | Ubuntu 24.04 VPS managed by HestiaCP: nginx and PHP 8.5-FPM. Let’s Encrypt TLS issued by HestiaCP, HTTPS forced, HSTS on. |
 
 ## Phase 1–5
 
@@ -61,4 +61,4 @@ HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/
 
 - One phase at a time. Each phase is built on `phase/NN-…` and merged to `main` after sign-off.
 - No secrets in git. Deploy uses GitHub Actions secrets over SSH.
-- Host of record: cPanel at `haqqline.excellonit.net` (not Cloud Run).
+- Host of record: the HestiaCP VPS behind `haqqline.excellonit.net`. Deploys run as a dedicated SSH user that can write only the HaqqLine document root.

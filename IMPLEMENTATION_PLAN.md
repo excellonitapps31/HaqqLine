@@ -68,10 +68,10 @@ phase branch → CI (lint, unit, contract, phase tests) → deploy to haqqline.e
 
 | Item | Decision |
 | --- | --- |
-| Public URL | `https://haqqline.excellonit.net` (DNS and document root on the excellonit.net cPanel account; deploy writes into that root) |
+| Public URL | `https://haqqline.excellonit.net` (subdomain on the excellonit.net VPS; deploy writes into its document root) |
 | TLS | Valid certificate; HTTP → HTTPS |
-| Compute | **cPanel + LiteSpeed** on excellonit.net (decided Phase 1). GitHub Actions rsyncs `public/` to the subdomain document root. |
-| Regions | Hosting region is the excellonit.net cPanel cluster (US-east as observed on the server). |
+| Compute | Ubuntu 24.04 VPS managed by HestiaCP (nginx, PHP 8.5-FPM). Phases 1–4 ran on cPanel; the site moved to this VPS on 21 September 2026. GitHub Actions rsyncs `public/` to the subdomain document root. |
+| Regions | Sandbox only. A production deployment for a UAE authority runs in a UAE region. |
 | Data | Demo database only; wipeable; no real resident PII |
 | Identity | Demo PIN or magic-link for investors; separate from excellonit.net marketing site |
 
@@ -85,8 +85,8 @@ In place before Phase 1:
 
 - [x] Gate 0 sign-off of this file
 - [x] GitHub repo for HaqqLine
-- [x] DNS: `haqqline.excellonit.net` on the cPanel host
-- [x] Compute: cPanel + LiteSpeed (Cloud Run was dropped in Phase 1)
+- [x] DNS: `haqqline.excellonit.net` on the excellonit.net host
+- [x] Compute: cPanel for Phases 1–4, HestiaCP VPS from 21 September 2026
 - [x] ElevenLabs workspace
 - [ ] Twilio account: API Key SID + secret (preferred), purchased Voice number; SMS on that number or a second number, documented
 - [ ] Meta WhatsApp Business / WABA not required until Phase 6 — Meta verification can run as paperwork only, with no code
@@ -111,7 +111,7 @@ In place before Phase 1:
 
 - Repo layout, `README`, `CODEOWNERS`, branch protection  
 - CI: install, lint, test job, deploy job  
-- Static site (cPanel document root) that serves a **complete** demo landing: product name, sandbox banner, “not a government service”, English + Arabic chrome, `/health` JSON  
+- Static site (subdomain document root) that serves a **complete** demo landing: product name, sandbox banner, “not a government service”, English + Arabic chrome, `/health` JSON  
 - Deploy to `haqqline.excellonit.net`  
 - Uptime/health check in CI against the live host after deploy  
 
