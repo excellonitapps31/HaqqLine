@@ -44,7 +44,7 @@ Exit: `public/twilio.json` has an E.164 number, the Call section on the host sho
 
 ### Evaluation evidence
 
-`elevenlabs/tests.json` defines disclosure, the JLT lookup, the unconfirmed-submit absence, and the EN/AR simulations. Every sync waits for the run to finish and records passed/total. The 22 September 2026 run passed 11 of 13. The two failures are Arabic simulations: over-band escalates before the lookup, and unknown area answers in English.
+`elevenlabs/tests.json` defines disclosure, the JLT lookup, the unconfirmed-submit absence, and the EN/AR simulations. Every sync waits for the run to finish and records passed/total. The 22 September 2026 run passed 13 of 13, English and Arabic. Phase 5 adds a multi-run figure (`repeat_count` above 1) so the rate is not a single sample.
 
 Exit: `reports/phase-05.md` states passed/total and quotes the unconfirmed-submit test result verbatim. A skipped disclosure fails the run.
 
@@ -99,7 +99,7 @@ Promotion is the phase branch, green CI, smoke of the live URL, `reports/phase-0
 | Risk | What it does to the date | Response |
 | --- | --- | --- |
 | Twilio number not purchased, or extra KYC on the chosen country | DID missing on 14 October | Web path is the deployment of record. A verified caller ID is not a substitute. |
-| Arabic simulations below the English pass rate | AR evidence is weaker than EN | Prompt fix for Arabic lookup order and reply language, then a re-run before recording |
+| Model-graded simulations vary between runs | A single 13/13 can drop on a re-run | Multi-run pass rate in the Phase 5 report, and a re-run on the recording day |
 | Arabic path never heard by a native listener | AR evidence is weaker than EN | One listen-through before the recording day |
 | Scope pulled in from WhatsApp or SMS | Voice evidence slips | Those channels stay Phase 6 and Phase 7 |
 
