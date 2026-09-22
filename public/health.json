@@ -14,6 +14,6 @@
     "whatsapp": false,
     "sms": false
   },
-  "api": "https://haqqline.excellonit.net/api/v1/docs",
+  "api": "https://haqqline.excellonit.net/api/v1/docs/index.html",
   "play": "https://haqqline.excellonit.net/play/"
 }

@@ -100,7 +100,7 @@ jobs:
           echo "$html" | grep -q "not a government service"
           echo "$html" | grep -q "HaqqLine"
           echo "$html" | grep -q "ليس خدمة حكومية"
-          curl -fsS https://haqqline.excellonit.net/api/v1/docs | grep -q "haqqline_sandbox_preview"
+          curl -fsS https://haqqline.excellonit.net/api/v1/docs/index.html | grep -q "haqqline_sandbox_preview"
           curl -fsS https://haqqline.excellonit.net/api/v1/openapi.json | grep -q lookup_rera_band
           curl -fsS https://haqqline.excellonit.net/play/ | grep -q "Try a case"
           curl -fsS https://haqqline.excellonit.net/play/ | grep -q "جرّب حالة"
