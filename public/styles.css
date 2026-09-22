@@ -212,6 +212,27 @@ html[dir="rtl"] .deck {
   padding: 0 1.5rem 3rem;
 }
 
+.talk .deck {
+  margin-bottom: 1.35rem;
+}
+
+.script {
+  margin: 0 0 0.9rem;
+  max-width: 40rem;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.script-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--metal);
+}
+
 .talk h2 {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 0.72rem;
@@ -317,11 +338,23 @@ html[dir="rtl"] .deck {
   color: var(--muted);
 }
 
-.result[data-kind="ok"] {
+.result-lead {
+  margin: 0 0 0.85rem;
   color: var(--ink);
+  font-size: 1.05rem;
+  line-height: 1.45;
+  white-space: normal;
 }
 
-.result[data-kind="block"] {
+.result-raw {
+  margin: 0;
+  font: inherit;
+  font-size: 0.82rem;
+  white-space: pre-wrap;
+  color: var(--muted);
+}
+
+.result[data-kind="block"] .result-lead {
   color: #f0c7a0;
 }
 

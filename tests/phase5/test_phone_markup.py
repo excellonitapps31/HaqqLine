@@ -18,6 +18,8 @@ def test_test_did_is_labelled_sandbox() -> None:
     assert "Twilio 5xx" in CFG["failover"]
     assert CFG["inbound_only"] is True
     assert "/twilio.json" in JS
+    assert "Use Talk." in JS
+    assert "Twilio secrets" not in JS
     assert HEALTH["phase"] >= 5
     assert HEALTH["channels"]["phone"] is True
     assert HEALTH["channels"]["sms"] is False

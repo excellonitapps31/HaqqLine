@@ -19,6 +19,8 @@ def test_filing_gate_and_ledger() -> None:
     assert 'data-testid="ledger"' in HTML
     assert "submit_to_human_queue" in JS
     assert "caller_confirmed" in JS
+    assert "Within the band. Cited pack. Not a ruling." in JS
+    assert "ضمن الحد" in JS
     assert "/api/v1/audit" in JS
 
 

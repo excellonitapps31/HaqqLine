@@ -42,6 +42,6 @@ Open https://haqqline.excellonit.net/api/v1/docs, run the JLT example, read the 
 - Demo API key is public. That is intentional for a sandbox.
 - PHP on LiteSpeed; data dir is `public/api/data` with deny-all, created on deploy.
 
-## Request
+## Status
 
-Approve Phase 02 / Reject
+Signed off. Phase closed.

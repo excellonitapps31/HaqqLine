@@ -1,6 +1,6 @@
 # Sources for boxes D and J
 
-Use only figures you are willing to defend in a judge Q&A. Prefer replacing secondary citations with DLD/RDC figures if a mentor can supply them before 23 September.
+Figures used in boxes D and J. Secondary citations stay labelled. Replace them with DLD or RDC figures when those are in hand.
 
 | Claim | Source |
 | --- | --- |
@@ -17,7 +17,7 @@ Use only figures you are willing to defend in a judge Q&A. Prefer replacing seco
 
 **Box D/J contract used in the canvas**
 
-We do **not** invent a fake “% of preventable filings.” We baseline what is observable:
+No invented “% of preventable filings.” The baselines are what is observable:
 
 1. Staffed voice languages today: English and Arabic (2).
 2. Automated, source-attributed rule-check on that voice channel: not a productised service (0 per 100 contacts).

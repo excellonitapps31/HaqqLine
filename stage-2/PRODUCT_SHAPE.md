@@ -23,7 +23,7 @@ Caller  →  Phone (Twilio test DID)  ─┐
                                            escalate_human
 ```
 
-That stack **is** the product for the challenge. A Flutter/React “HaqqLine app” would not raise Stage 2 scores and would dilute the 14-day sprint.
+That stack is the product. A separate Flutter or React app is out of scope for this build.
 
 ## What a real buyer installs
 
@@ -39,7 +39,7 @@ They do not need residents to download ExcellonIT software. Production looks lik
 2. Embed the same widget on the RERA/Ejari page.
 3. Connect webhooks to their APIs and officer queue (same contracts as the sandbox).
 
-Native iOS/Android SDKs exist on ElevenLabs for a **later** embed inside Dubai Now or a DLD app. They are out of scope for 14 October (already stated in canvas box G).
+Native iOS/Android SDKs exist on ElevenLabs for a later embed inside Dubai Now or a DLD app. They are out of scope for 14 October.
 
 ## What ExcellonIT still has to build
 
@@ -47,8 +47,8 @@ Native iOS/Android SDKs exist on ElevenLabs for a **later** embed inside Dubai N
 | --- | --- |
 | ElevenLabs agent, voices, knowledge, evals | Yes — this is the scored work |
 | Sandbox tools + confirmation gate | Yes |
-| Thin demo page with the official widget | Yes — so judges can click/call |
+| Thin demo page with the official widget | Yes — so a reviewer can click or call |
 | Full mobile + web citizen app | No |
 | JustNow as a host | No |
 
-Box N’s live site (excellonit.net) proves you ship production software. It is not the place residents will “open HaqqLine.”
+excellonit.net is the production portfolio. Residents do not open HaqqLine there.

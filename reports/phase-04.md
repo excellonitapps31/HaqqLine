@@ -40,6 +40,6 @@ Open https://haqqline.excellonit.net/, allow the microphone, click Talk, complet
 - ElevenLabs eval JSON summary was not parsed into a numeric pass rate; treat dashboard runs as the source of truth until the parser is tightened.
 - Webhook HMAC secret lives only on the host (`api/data/elevenlabs_webhook.secret`), not in git.
 
-## Request
+## Status
 
-Approve Phase 04 / Reject — **approved 7 September 2026**.
+Signed off 7 September 2026. Phase closed.

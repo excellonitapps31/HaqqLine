@@ -32,6 +32,9 @@ def test_bilingual_shell_and_honest_scope() -> None:
     assert 'id="call"' in HTML
     assert 'src="/call.js"' in HTML
     assert "Try a case" in HTML
+    assert "Say this" in HTML
+    assert "What does the published band allow?" in HTML
+    assert "قل هذا" in HTML
     assert "convai-widget-embed" in HTML
     assert 'src="/voice.js"' in HTML
     assert "noindex" in HTML

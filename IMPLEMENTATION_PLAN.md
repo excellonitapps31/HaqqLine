@@ -4,7 +4,7 @@
 **Applicant:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
-**Rule:** one phase in flight. That phase is built, deployed, tested, reported, and **approved by you in writing** before the next phase is touched. Two phases must never be implemented in the same change set, branch, or deploy.
+**Rule:** one phase in flight. A phase is built, deployed, tested, reported, and signed off in writing before the next phase starts. Two phases never share a change set, branch, or deploy.
 
 This plan supersedes `stage-2/BUILD_PLAN.md` as the delivery sequence. The 14-day challenge sprint is a **subset** of Phases 1–5, not a licence to skip gates.
 
@@ -12,24 +12,24 @@ This plan supersedes `stage-2/BUILD_PLAN.md` as the delivery sequence. The 14-da
 
 ## 0. Operating rules (non-negotiable)
 
-1. **One phase at a time.** No “while we wait” work on Phase N+1. No drive-by features from later phases.
-2. **No patches.** A phase is a complete, releasable increment: versioned, deployed to `haqqline.excellonit.net` (or a path it already serves), documented, and reversible by git tag. Incomplete “we’ll harden later” work is a failed phase.
-3. **Tests gate merge.** CI must be green. Phase-specific tests listed below must pass. If a test cannot be automated, a signed manual test log is attached to the phase report. Fail = no deploy, no approval request.
-4. **You approve; then we proceed.** After each phase the agent publishes a summary report under `reports/`. You reply **Approve Phase N** or **Reject** with defects. Reject returns to the **same** phase. No silent continue.
+1. **One phase at a time.** Phase N+1 stays closed while Phase N is open. Later-phase features stay in their own phase.
+2. **No patches.** A phase is a complete, releasable increment: versioned, deployed to `haqqline.excellonit.net` (or a path it already serves), documented, and reversible by git tag. Leaving hardening for a later phase fails the current one.
+3. **Tests gate merge.** CI must be green. Phase-specific tests listed below must pass. If a test cannot be automated, a signed manual test log is attached to the phase report. A failure blocks deploy and sign-off.
+4. **Sign-off, then the next phase.** Each phase ends with `reports/phase-NN.md`. Sign-off is **Approve Phase N** or **Reject** with defects. A reject stays on that phase.
 5. **Git is the system of record.** No production changes from a laptop outside CI. No `--no-verify`. No force-push to `main`.
 6. **Demo is not government production.** Every page, call, WhatsApp thread, and SMS states this is an ExcellonIT **sandbox**. Synthetic data only. No live DLD/RERA credentials. Aligns with the challenge rule: not deployed in real production settings.
 7. **WhatsApp is the primary message channel; SMS is secondary.** They are **separate phases**. Voice (web, then Twilio) lands first so the agent exists before any message channel is wired.
-8. **Twilio.** You provision and confirm the account. We do not start the Twilio voice phase until you have: Account SID, Auth Token in the secret store, a **purchased** number with Voice (+ SMS when we reach that phase), and 2FA on the Twilio console.
+8. **Twilio.** The account is ExcellonIT’s. Twilio voice starts only after a **Standard API Key** (SID starting `SK` + secret) is in the secret store, a **purchased** number has Voice (SMS when that phase starts), and 2FA is on in the Twilio console. Account SID + Auth Token is a fallback only.
 
 ---
 
-## 1. What we are building
+## 1. What this builds
 
 HaqqLine remains an **institutional voice-and-message agent**, not a citizen App Store product.
 
 | Surface | Role | Phase |
 | --- | --- | --- |
-| `haqqline.excellonit.net` | Investor / judge playground (disclaimer, scenarios, widget, queue view, health) | 1 then 3 |
+| `haqqline.excellonit.net` | Investor demo (disclaimer, scenarios, widget, queue view, health) | 1 then 3 |
 | HTTPS APIs | Rule lookup, Ejari mock, confirmation-gated filing queue, audit | 2 |
 | ElevenLabs agent | Workflows, EN+AR voice, RAG, evals | 4 |
 | Web voice widget | Playable on the subdomain | 4 |
@@ -49,18 +49,18 @@ JustNow is out of scope for every phase.
 | --- | --- |
 | `main` | Only approved, deployed phase tips. Protected. |
 | `phase/NN-<slug>` | The **single** active phase. Deleted after merge. |
-| Tags `phase-NN` | Immutable snapshot of what you approved. |
+| Tags `phase-NN` | Immutable snapshot of the signed-off phase. |
 
 **Pipeline (every phase):**
 
 ```
 phase branch → CI (lint, unit, contract, phase tests) → deploy to haqqline.excellonit.net
-            → smoke against the live URL → report → your approval → merge to main → tag
+            → smoke against the live URL → report → sign-off → merge to main → tag
 ```
 
 **Commit policy:** conventional commits, one concern, no “WIP” on `main`. Phase branch may iterate; `main` only receives a complete phase.
 
-**Secrets:** never in git. Twilio, ElevenLabs, WhatsApp, and demo auth live in the host secret store. CI uses OIDC or injected secrets.
+**Secrets:** never in git. Twilio, ElevenLabs, WhatsApp, and the webhook HMAC live in GitHub Actions secrets or on the host. The sandbox demo API key in `public/api/v1/pack/config.json` is public on purpose.
 
 ---
 
@@ -68,29 +68,29 @@ phase branch → CI (lint, unit, contract, phase tests) → deploy to haqqline.e
 
 | Item | Decision |
 | --- | --- |
-| Public URL | `https://haqqline.excellonit.net` (you create DNS + folder/host; we deploy into it) |
+| Public URL | `https://haqqline.excellonit.net` (DNS and document root on the excellonit.net cPanel account; deploy writes into that root) |
 | TLS | Valid certificate; HTTP → HTTPS |
 | Compute | **cPanel + LiteSpeed** on excellonit.net (decided Phase 1). GitHub Actions rsyncs `public/` to the subdomain document root. |
 | Regions | Hosting region is the excellonit.net cPanel cluster (US-east as observed on the server). Keep it. |
 | Data | Demo database only; wipeable; no real resident PII |
 | Identity | Demo PIN or magic-link for investors; separate from excellonit.net marketing site |
 
-The apex `excellonit.net` site is **not** modified in any HaqqLine phase except DNS for the subdomain (your ops).
+The apex `excellonit.net` site is **not** modified in any HaqqLine phase except DNS for the subdomain.
 
 ---
 
 ## 4. Entry criteria for the whole programme (before Phase 1)
 
-You supply or confirm:
+In place before Phase 1:
 
-- [ ] Gate 0 approval of **this** file  
-- [ ] GitHub org/repo ownership for HaqqLine  
-- [ ] DNS: `haqqline.excellonit.net` CNAME/A ready for our deploy target  
-- [ ] Cloud billing / Cloud Run (or named alternative)  
-- [ ] ElevenLabs workspace (commercial account; challenge credits later if shortlisted)  
-- [ ] Twilio account **ready** (you own this): SID, token, purchased number planned for Voice; SMS capability on that number or a second number documented  
-- [ ] Meta WhatsApp Business / WABA **not** required until Phase 6 — start Meta verification in parallel **as paperwork only**, no code  
-- [ ] Contact for Arabic listen-through (named person) before Phase 4 sign-off  
+- [x] Gate 0 sign-off of this file
+- [x] GitHub repo for HaqqLine
+- [x] DNS: `haqqline.excellonit.net` on the cPanel host
+- [x] Compute: cPanel + LiteSpeed (Cloud Run was dropped in Phase 1)
+- [x] ElevenLabs workspace
+- [ ] Twilio account: API Key SID + secret (preferred), purchased Voice number; SMS on that number or a second number, documented
+- [ ] Meta WhatsApp Business / WABA not required until Phase 6 — Meta verification can run as paperwork only, with no code
+- [ ] Arabic listen-through by a named person before any later voice sign-off that adds copy
 
 ---
 
@@ -98,8 +98,8 @@ You supply or confirm:
 
 ### Gate 0 — Approve this plan
 
-**Done when:** you write **Approve Gate 0**.  
-**Not done:** any application code, DNS, or CI beyond this document.
+**Done when:** this plan is signed off. It is. Phases 1–4 shipped from it.  
+**Was out of scope at Gate 0:** application code, DNS, and CI.
 
 ---
 
@@ -125,7 +125,7 @@ You supply or confirm:
 - CI deploy smoke: `GET https://haqqline.excellonit.net/health` → 200  
 - Manual: browser TLS padlock, disclaimer visible without scrolling on desktop  
 
-**Live-ready means:** if we stopped the programme here, the subdomain is a professional sandbox placeholder, not a 404 or mixed excellonit.net theme.
+**Live-ready means:** the subdomain is a professional sandbox shell on its own, not a 404 and not the excellonit.net marketing theme.
 
 **Report:** `reports/phase-01.md`
 
@@ -228,7 +228,7 @@ You supply or confirm:
 
 **Intent:** inbound test calls to a purchased Twilio number, native ElevenLabs Twilio integration, same agent as Phase 4.
 
-**Entry criteria (you):** Twilio account ready; number purchased with Voice; credentials in secret store; you confirm the number is a **test** DID (not published as DLD).
+**Entry criteria:** Twilio account ready; number purchased with Voice; credentials in the secret store; the number is a **test** DID (not published as DLD).
 
 **In scope**
 
@@ -236,7 +236,7 @@ You supply or confirm:
 - Inbound only for this phase (outbound calling is not required for the use case)  
 - Recording on; transcripts in audit  
 - Demo page lists the test number and calling hours/disclaimer  
-- Failover note if Twilio 5xx (documented, not a second product)  
+- Failover note if Twilio returns 5xx (same agent; Talk on the page is the fallback)  
 
 **Out of scope**
 
@@ -248,7 +248,7 @@ You supply or confirm:
 - Failure path: advice question → escalate  
 - Number **not** reachable without disclaimer page listing it (avoid surprise production)  
 
-**Live-ready means:** you can dial the test DID from your phone and complete the gold path.
+**Live-ready means:** an inbound call to the test DID completes the gold path.
 
 **Report:** `reports/phase-05.md`
 
@@ -258,12 +258,12 @@ You supply or confirm:
 
 **Intent:** same agent, WhatsApp Business as the **primary** digital message channel (text, voice notes per ElevenLabs WhatsApp). Official ElevenLabs WhatsApp import — not an unofficial gateway.
 
-**Entry criteria (you, before any code):**
+**Entry criteria (before any code):**
 
 - Meta WABA approved  
 - Number **not** already tied to another WhatsApp provider / personal WA Business app  
 - Payment method on the WhatsApp / Meta side if outbound templates will be used later in this phase  
-- Template for **session-start / sandbox disclaimer** submitted and **approved** if we send the first outbound  
+- Template for **session-start / sandbox disclaimer** submitted and **approved** before any outbound message  
 
 **In scope**
 
@@ -277,7 +277,7 @@ You supply or confirm:
 
 - SMS  
 - Marketing blasts  
-- Voice-on-WhatsApp **calls** unless inbound message path is already green (if both are enabled in dashboard, inbound **messages** are the acceptance test; voice-on-WA is a stretch only if tests still pass without extra scope creep — **default: messages only** unless you approve a Phase 6b later)
+- Voice-on-WhatsApp calls. Inbound messages are the acceptance test. Messages only, unless a later Phase 6b is signed off on its own.
 
 **Tests**
 
@@ -290,7 +290,7 @@ You supply or confirm:
 
 **Report:** `reports/phase-06.md`
 
-**Canvas note:** Stage 1 box G currently omits WhatsApp (selection, not coverage). If the canvas is **not** yet submitted, we can add one justified line after this phase exists. If it **is** submitted, do not file a second canvas. WhatsApp remains product scope.
+Stage 1 box G leaves WhatsApp unticked on purpose. WhatsApp stays in product scope here. Do not file a second canvas after Stage 1 is in.
 
 ---
 
@@ -344,9 +344,9 @@ You supply or confirm:
 
 **Tests**
 
-- Load test meets the number we published  
-- Restore drill timed and logged  
-- Runbook dry-run by someone other than the implementer (you or a named person)  
+- Load test meets the published number
+- Restore drill timed and logged
+- Runbook dry-run by someone other than the person who built the phase  
 
 **Report:** `reports/phase-08.md`
 
@@ -363,7 +363,7 @@ You supply or confirm:
 
 ---
 
-## 6. Explicitly never in this programme (unless you open a new plan)
+## 6. Out of this programme (needs a new plan)
 
 - JustNow integration  
 - Live Ejari/DLD credentials  
@@ -377,7 +377,7 @@ You supply or confirm:
 
 ## 7. Phase summary report (mandatory)
 
-After CI is green and the live URL is smoked, the agent writes `reports/phase-NN.md` using this skeleton:
+After CI is green and the live URL is smoked, write `reports/phase-NN.md` in this form:
 
 ```markdown
 # Phase NN report — <name>
@@ -403,12 +403,11 @@ Deploy method:
 ## Risks / residual defects
 - none | …
 
-## Request
-Approve Phase NN / Reject
+## Status
+Signed off / returned with defects
 ```
 
-**Your reply that unlocks the next phase:** `Approve Phase NN`  
-Anything else keeps work on Phase NN.
+Sign-off that starts the next phase: `Approve Phase NN`. Anything else keeps work on Phase NN.
 
 ---
 
@@ -444,16 +443,14 @@ WhatsApp and SMS are last among **channels** so Meta approval and Twilio SMS can
 
 | Challenge page | This plan |
 | --- | --- |
-| Official Idea Canvas is Stage 1 | Unchanged; still paste `stage-1/IDEA_CANVAS.md` into their template |
+| Official Idea Canvas is Stage 1 | Upload filled `stage-1/ElevenLabs_Idea_Canvas.docx` (their template name, Word format only) |
 | Web **or** test number for Stage 2 | Phase 4 then 5 — both live-ready, still gated |
 | Not live government production | Sandbox banner + synthetic data on `haqqline.excellonit.net` |
-| WhatsApp listed as a platform option | Phase 6, after voice, WhatsApp-primary as you instructed |
+| WhatsApp listed as a platform option | Phase 6, after voice. WhatsApp is the primary message channel. |
 | Box G “don’t tick everything” | Canvas can stay lean; WhatsApp is earned in Phase 6 |
 
 ---
 
-## 10. Gate 0 request
+## 10. Where the programme is
 
-This file is the only deliverable of Gate 0.
-
-Reply **Approve Gate 0** to start **Phase 1 only** (repo protection, CI, `haqqline.excellonit.net` live shell). Until then: no DNS cutover work in this repo, no Twilio wiring, no WhatsApp, no SMS, no ElevenLabs agent, no Phase 2 APIs.
+Gate 0 is closed. Phases 1–4 are on `main`. Phase 5 is Twilio Voice. WhatsApp and SMS code wait for Phases 6 and 7.

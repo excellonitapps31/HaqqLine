@@ -6,8 +6,7 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import urlparse
 
-# Illustrative bands for demo. Replace with a signed-off table before any institutional pilot.
-# Decree 43/2013 style steps: 0 / 5 / 10 / 15 / 20 percent depending on gap to index.
+# Sandbox bands only. Decree 43/2013 steps: 0 / 5 / 10 / 15 / 20 percent by gap to the index.
 AREAS = {
     "downtown_dubai": {"index_aed": 120000},
     "jlt": {"index_aed": 85000},

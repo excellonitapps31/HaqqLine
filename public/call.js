@@ -12,7 +12,19 @@
       var hours = cfg.hours || "";
       var failover = cfg.failover || "";
       if (!number) {
-        mount.textContent = "Test DID is not linked yet. Twilio secrets are required.";
+        mount.textContent = "";
+        var en = document.createElement("p");
+        en.setAttribute("data-pane", "en");
+        en.className = "did-meta";
+        en.textContent = "No test number on this host yet. Use Talk.";
+        en.hidden = document.documentElement.lang === "ar";
+        var ar = document.createElement("p");
+        ar.setAttribute("data-pane", "ar");
+        ar.className = "did-meta";
+        ar.textContent = "لا يوجد رقم اختبار على هذا الموقع بعد. استخدم «تحدّث».";
+        ar.hidden = document.documentElement.lang !== "ar";
+        mount.appendChild(en);
+        mount.appendChild(ar);
         return;
       }
       mount.innerHTML = "";

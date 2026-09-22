@@ -2,7 +2,7 @@
 
 Pack id: `sandbox_decree_43_2013_table_v1`
 
-This document is a demonstration extract, not an official DLD/RERA publication. Figures are synthetic for the Ignyte sandbox.
+This document is a demonstration extract, not an official DLD/RERA publication. Figures are synthetic for this sandbox.
 
 ## Disclaimer
 

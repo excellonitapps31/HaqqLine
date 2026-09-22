@@ -37,22 +37,38 @@ def api(method: str, path: str, body: dict | None = None) -> dict:
         raise SystemExit(f"{method} {path} -> {exc.code}: {detail[:4000]}") from exc
 
 
-def require_env(*names: str) -> dict[str, str]:
-    out = {}
-    missing = []
-    for name in names:
-        value = os.environ.get(name, "").strip()
-        if not value:
-            missing.append(name)
-        else:
-            out[name] = value
-    if missing:
+def require_voice_number() -> str:
+    number = os.environ.get("TWILIO_VOICE_NUMBER", "").strip()
+    if not number:
         raise SystemExit(
-            "Phase 5 entry criteria missing GitHub secrets: "
-            + ", ".join(missing)
-            + ". Also confirm the number is a sandbox test DID, not a DLD/RERA line."
+            "TWILIO_VOICE_NUMBER is not set (E.164 sandbox test DID, not a DLD/RERA line)."
         )
-    return out
+    if not number.startswith("+"):
+        raise SystemExit("TWILIO_VOICE_NUMBER must be E.164 (start with +)")
+    return number
+
+
+def twilio_sid_and_token() -> tuple[str, str]:
+    """sid + token for POST /v1/convai/phone-numbers.
+
+    API key (SK + secret) first. Account SID + auth token if the key is absent.
+    """
+    key_sid = os.environ.get("TWILIO_API_KEY_SID", "").strip()
+    key_secret = os.environ.get("TWILIO_API_KEY_SECRET", "").strip()
+    if key_sid or key_secret:
+        if not key_sid.startswith("SK"):
+            raise SystemExit("TWILIO_API_KEY_SID must start with SK")
+        if not key_secret:
+            raise SystemExit("TWILIO_API_KEY_SECRET is missing")
+        return key_sid, key_secret
+    account = os.environ.get("TWILIO_ACCOUNT_SID", "").strip()
+    auth = os.environ.get("TWILIO_AUTH_TOKEN", "").strip()
+    if account.startswith("AC") and auth:
+        return account, auth
+    raise SystemExit(
+        "Set TWILIO_API_KEY_SID + TWILIO_API_KEY_SECRET (Standard key), "
+        "or TWILIO_ACCOUNT_SID + TWILIO_AUTH_TOKEN."
+    )
 
 
 def agent_id() -> str:
@@ -101,7 +117,7 @@ def write_public(number: str, meta: dict) -> None:
                 "label": LABEL,
                 "inbound_only": True,
                 "hours": "Sandbox test DID — any hour. Not a government hotline.",
-                "failover": "If this number does not ring, use Talk on this page. Twilio 5xx is not a second product.",
+                "failover": "If this number does not ring, use Talk on this page. Twilio 5xx means the carrier failed.",
                 "phone_number_id": meta.get("phone_number_id") or "",
                 "agent_id": agent_id(),
             },
@@ -113,12 +129,10 @@ def write_public(number: str, meta: dict) -> None:
 
 
 def main() -> None:
-    env = require_env("TWILIO_ACCOUNT_SID", "TWILIO_AUTH_TOKEN", "TWILIO_VOICE_NUMBER")
-    number = env["TWILIO_VOICE_NUMBER"]
-    if not number.startswith("+"):
-        raise SystemExit("TWILIO_VOICE_NUMBER must be E.164 (start with +)")
+    number = require_voice_number()
+    sid, token = twilio_sid_and_token()
     aid = agent_id()
-    meta = upsert_number(number, env["TWILIO_ACCOUNT_SID"], env["TWILIO_AUTH_TOKEN"], aid)
+    meta = upsert_number(number, sid, token, aid)
     write_public(number, meta)
     print(json.dumps({"ok": True, "agent_id": aid, **meta}, indent=2))
 
