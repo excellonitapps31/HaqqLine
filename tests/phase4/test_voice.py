@@ -27,6 +27,9 @@ def test_widget_markup() -> None:
     assert 'id="talk"' in html
     assert "elevenlabs-convai" in js
     assert "agent-id" in js
+    assert "haqqline:lang" in js
+    assert 'action: "Talk"' in js
+    assert 'action: "تحدّث"' in js
     assert cfg["widget_script"].endswith("convai-widget-embed")
     prompt = (ROOT / "elevenlabs/prompt.md").read_text(encoding="utf-8")
     assert "AI disclosure" in prompt

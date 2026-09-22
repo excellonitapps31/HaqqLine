@@ -231,7 +231,7 @@ def agent_payload(kb_id: str, tool_ids: dict[str, str], webhook_id: str) -> dict
             "asr": {
                 "quality": "high",
                 "provider": "scribe_realtime",
-                "keywords": ["Ejari", "RERA", "DLD", "RDC", "HaqqLine", "JLT", "Ignyte"],
+                "keywords": ["Ejari", "RERA", "DLD", "RDC", "HaqqLine", "JLT"],
             },
             "tts": {
                 "model_id": "eleven_v3_conversational",
@@ -407,7 +407,7 @@ def main() -> None:
     summary = summarize_runs(result)
     print(json.dumps({"agent_id": agent_id, "tools": tool_ids, "webhook_id": webhook_id, "tests": test_ids, "summary": summary}, indent=2))
     if summary["total"] and summary["passed"] < summary["total"]:
-        # Still deploy the widget; report the rate. Fail only if nothing ran.
+        # Partial failures stay a warning. The widget stays up.
         print("warning: some agent tests did not pass", file=sys.stderr)
 
 

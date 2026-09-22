@@ -45,11 +45,11 @@
       <div class="grid meta">
         <div>
           <dt>On this host</dt>
-          <dd>Talk with the sandbox voice agent, or try a case without a microphone. The telephone line, WhatsApp, and SMS are not connected here yet.</dd>
+          <dd>Talk in the browser, or dial the sandbox test DID listed below. WhatsApp and SMS are not connected here yet.</dd>
         </div>
         <div>
           <dt>For review</dt>
-          <dd>Investors and challenge judges. Synthetic scenarios. Every later channel will repeat this sandbox notice.</dd>
+          <dd>Investors reviewing this sandbox. Synthetic scenarios. Later channels repeat this notice.</dd>
         </div>
       </div>
     </div>
@@ -61,11 +61,11 @@
       <div class="grid meta">
         <div>
           <dt>على هذا الموقع</dt>
-          <dd>تحدّث مع الوكيل التجريبي أو جرّب حالة بلا ميكروفون. الخط الهاتفي وواتساب والرسائل النصية غير موصولة هنا بعد.</dd>
+          <dd>تحدّث من المتصفح أو اتصل برقم الاختبار أدناه. واتساب والرسائل النصية غير موصولين هنا بعد.</dd>
         </div>
         <div>
           <dt>لمن يراجع</dt>
-          <dd>المستثمرون ولجان التحكيم. سيناريوهات اصطناعية. وستُعاد هذه العبارة على كل قناة لاحقة.</dd>
+          <dd>مستثمرون يراجعون هذه البيئة التجريبية. سيناريوهات اصطناعية. وستُعاد هذه العبارة على كل قناة لاحقة.</dd>
         </div>
       </div>
     </div>
@@ -74,25 +74,43 @@
   <section id="talk" class="talk">
     <div data-pane="en">
       <h2>Talk</h2>
-      <p class="deck">Official ElevenLabs widget. Microphone required. Same sandbox rules as the rest of this host.</p>
+      <p class="deck">Microphone required. Same sandbox rules as the rest of this host.</p>
+      <p class="script"><span class="script-label">Say this</span>JLT. Current rent 80,000. Proposed rent 80,000. What does the published band allow?</p>
+      <p class="script"><span class="script-label">Then</span>Will I win if I sue? The line must refuse, and a person takes the call.</p>
     </div>
     <div data-pane="ar" hidden>
       <h2>تحدّث</h2>
-      <p class="deck">ودجة ElevenLabs الرسمية. يلزم ميكروفون. نفس قواعد البيئة التجريبية.</p>
+      <p class="deck">يلزم ميكروفون. نفس قواعد البيئة التجريبية.</p>
+      <p class="script"><span class="script-label">قل هذا</span>أبراج بحيرات جميرا. الإيجار الحالي 80,000. الإيجار المقترح 80,000. ماذا يسمح به الجدول المنشور؟</p>
+      <p class="script"><span class="script-label">ثم</span>هل سأكسب إذا رفعت دعوى؟ يرفض الخط، ويتولى شخص المكالمة.</p>
     </div>
     <div id="voice-widget" class="voice-widget" aria-live="polite"></div>
   </section>
 
+  <section id="call" class="talk">
+    <div data-pane="en">
+      <h2>Call (sandbox test DID)</h2>
+      <p class="deck">Inbound only. Same HaqqLine agent as Talk. This number is a test DID, not a DLD, RERA, or RDC line. Do not publish it as a government service.</p>
+    </div>
+    <div data-pane="ar" hidden>
+      <h2>اتصال (رقم اختبار)</h2>
+      <p class="deck">وارد فقط. نفس وكيل حقّ لاين. هذا رقم تجريبي وليس خط دائرة الأراضي أو مؤسسة التنظيم العقاري أو مركز فض المنازعات. لا يُنشر كخدمة حكومية.</p>
+    </div>
+    <div id="test-did" class="voice-widget" data-testid="test-did" aria-live="polite"></div>
+  </section>
+
   <footer class="foot">
     <a href="/play/">Play</a>
+    <a href="#call">Call</a>
     <a href="https://excellonit.net">excellonit.net</a>
     <a href="https://github.com/excellonitapps31/HaqqLine">Source</a>
-    <a href="/api/v1/docs">API</a>
+    <a href="/api/v1/docs/index.html">API</a>
     <a href="/health">Health</a>
     <span>haqqline.excellonit.net</span>
   </footer>
   <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
   <script src="/app.js" defer></script>
   <script src="/voice.js" defer></script>
+  <script src="/call.js" defer></script>
 </body>
 </html>

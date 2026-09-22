@@ -42,6 +42,6 @@ Open https://haqqline.excellonit.net/play/, run the JLT cards, see the citation,
 - Demo API key remains public (intentional sandbox).
 - Language choice is stored in `localStorage`, so the shell can open in Arabic on a repeat visit.
 
-## Request
+## Status
 
-Approve Phase 03 / Reject
+Signed off. Phase closed.

@@ -13,3 +13,13 @@ public/api/data/*
 !public/api/data/.gitkeep
 !public/api/data/.htaccess
 reports/phase-04-eval.json
+
+# Office lock files
+~$*
+
+# Local working notes. Outreach, print, and filming. Not the product.
+stage-1/LINKEDIN_PROFILE_BUILD.md
+stage-1/BANNER_IMAGE_PROMPT.md
+stage-1/WALKTHROUGH_SPEECH.md
+stage-1/insight-phone-calls.docx
+stage-1/IDEA_CANVAS.md

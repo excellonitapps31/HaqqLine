@@ -2,7 +2,7 @@
 
 Date: 5 September 2026  
 Git SHA: `13b6db8` on `phase/02-apis`  
-Live URL(s): https://haqqline.excellonit.net/api/v1/docs · https://haqqline.excellonit.net/api/v1/openapi.json  
+Live URL(s): https://haqqline.excellonit.net/api/v1/docs/index.html · https://haqqline.excellonit.net/api/v1/openapi.json  
 Deploy: GitHub Actions rsync (`phase/02-apis`)  
 CI: https://github.com/excellonitapps31/HaqqLine/actions/runs/33954921384 (success)
 
@@ -30,7 +30,7 @@ CI: https://github.com/excellonitapps31/HaqqLine/actions/runs/33954921384 (succe
 
 ## What an investor can do now
 
-Open https://haqqline.excellonit.net/api/v1/docs, run the JLT example, read the disclaimer. Call Ejari `EJ-1001` or a fake id. Attempt a filing without confirmation and see it refused.
+Open https://haqqline.excellonit.net/api/v1/docs/index.html, run the JLT example, read the disclaimer. Call Ejari `EJ-1001` or a fake id. Attempt a filing without confirmation and see it refused.
 
 ## Explicitly not built (next phases)
 
@@ -42,6 +42,6 @@ Open https://haqqline.excellonit.net/api/v1/docs, run the JLT example, read the 
 - Demo API key is public. That is intentional for a sandbox.
 - PHP on LiteSpeed; data dir is `public/api/data` with deny-all, created on deploy.
 
-## Request
+## Status
 
-Approve Phase 02 / Reject
+Signed off. Phase closed.
