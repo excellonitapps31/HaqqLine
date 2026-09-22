@@ -12,7 +12,7 @@ A live agent on a test number or on the hosted page, plus recordings, tests, and
 
 ```
 Caller  →  Phone (Twilio test DID)  ─┐
-        →  Web widget (React)       ─┼─→  ElevenLabs agent (HaqqLine)
+        →  Web widget (ConvAI)      ─┼─→  ElevenLabs agent (HaqqLine)
                                      │         │
                                      │         ├─ TTS / Scribe / Workflows / RAG
                                      │         └─ signed webhooks
