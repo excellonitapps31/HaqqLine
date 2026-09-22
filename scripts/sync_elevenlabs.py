@@ -324,7 +324,7 @@ def upsert_tests(tool_ids: dict[str, str]) -> list[str]:
             ref["id"] = tool_ids["submit_to_human_queue"]
         name = body["name"]
         if name in by_name and by_name[name]:
-            api("PATCH", f"/v1/convai/agent-testing/{by_name[name]}", body)
+            api("PUT", f"/v1/convai/agent-testing/{by_name[name]}", body)
             ids.append(by_name[name])
         else:
             created = api("POST", "/v1/convai/agent-testing/create", body)

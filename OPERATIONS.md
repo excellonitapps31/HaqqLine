@@ -2,7 +2,7 @@
 
 Sandbox host: https://haqqline.excellonit.net  
 Compute: Ubuntu 24.04 VPS, HestiaCP, nginx, PHP 8.5-FPM. The PHP pool runs as `admin`. Document root is the `DEPLOY_PATH` secret.  
-Deploy user: `haqqdeploy`, key-only SSH (`restrict`), owns the document root. `api/data` is `haqqdeploy:admin` mode 2770 so PHP can write it.  
+Deploy user: `haqqdeploy`, key-only SSH (`restrict`), owns the document root. `api/data` is `haqqdeploy:admin` mode 770 with an ACL (`u:admin:rwX`, default on new files) so PHP can read the webhook secret and write the logs.  
 TLS: Let’s Encrypt issued and renewed by HestiaCP. HTTPS is forced and HSTS is on for this domain.  
 nginx ignores `.htaccess`. `/api/v1/` routing lives in the HestiaCP custom include `nginx.ssl.conf_haqqline_api` for the domain.
 
@@ -34,7 +34,8 @@ Local equivalents are in `.env.example`.
 | --- | --- |
 | Site is the old tree | Actions run for that commit. rsync only follows a green verify job. |
 | Deploy `Permission denied (publickey)` | `SSH_HOST`, `SSH_USER`, and `SSH_PRIVATE_KEY` against `/home/haqqdeploy/.ssh/authorized_keys` on the VPS |
-| Deploy cannot write files after a HestiaCP rebuild | A domain rebuild can return the document root to `admin`. Re-own it to `haqqdeploy:www-data`, and `api/data` to `haqqdeploy:admin` 2770. |
+| Deploy cannot write files after a HestiaCP rebuild | A domain rebuild can return the document root to `admin`. Re-own it to `haqqdeploy:www-data`, `api/data` to `haqqdeploy:admin` 770, and re-apply `setfacl -R -m u:admin:rwX` plus `setfacl -d -m u:admin:rwX,u:haqqdeploy:rwX` on `api/data`. |
+| Webhook 503 after a sync | `getfacl api/data/elevenlabs_webhook.secret` shows `user:admin` with read |
 | Talk widget missing | `public/elevenlabs.json` and the elevenlabs-sync job. Key unset fails that job before sync. |
 | Call section has no number | `TWILIO_VOICE_NUMBER` and the twilio-sync job. Empty `phone_number` means import has not succeeded. |
 | Webhook 401 | Host secret vs the ElevenLabs webhook signing secret. Clock skew over 30 minutes also fails. |

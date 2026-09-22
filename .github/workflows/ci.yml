@@ -61,7 +61,7 @@ jobs:
             public/ \
             "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/"
           ssh -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
-            "mkdir -p '${{ secrets.DEPLOY_PATH }}/api/data' && chmod 2770 '${{ secrets.DEPLOY_PATH }}/api/data'"
+            "mkdir -p '${{ secrets.DEPLOY_PATH }}/api/data' && chmod 770 '${{ secrets.DEPLOY_PATH }}/api/data'"
       - name: Smoke HTTPS health and API
         run: |
           curl -fsS --retry 8 --retry-delay 2 https://haqqline.excellonit.net/health
