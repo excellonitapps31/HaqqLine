@@ -12,7 +12,7 @@ if ($uri === '/play' || $uri === '/play/') {
     return true;
 }
 
-if ($uri === '/health') {
+if ($uri === '/health' || $uri === '/health/') {
     header('Content-Type: application/json; charset=utf-8');
     readfile(__DIR__ . '/health.json');
     return true;
