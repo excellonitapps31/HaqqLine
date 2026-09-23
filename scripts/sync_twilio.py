@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Import a Twilio Voice test DID into ElevenLabs and assign the HaqqLine agent."""
+"""Import a Twilio Voice test DID into ElevenLabs and assign the HaqqLine agent.
+
+Abuse kill switch: HAQQLINE_CALL_DID_ENABLED=0 unpublishes the number from
+public/twilio.json and clears the Twilio Voice webhook so inbound calls do not
+reach the agent. Re-enable with HAQQLINE_CALL_DID_ENABLED=1 (default) and re-run.
+"""
 
 from __future__ import annotations
 
@@ -8,13 +13,16 @@ import os
 import ssl
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
+import base64
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 API = "https://api.elevenlabs.io"
 CTX = ssl.create_default_context()
 LABEL = "HaqqLine sandbox test DID"
+TWILIO_API = "https://api.twilio.com/2010-04-01"
 
 
 def api(method: str, path: str, body: dict | None = None) -> dict:
@@ -48,6 +56,19 @@ def require_voice_number() -> str:
     return number
 
 
+def call_did_enabled() -> bool:
+    """HAQQLINE_CALL_DID_ENABLED kill switch. Default on when unset."""
+    raw = os.environ.get("HAQQLINE_CALL_DID_ENABLED", "1").strip().lower()
+    if raw in ("0", "false", "off", "no", "disabled", "paused"):
+        return False
+    if raw in ("1", "true", "on", "yes", "enabled", ""):
+        return True
+    raise SystemExit(
+        f"HAQQLINE_CALL_DID_ENABLED={raw!r} is not a recognised toggle "
+        "(use 1/0, true/false, on/off)."
+    )
+
+
 def twilio_sid_and_token() -> tuple[str, str]:
     """sid + token for POST /v1/convai/phone-numbers.
 
@@ -68,6 +89,18 @@ def twilio_sid_and_token() -> tuple[str, str]:
     raise SystemExit(
         "Set TWILIO_API_KEY_SID + TWILIO_API_KEY_SECRET (Standard key), "
         "or TWILIO_ACCOUNT_SID + TWILIO_AUTH_TOKEN."
+    )
+
+
+def twilio_account_and_auth() -> tuple[str, str]:
+    """Account SID + Auth Token for Twilio REST (kill-switch webhook clear)."""
+    account = os.environ.get("TWILIO_ACCOUNT_SID", "").strip()
+    auth = os.environ.get("TWILIO_AUTH_TOKEN", "").strip()
+    if account.startswith("AC") and auth:
+        return account, auth
+    raise SystemExit(
+        "HAQQLINE_CALL_DID_ENABLED=0 requires TWILIO_ACCOUNT_SID + TWILIO_AUTH_TOKEN "
+        "to clear the Twilio Voice webhook."
     )
 
 
@@ -108,19 +141,70 @@ def upsert_number(number: str, sid: str, token: str, aid: str) -> dict:
     return {"phone_number_id": pid, "phone_number": number, "created": True}
 
 
-def write_public(number: str, meta: dict) -> None:
+def clear_twilio_voice_webhook(number: str) -> dict:
+    """Detach Voice (and SMS) webhooks so the DID does not ring the agent while paused."""
+    account, auth = twilio_account_and_auth()
+    list_url = (
+        f"{TWILIO_API}/Accounts/{account}/IncomingPhoneNumbers.json?"
+        + urllib.parse.urlencode({"PhoneNumber": number, "PageSize": 20})
+    )
+    req = urllib.request.Request(list_url)
+    req.add_header(
+        "Authorization",
+        "Basic " + base64.b64encode(f"{account}:{auth}".encode()).decode(),
+    )
+    with urllib.request.urlopen(req, context=CTX, timeout=60) as res:
+        payload = json.loads(res.read().decode())
+    rows = payload.get("incoming_phone_numbers") or []
+    if not rows:
+        raise SystemExit(f"No Twilio IncomingPhoneNumber matches {number}")
+    pn_sid = rows[0]["sid"]
+    update_url = f"{TWILIO_API}/Accounts/{account}/IncomingPhoneNumbers/{pn_sid}.json"
+    body = urllib.parse.urlencode(
+        {
+            "VoiceUrl": "",
+            "VoiceFallbackUrl": "",
+            "StatusCallback": "",
+            "SmsUrl": "",
+            "SmsFallbackUrl": "",
+        }
+    ).encode()
+    req = urllib.request.Request(update_url, data=body, method="POST")
+    req.add_header(
+        "Authorization",
+        "Basic " + base64.b64encode(f"{account}:{auth}".encode()).decode(),
+    )
+    req.add_header("Content-Type", "application/x-www-form-urlencoded")
+    with urllib.request.urlopen(req, context=CTX, timeout=60) as res:
+        updated = json.loads(res.read().decode())
+    return {
+        "phone_number_sid": pn_sid,
+        "voice_url": updated.get("voice_url") or "",
+        "sms_url": updated.get("sms_url") or "",
+    }
+
+
+def write_public(number: str, meta: dict, *, enabled: bool = True) -> None:
     path = ROOT / "public/twilio.json"
+    published = number if enabled and number else ""
     path.write_text(
         json.dumps(
             {
-                "phone_number": number,
+                "phone_number": published,
+                "enabled": bool(enabled and published),
                 "label": LABEL,
                 "inbound_only": True,
                 "enable_sms": False,
                 "hours": "Sandbox test DID — any hour. Not a government hotline.",
                 "failover": "If this number does not ring, use Talk on this page. Twilio 5xx means the carrier failed.",
-                "phone_number_id": meta.get("phone_number_id") or "",
-                "agent_id": agent_id(),
+                "phone_number_id": (meta.get("phone_number_id") or "") if enabled else "",
+                "agent_id": agent_id() if enabled else "",
+                "kill_switch": "HAQQLINE_CALL_DID_ENABLED",
+                "paused_reason": (
+                    ""
+                    if enabled
+                    else "HAQQLINE_CALL_DID_ENABLED=0 — number unpublished; Twilio Voice webhook cleared."
+                ),
             },
             indent=2,
         )
@@ -131,11 +215,28 @@ def write_public(number: str, meta: dict) -> None:
 
 def main() -> None:
     number = require_voice_number()
-    sid, token = twilio_sid_and_token()
+    enabled = call_did_enabled()
     aid = agent_id()
+    if not enabled:
+        cleared = clear_twilio_voice_webhook(number)
+        write_public("", {}, enabled=False)
+        print(
+            json.dumps(
+                {
+                    "ok": True,
+                    "enabled": False,
+                    "agent_id": aid,
+                    "unpublished": number,
+                    "twilio_webhook_cleared": cleared,
+                },
+                indent=2,
+            )
+        )
+        return
+    sid, token = twilio_sid_and_token()
     meta = upsert_number(number, sid, token, aid)
-    write_public(number, meta)
-    print(json.dumps({"ok": True, "agent_id": aid, **meta}, indent=2))
+    write_public(number, meta, enabled=True)
+    print(json.dumps({"ok": True, "enabled": True, "agent_id": aid, **meta}, indent=2))
 
 
 if __name__ == "__main__":

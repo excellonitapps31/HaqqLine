@@ -1,0 +1,21 @@
+{
+  "phase": 12,
+  "environment": "sandbox",
+  "label": "Sandbox load sample \u2014 not UAE production scale",
+  "base": "http://127.0.0.1:36683",
+  "workers": 4,
+  "requests": 20,
+  "wall_s": 0.096,
+  "rps": 209.13,
+  "success_rate": 1.0,
+  "p50_ms": 1.4,
+  "p95_ms": 87.6,
+  "status_counts": {
+    "200": 20
+  },
+  "budgets": {
+    "api_rps_sandbox_target": 10.0,
+    "success_rate_min": 0.95
+  },
+  "meets_sandbox_gate": true
+}

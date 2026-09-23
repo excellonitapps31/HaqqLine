@@ -30,7 +30,7 @@ If the purchased DID is blocked by KYC, stock, or credentials, the web path rema
 | Rule lookup, Ejari mock, confirm gate, audit, HMAC webhook | `public/api/v1/` | Live since Phase 2 |
 | Scenario playground | `public/play/` | Live since Phase 3 |
 | ConvAI widget, workflow, knowledge pack, agent tests | Talk on the host; `elevenlabs/` | Live since Phase 4. Agent `agent_5601m1xp22apfdcbwbb8h9y5zzqt` |
-| Inbound DID | `public/twilio.json`, `scripts/sync_twilio.py`, Call section, `twilio-sync` CI | Phase 5 signed off 23 September 2026 with residual *inbound DID deferred*. `phone_number` empty until secrets are intentional |
+| Inbound DID | `public/twilio.json`, `scripts/sync_twilio.py`, Call section, `twilio-sync` CI | **Active** 23 September 2026: `+13159020932` (`enabled: true`, `enable_sms: false`). Kill switch: `HAQQLINE_CALL_DID_ENABLED`. SMS on the same number waits on Messaging compliance. |
 
 Phases 1–4 are out of scope for rework in this window. A defect found while recording is fixed against the phase that owns it.
 
@@ -38,9 +38,9 @@ Phases 1–4 are out of scope for rework in this window. A defect found while re
 
 ### Telephony
 
-One purchased Twilio Voice number is imported into ElevenLabs and assigned to the existing agent. Credentials are a Standard API key (`SK` + secret), with Account SID + auth token as the fallback. `enable_sms` is false.
+One purchased Twilio Voice number (`+13159020932`) is imported into ElevenLabs and assigned to the existing agent when `twilio-sync` runs with secrets. Credentials are Account SID + auth token (or Standard API key). `enable_sms` is false while Messaging compliance is under review. Abuse kill switch: set GitHub secret / env `HAQQLINE_CALL_DID_ENABLED=0` and re-run sync to unpublish the Call number and clear the Twilio Voice webhook.
 
-Exit: `public/twilio.json` has an E.164 number, the Call section on the host shows it with the sandbox disclaimer, one English inbound and one Arabic inbound are logged, and a Twilio failure sends the caller back to Talk on the same page.
+Exit: `public/twilio.json` has the E.164 number with `enabled: true`, the Call section on the host shows it with the sandbox disclaimer, and Talk remains the failover path.
 
 ### Evaluation evidence
 
@@ -105,8 +105,4 @@ Promotion is the phase branch, green CI, smoke of the live URL, `reports/phase-0
 
 ## 8. After 14 October
 
-## 8. After 14 October
-
-Phase 5 is signed off with residual *inbound DID deferred*. **Stage 3** (`stage-3/BUILD_PLAN.md`): pack governance → policy engine → case spine → voice SRE (Phases 6–9). Phase 6 is open after owner start. Each later phase waits for `Begin Phase N`, then build, deploy, test, report, and **Approve Phase N**.
-
-Only after Stage 3 sign-off: WhatsApp (Phase 10), SMS (Phase 11), hardening (Phase 12), evidence freeze (Phase 13). Phase 5 residuals (DID when secrets are intentional; multi-run artifact after merge) stay Phase 5 defects, not a reason to skip Stage 3 gates.
+Phase 5 is signed off; inbound Voice DID **active** (`+13159020932`) with `HAQQLINE_CALL_DID_ENABLED` kill switch. SMS on that number remains deferred pending Messaging compliance (Phase 11). **Stage 3** (`stage-3/BUILD_PLAN.md`) complete (Phases 6–9). Programme Phases 10–13 signed off (WABA deferred; SMS compliance pending).

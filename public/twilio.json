@@ -1,8 +1,13 @@
 {
-  "phone_number": "",
+  "phone_number": "+13159020932",
+  "enabled": true,
   "label": "HaqqLine sandbox test DID",
   "inbound_only": true,
   "enable_sms": false,
   "hours": "Sandbox test DID — any hour. Not a government hotline.",
-  "failover": "If this number does not ring, use Talk on this page. Twilio 5xx means the carrier failed."
+  "failover": "If this number does not ring, use Talk on this page. Twilio 5xx means the carrier failed.",
+  "phone_number_id": "",
+  "agent_id": "agent_5601m1xp22apfdcbwbb8h9y5zzqt",
+  "kill_switch": "HAQQLINE_CALL_DID_ENABLED",
+  "paused_reason": ""
 }

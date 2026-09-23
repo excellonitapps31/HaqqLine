@@ -13,7 +13,7 @@ Push to `main` or `phase/**`. `.github/workflows/ci.yml` runs tests, rsyncs `pub
 Agent and number updates are separate jobs in the same workflow:
 
 - `scripts/sync_elevenlabs.py` needs `ELEVENLABS_API_KEY`. It writes `public/elevenlabs.json` and rsyncs that file.
-- `scripts/sync_twilio.py` needs the ElevenLabs key, Twilio credentials, and `TWILIO_VOICE_NUMBER`. It writes `public/twilio.json`.
+- `scripts/sync_twilio.py` needs the ElevenLabs key, Twilio credentials, `TWILIO_VOICE_NUMBER`, and optional `HAQQLINE_CALL_DID_ENABLED` (default `1`). It writes `public/twilio.json`. Set `HAQQLINE_CALL_DID_ENABLED=0` to pause: unpublish the Call number and clear the Twilio Voice webhook.
 
 Local equivalents are in `.env.example`.
 
@@ -23,10 +23,11 @@ Local equivalents are in `.env.example`.
 - `GET /api/v1/health` returns the current phase and pack id
 - Home page still contains the English and Arabic “not a government service” lines
 - `public/elevenlabs.json` on the host has an `agent_` id
-- `GET /twilio.json` returns `inbound_only: true`, `enable_sms: false`, and a failover string. Empty `phone_number` is expected until Twilio secrets are set.
+- `GET /twilio.json` returns `inbound_only: true`, `enable_sms: false`, failover string, and `kill_switch: HAQQLINE_CALL_DID_ENABLED`. When active: `enabled: true` and E.164 `phone_number`. When paused: `enabled: false` and empty `phone_number`.
 - `GET /whatsapp.json` returns sandbox WhatsApp status (`connected`, STOP policy, failover → Talk). Empty number is expected until WABA is imported in ElevenLabs and `whatsapp-sync` runs.
 - `python3 scripts/verify_pack_lock.py` exits 0 (pack areas/ejari match `content_hash` in `public/api/v1/pack/config.json`)
-- `GET /sre-budgets.json` returns sandbox-labelled latency / concurrency / eval-gate budgets (Phase 9)
+- `GET /sre-budgets.json` returns sandbox-labelled latency / concurrency / eval-gate / load budgets
+- Phase 12: `python3 scripts/backup_restore_drill.py`, `python3 scripts/deps_licence_scan.py`, and `scripts/load_test.py` write reports under `reports/phase-12-*.json`
 
 ## Pack rollback (Phase 6)
 
@@ -67,14 +68,15 @@ Then run `python3 scripts/verify_pack_lock.py`.
 | Deploy cannot write files after a HestiaCP rebuild | A domain rebuild can return the document root to `admin`. Re-own it to `haqqdeploy:www-data`, `api/data` to `haqqdeploy:admin` 770, and re-apply `setfacl -R -m u:admin:rwX` plus `setfacl -d -m u:admin:rwX,u:haqqdeploy:rwX` on `api/data`. |
 | Webhook 503 after a sync | `getfacl api/data/elevenlabs_webhook.secret` shows `user:admin` with read |
 | Talk widget missing | `public/elevenlabs.json` and the elevenlabs-sync job. Key unset fails that job before sync. |
-| Call section has no number | `TWILIO_VOICE_NUMBER` and the twilio-sync job. Empty `phone_number` means import has not succeeded. |
+| Call section has no number | `TWILIO_VOICE_NUMBER` / `twilio-sync`, or `HAQQLINE_CALL_DID_ENABLED=0` (paused). Use Talk. |
+| Need to kill the public DID fast | Set secret/env `HAQQLINE_CALL_DID_ENABLED=0`, re-run `scripts/sync_twilio.py` (or `twilio-sync`). Confirms `/twilio.json` `enabled: false`. |
 | Webhook 401 | Host secret vs the ElevenLabs webhook signing secret. Clock skew over 30 minutes also fails. |
 | Webhook 503 | Secret file missing on the host. |
 | Lookup 429 | Rate limit in `public/api/v1/pack/config.json` (120/minute/IP). |
 
 Rollback of the site is a redeploy of the previous tag. Rollback of the agent is a sync from the last good commit **only after** the Phase 9 promote gate passes (`reports/phase-09-eval.json`). Git does not restore `api/data`.
 
-Operator runbook (pack / agent / number failover, alerts): `docs/OPERATOR_RUNBOOK.md`.
+Operator runbook (pack / agent / number failover, restore drill, load budgets, edge notes): `docs/OPERATOR_RUNBOOK.md`. Nginx/WAF stand-in: `docs/NGINX_SECURITY_HEADERS.md`.
 
 ## Not operated from this repo
 

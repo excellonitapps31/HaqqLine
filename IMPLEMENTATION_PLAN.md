@@ -1,6 +1,6 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Phases 1–11 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*; Phase 11 residual *Twilio SMS deferred*). **Phase 11 signed off 23 September 2026** (`reports/phase-11.md`). Phase 12 stays closed until owner `Begin Phase N`.  
+**Status:** Phases 1–13 signed off. Voice sandbox DID **active** (`+13159020932`) with kill switch `HAQQLINE_CALL_DID_ENABLED`. Remaining residuals: Phase 10 *WABA deferred*; Phase 11 *Twilio SMS deferred* (Messaging compliance review ongoing). Programme Gate 0 sequence complete.  
 **Owner:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
@@ -455,7 +455,7 @@ WhatsApp is Phase 10. It is outside the Stage 1 canvas scope.
 
 **Intent:** production-shaped sandbox: rate limits, backups, error budgets, load, operator runbook drill. Still synthetic data unless a separate production Gate exists.
 
-**Owner start:** closed until `Begin Phase 12` (after Phase 11 approve).
+**Owner start:** **open** — `Begin Phase 12` 23 September 2026.
 
 **In scope**
 
@@ -484,7 +484,7 @@ WhatsApp is Phase 10. It is outside the Stage 1 canvas scope.
 
 **Intent:** Stage 2–3 artefacts from **already live** phases: recordings, transcripts, analysis, architecture one-pager, README, pass rates. **No new features.**
 
-**Owner start:** closed until `Begin Phase 13`.
+**Owner start:** `Begin Phase 13` received 23 September 2026.
 
 **In scope:** export and freeze evidence.  
 **Out of scope:** any behaviour change. If a test fails, that is a **defect return to the phase that owns it**, not a Phase 13 patch.
@@ -589,4 +589,4 @@ WhatsApp and SMS stay last among **channels** so Meta approval and Twilio SMS ca
 
 ## 10. Where the programme is
 
-Gate 0 is closed. Phases 1–11 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*; Phase 11 residual *Twilio SMS deferred*). Phase 12 stays closed until owner `Begin Phase N`.
+Gate 0 is closed. Phases 1–13 signed off. Voice DID active with `HAQQLINE_CALL_DID_ENABLED` kill switch. Residuals: WABA deferred; Twilio SMS deferred (compliance review). Further feature work needs a new Gate 0.

@@ -21,12 +21,15 @@ def test_test_did_is_labelled_sandbox() -> None:
     assert CFG["enable_sms"] is False
     assert "/twilio.json" in JS
     assert "Use Talk." in JS
+    assert "Test number paused (abuse guard)" in JS
     assert "استخدم «تحدّث»" in JS
     assert "Twilio secrets" not in JS
     assert HEALTH["phase"] >= 5
     assert HEALTH["channels"]["phone"] is True
     if HEALTH["phase"] < 11:
         assert HEALTH["channels"]["sms"] is False
+    assert "enabled" in CFG
+    assert CFG.get("kill_switch") == "HAQQLINE_CALL_DID_ENABLED" or CFG["phone_number"] == ""
 
 
 def test_number_not_hardcoded_as_government_line() -> None:
