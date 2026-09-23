@@ -1,6 +1,6 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Phases 1–11 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*; Phase 11 residual *Twilio SMS deferred*). **Phase 12 (hardening) in flight** — `Begin Phase 12` 23 September 2026; report `reports/phase-12.md` awaiting Approve. Phase 13 stays closed.  
+**Status:** Phases 1–12 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*; Phase 11 residual *Twilio SMS deferred*). Phase 12 signed off 23 September 2026 — Approve Phase 12. Phase 13 opens only on owner `Begin Phase 13`.  
 **Owner:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
@@ -589,4 +589,4 @@ WhatsApp and SMS stay last among **channels** so Meta approval and Twilio SMS ca
 
 ## 10. Where the programme is
 
-Gate 0 is closed. Phases 1–11 signed off (residuals: inbound DID, WABA, Twilio SMS deferred). Phase 12 (hardening) is in flight awaiting Approve. Phase 13 stays closed.
+Gate 0 is closed. Phases 1–12 signed off (residuals: inbound DID, WABA, Twilio SMS deferred). Phase 13 stays closed until owner `Begin Phase 13`.

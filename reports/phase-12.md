@@ -43,7 +43,7 @@ See sandbox load and restore evidence, a licence inventory, and an operator runb
 ## Explicitly not built (next phases)
 
 - Multi-region WAF/CDN attachment (documented stand-in only; optional later)
-- Phase 13 evidence freeze
+- Phase 13 evidence freeze (opens only after this Approve)
 - Clearing Phase 5/10/11 channel residuals
 
 ## Risks / residual defects
@@ -53,4 +53,4 @@ See sandbox load and restore evidence, a licence inventory, and an operator runb
 
 ## Status
 
-**Awaiting Approve Phase 12.** Phase 13 stays closed until then.
+**Signed off 23 September 2026 — Approve Phase 12.** Phase closed. Tag `phase-12` on `main` after this sign-off merges.
