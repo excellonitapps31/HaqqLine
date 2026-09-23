@@ -351,6 +351,18 @@ def upsert_tests(tool_ids: dict[str, str]) -> dict[str, str]:
     return ids
 
 
+def repeat_count() -> int:
+    """Phase 5 requires a multi-run figure (repeat_count above 1)."""
+    raw = os.environ.get("HAQQLINE_TEST_REPEAT_COUNT", "3").strip() or "3"
+    try:
+        count = int(raw)
+    except ValueError as exc:
+        raise SystemExit("HAQQLINE_TEST_REPEAT_COUNT must be an integer") from exc
+    if count < 1:
+        raise SystemExit("HAQQLINE_TEST_REPEAT_COUNT must be >= 1")
+    return count
+
+
 def attach_and_run(agent_id: str, test_ids: list[str]) -> dict:
     api(
         "PATCH",
@@ -360,7 +372,7 @@ def attach_and_run(agent_id: str, test_ids: list[str]) -> dict:
     result = api(
         "POST",
         f"/v1/convai/agents/{agent_id}/run-tests",
-        {"tests": [{"test_id": tid} for tid in test_ids], "repeat_count": 1},
+        {"tests": [{"test_id": tid} for tid in test_ids], "repeat_count": repeat_count()},
     )
     return result
 
@@ -421,13 +433,16 @@ def summarize_runs(result: dict, names: dict[str, str]) -> dict:
         "agent_id": result.get("agent_id"),
         "version_id": result.get("version_id"),
         "finished_at": int(time.time()),
+        "repeat_count": repeat_count(),
         "passed": sum(1 for d in details if d["status"] == "passed"),
         "failed": sum(1 for d in details if d["status"] == "failed"),
         "pending": sum(1 for d in details if d["status"] == "pending"),
         "total": len(details),
         "details": details,
     }
-    (ROOT / "reports/phase-04-eval.json").write_text(json.dumps({"summary": summary, "invocation": result}, indent=2), encoding="utf-8")
+    payload = json.dumps({"summary": summary, "invocation": result}, indent=2)
+    (ROOT / "reports/phase-04-eval.json").write_text(payload, encoding="utf-8")
+    (ROOT / "reports/phase-05-eval.json").write_text(payload, encoding="utf-8")
     write_step_summary(summary)
     return summary
 
@@ -439,7 +454,7 @@ def write_step_summary(summary: dict) -> None:
     lines = [
         f"### Agent tests: {summary['passed']}/{summary['total']} passed",
         "",
-        f"Invocation `{summary['invocation_id']}` · agent version `{summary['version_id']}`",
+        f"Invocation `{summary['invocation_id']}` · agent version `{summary['version_id']}` · repeat_count `{summary.get('repeat_count', 1)}`",
         "",
         "| Test | Result | Reason |",
         "| --- | --- | --- |",

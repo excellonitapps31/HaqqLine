@@ -30,7 +30,7 @@ If the purchased DID is blocked by KYC, stock, or credentials, the web path rema
 | Rule lookup, Ejari mock, confirm gate, audit, HMAC webhook | `public/api/v1/` | Live since Phase 2 |
 | Scenario playground | `public/play/` | Live since Phase 3 |
 | ConvAI widget, workflow, knowledge pack, agent tests | Talk on the host; `elevenlabs/` | Live since Phase 4. Agent `agent_5601m1xp22apfdcbwbb8h9y5zzqt` |
-| Inbound DID | `public/twilio.json`, `scripts/sync_twilio.py` | Page and import script are in the tree. `phone_number` is still empty |
+| Inbound DID | `public/twilio.json`, `scripts/sync_twilio.py`, Call section, `twilio-sync` CI | Phase 5 signed off 23 September 2026 with residual *inbound DID deferred*. `phone_number` empty until secrets are intentional |
 
 Phases 1–4 are out of scope for rework in this window. A defect found while recording is fixed against the phase that owns it.
 
@@ -44,7 +44,7 @@ Exit: `public/twilio.json` has an E.164 number, the Call section on the host sho
 
 ### Evaluation evidence
 
-`elevenlabs/tests.json` defines disclosure, the JLT lookup, the unconfirmed-submit absence, and the EN/AR simulations. Every sync waits for the run to finish and records passed/total. The 22 September 2026 run passed 13 of 13, English and Arabic. Phase 5 adds a multi-run figure (`repeat_count` above 1) so the rate is not a single sample.
+`elevenlabs/tests.json` defines disclosure, the JLT lookup, the unconfirmed-submit absence, and the EN/AR simulations. Every sync waits for the run to finish and records passed/total. The 22 September 2026 run passed 13 of 13, English and Arabic. Phase 5 sets `HAQQLINE_TEST_REPEAT_COUNT` default **3** so the rate is not a single sample; sync writes `reports/phase-05-eval.json`.
 
 Exit: `reports/phase-05.md` states passed/total and quotes the unconfirmed-submit test result verbatim. A skipped disclosure fails the run.
 
@@ -105,4 +105,4 @@ Promotion is the phase branch, green CI, smoke of the live URL, `reports/phase-0
 
 ## 8. After 14 October
 
-WhatsApp (official WABA only), then SMS for receipts and status, then hardening and the runbook drill. Each starts after Phase 5 sign-off. Gaps in the evidence pack are defects in this window.
+Phase 5 is signed off with residual *inbound DID deferred*. WhatsApp (official WABA only), then SMS, then hardening — each starts only after an explicit owner start once the programme sequence allows. Gaps in Stage 2 evidence (multi-run artifact after merge, DID when secrets are intentional) are Phase 5 residuals, not a reason to open later channels early.

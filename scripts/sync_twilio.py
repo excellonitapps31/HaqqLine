@@ -116,6 +116,7 @@ def write_public(number: str, meta: dict) -> None:
                 "phone_number": number,
                 "label": LABEL,
                 "inbound_only": True,
+                "enable_sms": False,
                 "hours": "Sandbox test DID — any hour. Not a government hotline.",
                 "failover": "If this number does not ring, use Talk on this page. Twilio 5xx means the carrier failed.",
                 "phone_number_id": meta.get("phone_number_id") or "",

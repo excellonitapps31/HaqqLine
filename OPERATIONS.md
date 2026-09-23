@@ -23,6 +23,7 @@ Local equivalents are in `.env.example`.
 - `GET /api/v1/health` returns the current phase and pack id
 - Home page still contains the English and Arabic “not a government service” lines
 - `public/elevenlabs.json` on the host has an `agent_` id
+- `GET /twilio.json` returns `inbound_only: true`, `enable_sms: false`, and a failover string. Empty `phone_number` is expected until Twilio secrets are set.
 
 ## Data on the host
 

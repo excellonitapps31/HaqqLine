@@ -13,12 +13,15 @@ def test_test_did_is_labelled_sandbox() -> None:
     assert "not a DLD" in HTML
     assert "رقم اختبار" in HTML
     assert 'id="test-did"' in HTML
+    assert 'id="call"' in HTML
     assert 'src="/call.js"' in HTML
     assert "failover" in CFG
     assert "Twilio 5xx" in CFG["failover"]
     assert CFG["inbound_only"] is True
+    assert CFG["enable_sms"] is False
     assert "/twilio.json" in JS
     assert "Use Talk." in JS
+    assert "استخدم «تحدّث»" in JS
     assert "Twilio secrets" not in JS
     assert HEALTH["phase"] >= 5
     assert HEALTH["channels"]["phone"] is True
@@ -28,3 +31,12 @@ def test_test_did_is_labelled_sandbox() -> None:
 def test_number_not_hardcoded_as_government_line() -> None:
     assert "JustNow" not in HTML
     assert "not a government service" in HTML
+    assert CFG["phone_number"] == "" or CFG["phone_number"].startswith("+")
+    assert "800" not in CFG["phone_number"]
+    assert "04" not in (CFG["phone_number"] or "")
+
+
+def test_empty_did_falls_back_to_talk() -> None:
+    assert "No test number on this host yet" in JS
+    assert "tel:" in JS
+    assert "test-did-number" in JS
