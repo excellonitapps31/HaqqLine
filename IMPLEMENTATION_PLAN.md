@@ -293,7 +293,7 @@ In place before Phase 1:
 
 **Intent:** LLM proposes; server-side policy decides what is executable.
 
-**Owner start:** closed until `Begin Phase 7` (after Phase 6 approve). Detail: `stage-3/BUILD_PLAN.md`. **In flight** on `cursor/phase-07-policy-engine-9d24`.
+**Owner start:** **signed off 23 September 2026** (`reports/phase-07.md`). Was in flight on `cursor/phase-07-policy-engine-9d24`.
 
 **In scope**
 
@@ -589,4 +589,4 @@ WhatsApp and SMS stay last among **channels** so Meta approval and Twilio SMS ca
 
 ## 10. Where the programme is
 
-Gate 0 is closed. Phases 1–5 signed off (Phase 5 residual *inbound DID deferred*). **Phase 6 signed off.** **Phase 7 (policy engine) is open** on `cursor/phase-07-policy-engine-9d24`. Phases 8–9 stay closed until Phase 7 is approved.
+Gate 0 is closed. Phases 1–7 signed off (Phase 5 residual *inbound DID deferred*). Phase 8 (case spine) stays closed until owner `Begin Phase N`. WhatsApp and SMS wait for Phases 10 and 11.
