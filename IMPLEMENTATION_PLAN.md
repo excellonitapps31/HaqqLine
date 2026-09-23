@@ -1,6 +1,6 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Phases 1–12 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*; Phase 11 residual *Twilio SMS deferred*). **Phase 13 (evidence freeze) in flight** — `Begin Phase 13` 23 September 2026; report `reports/phase-13.md` awaiting Approve.  
+**Status:** Phases 1–13 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*; Phase 11 residual *Twilio SMS deferred*). Phase 13 signed off 23 September 2026 — Approve Phase 13. Programme sequence complete for this Gate 0.  
 **Owner:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
@@ -589,4 +589,4 @@ WhatsApp and SMS stay last among **channels** so Meta approval and Twilio SMS ca
 
 ## 10. Where the programme is
 
-Gate 0 is closed. Phases 1–12 signed off (residuals: inbound DID, WABA, Twilio SMS deferred). Phase 13 (evidence freeze) is in flight awaiting Approve.
+Gate 0 is closed. Phases 1–13 signed off (residuals: inbound DID, WABA, Twilio SMS deferred). Programme evidence freeze complete. Further work needs a new Gate 0 or a residual clear on Phases 5 / 10 / 11.

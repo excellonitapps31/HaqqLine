@@ -1,6 +1,6 @@
 # HaqqLine — Stage 3 enterprise build plan
 
-**Status:** Phases 6–9 signed off (Stage 3 complete). Programme Phases 10–12 signed off (WABA deferred; Twilio SMS deferred). **Phase 13 (evidence freeze) in flight** (`Begin Phase 13` 23 September 2026).
+**Status:** Phases 6–9 signed off (Stage 3 complete). Programme Phases 10–13 signed off (WABA deferred; Twilio SMS deferred). Evidence freeze complete.
 **Owner:** ExcellonIT  
 **Live host:** https://haqqline.excellonit.net (sandbox until an authority production cutover is separately signed)  
 **Product shape:** `stage-2/PRODUCT_SHAPE.md`  
@@ -259,4 +259,4 @@ reports/phase-NN.md → Owner: "Approve Phase N" | "Reject"
 merge + tag phase-NN → wait for next Begin instruction
 ```
 
-**Current instruction state:** Phase 13 is **in flight** (`Begin Phase 13`). Awaiting owner `Approve Phase 13` or `Reject`.
+**Current instruction state:** Phase 13 signed off (`Approve Phase 13`, 23 September 2026). Programme sequence for this Gate 0 is complete. Residual clears stay on the owning phase.

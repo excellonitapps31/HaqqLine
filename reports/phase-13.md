@@ -41,4 +41,4 @@ Read one freeze pack: architecture one-pager, hashed artefact list, recorded 13/
 
 ## Status
 
-**Awaiting Approve Phase 13.** Programme evidence freeze candidate.
+**Signed off 23 September 2026 — Approve Phase 13.** Programme evidence freeze closed. Tag `phase-13` on `main` after this sign-off merges.
