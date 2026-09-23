@@ -26,6 +26,8 @@ Caller  →  Phone (Twilio test DID)  ─┐
 
 That stack is the product. A separate mobile or web app is out of scope for this build.
 
+Stage 3 (`../stage-3/BUILD_PLAN.md`) hardens the same stack: signed packs, a server-side policy engine, a case spine with immutable audit, and voice SRE with continuous eval gates. It does not add a citizen app or extra demo infrastructure. WhatsApp and SMS stay after that spine.
+
 ## Production deployment
 
 DLD and RDC already run:
