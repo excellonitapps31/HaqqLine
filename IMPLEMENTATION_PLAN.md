@@ -1,6 +1,6 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Phases 1–12 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*; Phase 11 residual *Twilio SMS deferred*). Phase 12 signed off 23 September 2026 — Approve Phase 12. Phase 13 opens only on owner `Begin Phase 13`.  
+**Status:** Phases 1–12 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*; Phase 11 residual *Twilio SMS deferred*). **Phase 13 (evidence freeze) in flight** — `Begin Phase 13` 23 September 2026; report `reports/phase-13.md` awaiting Approve.  
 **Owner:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
@@ -484,7 +484,7 @@ WhatsApp is Phase 10. It is outside the Stage 1 canvas scope.
 
 **Intent:** Stage 2–3 artefacts from **already live** phases: recordings, transcripts, analysis, architecture one-pager, README, pass rates. **No new features.**
 
-**Owner start:** closed until `Begin Phase 13`.
+**Owner start:** `Begin Phase 13` received 23 September 2026.
 
 **In scope:** export and freeze evidence.  
 **Out of scope:** any behaviour change. If a test fails, that is a **defect return to the phase that owns it**, not a Phase 13 patch.
@@ -589,4 +589,4 @@ WhatsApp and SMS stay last among **channels** so Meta approval and Twilio SMS ca
 
 ## 10. Where the programme is
 
-Gate 0 is closed. Phases 1–12 signed off (residuals: inbound DID, WABA, Twilio SMS deferred). Phase 13 stays closed until owner `Begin Phase 13`.
+Gate 0 is closed. Phases 1–12 signed off (residuals: inbound DID, WABA, Twilio SMS deferred). Phase 13 (evidence freeze) is in flight awaiting Approve.

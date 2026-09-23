@@ -1,0 +1,138 @@
+{
+  "phase": 13,
+  "label": "Programme evidence freeze \u2014 Stage 1\u20133 artefacts already live",
+  "frozen_at": "2026-09-23",
+  "environment": "sandbox",
+  "host": "https://haqqline.excellonit.net",
+  "walkthrough_recording": "https://youtu.be/ci3NsthWO0o",
+  "architecture_one_pager": "docs/ARCHITECTURE.md",
+  "architecture_banner": "stage-1/haqqline-architecture-banner.png",
+  "path_evidence": "reports/phase-13-paths.md",
+  "pass_rate": {
+    "passed": 13,
+    "total": 13,
+    "pass_rate": 1.0,
+    "invocation_id": "suite_8301m35dwvwhe6q8qc0190mh279w",
+    "source": "reports/phase-04.md",
+    "recorded": "2026-09-22"
+  },
+  "gold_paths": {
+    "primary_en": "haqqline-sim-en-jlt-within",
+    "primary_ar": "haqqline-sim-ar-jlt-within",
+    "failure_advice": "haqqline-sim-en-will-i-win",
+    "failure_unconfirmed_submit": "haqqline-tool-no-unconfirmed-submit"
+  },
+  "residuals_accepted": [
+    "phase-05:inbound DID deferred",
+    "phase-10:WABA deferred",
+    "phase-11:Twilio SMS deferred"
+  ],
+  "artefacts": [
+    {
+      "path": "README.md",
+      "sha256": "a52f1de25b99be00c28f92ca1412ccfbe3a3ed058ff60fc0944c4e8bec8f4f8d",
+      "bytes": 4573
+    },
+    {
+      "path": "IMPLEMENTATION_PLAN.md",
+      "sha256": "e26daebc7f146f526d0633a5b02de21757eab8ee862274e851314c9dba4794ed",
+      "bytes": 22851
+    },
+    {
+      "path": "docs/ARCHITECTURE.md",
+      "sha256": "7b6d526d6fec60a345b75d2867a8d460ee8fc84411f3ab37327b96890c9c558e",
+      "bytes": 2464
+    },
+    {
+      "path": "stage-1/ElevenLabs_Idea_Canvas.docx",
+      "sha256": "50955ef3b3a6affdf9fef81ae2b37306053a351267aa1c46eaf17caac0f59fea",
+      "bytes": 35512
+    },
+    {
+      "path": "stage-1/haqqline-architecture-banner.png",
+      "sha256": "851ee243115937a54b496d9d54d19edab3b0ae8cbf467a16fd0c0a27fc2589a8",
+      "bytes": 240741
+    },
+    {
+      "path": "stage-1/SOURCES.md",
+      "sha256": "137dc45bb4017c10b7fe3587ae6b26091cd75433185aefa719ab0d920bf74d2c",
+      "bytes": 1936
+    },
+    {
+      "path": "stage-2/BUILD_PLAN.md",
+      "sha256": "4b6c3c8149419bf721eee17047329d2b38ac820531d10552ee8b57ebfab20cc5",
+      "bytes": 6871
+    },
+    {
+      "path": "stage-2/PRODUCT_SHAPE.md",
+      "sha256": "4f6a039e8ea3883e63f3315533eeb71686191a3fa5f7426da43b97b5ef7dabf4",
+      "bytes": 2401
+    },
+    {
+      "path": "stage-3/BUILD_PLAN.md",
+      "sha256": "72a3b0e504fbc52a60047eafff2e8346fd648336c8b972befdf917e775d4068c",
+      "bytes": 11127
+    },
+    {
+      "path": "elevenlabs/tests.json",
+      "sha256": "7b0353817dbf64c0eb876e26c438191350da0c07c6e55ef3236e72a7489d5ad8",
+      "bytes": 6018
+    },
+    {
+      "path": "public/sre-budgets.json",
+      "sha256": "8aa8ea9b2cf95c280f4654dee7f88c374c869ce3b7f78870f87877a3b035e248",
+      "bytes": 1678
+    },
+    {
+      "path": "reports/phase-04.md",
+      "sha256": "72c8b1fc5c4b1e84e3fb00542377b33bbc33622658e40f4c9c1bec25018e0f2b",
+      "bytes": 2935
+    },
+    {
+      "path": "reports/phase-05.md",
+      "sha256": "53e64d7b4c0f08a563e3622c60e71ed15b143e580f5410ffe7a3490e7198a12b",
+      "bytes": 3021
+    },
+    {
+      "path": "reports/phase-06.md",
+      "sha256": "55ef896a35fbe52c737daf26304580acd1b60be3bae7add5a029f8856391f6ee",
+      "bytes": 1683
+    },
+    {
+      "path": "reports/phase-07.md",
+      "sha256": "6ba8a3eca87f971663ba4dbe6b2150a9ee889368c54829f6dea32fee866b310a",
+      "bytes": 1863
+    },
+    {
+      "path": "reports/phase-08.md",
+      "sha256": "27fbb359e5bfe8d876b921159e2b425072b02ab5ccf132be1e6240a4d22dbba7",
+      "bytes": 2374
+    },
+    {
+      "path": "reports/phase-09.md",
+      "sha256": "cf8136c6b950ccc9476c3e41acccc29e6b864e1ab89e5960d19a21113ba4f0ce",
+      "bytes": 3203
+    },
+    {
+      "path": "reports/phase-10.md",
+      "sha256": "fa24128bbb07ef450644d296da12d8a75072e1b4f618c8e33cde9b0546389305",
+      "bytes": 2832
+    },
+    {
+      "path": "reports/phase-11.md",
+      "sha256": "f8b1d2587cf9999734b145fb4911dc09db3e38b888989219e304010b57fe7324",
+      "bytes": 2647
+    },
+    {
+      "path": "reports/phase-12.md",
+      "sha256": "12186c91c23211a99a1b2bc3414ee24777c66e06e99aaa59c0806e173b5199dd",
+      "bytes": 2690
+    },
+    {
+      "path": "reports/phase-13-paths.md",
+      "sha256": "bf2e04302549b8e43cf1d1bf0832cc710b0c5f0951ddc4b1be4996d01c8c2548",
+      "bytes": 2042
+    }
+  ],
+  "ok": true
+}

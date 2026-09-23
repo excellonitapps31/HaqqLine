@@ -29,17 +29,18 @@ This repository is ExcellonIT’s HaqqLine sandbox: the public host, the sandbox
 
 ## Phase 1–5 and Stage 3
 
-HTTPS shell, sandbox APIs, playground, voice, Call/WhatsApp/SMS (channel residuals deferred), and Phase 12 hardening signed off. Detail: `IMPLEMENTATION_PLAN.md`. Phases 1–12 signed off; Phase 13 waits for owner start.
+HTTPS shell, sandbox APIs, playground, voice, Call/WhatsApp/SMS (channel residuals deferred), Phase 12 hardening signed off, and Phase 13 evidence freeze in flight. Detail: `IMPLEMENTATION_PLAN.md`.
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
 php -S 127.0.0.1:8787 -t public public/router.php
 # other terminal:
-HAQQLINE_API_BASE=http://127.0.0.1:8787 HAQQLINE_DISABLE_RATE_LIMIT=1 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7 tests/phase8 tests/phase9 tests/phase10 tests/phase11 tests/phase12
+HAQQLINE_API_BASE=http://127.0.0.1:8787 HAQQLINE_DISABLE_RATE_LIMIT=1 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7 tests/phase8 tests/phase9 tests/phase10 tests/phase11 tests/phase12 tests/phase13
 python3 scripts/verify_pack_lock.py
 python3 scripts/backup_restore_drill.py
 python3 scripts/deps_licence_scan.py
 HAQQLINE_API_BASE=http://127.0.0.1:8787 HAQQLINE_DISABLE_RATE_LIMIT=1 python3 scripts/load_test.py
+python3 scripts/freeze_evidence.py
 ```
 
 ## Layout
@@ -59,7 +60,8 @@ HAQQLINE_API_BASE=http://127.0.0.1:8787 HAQQLINE_DISABLE_RATE_LIMIT=1 python3 sc
 | `SECURITY.md` | Sandbox limits and where secrets live |
 | `.env.example` | Variable names for local sync. No values. |
 | `sandbox/` | Local API sketch from before Phase 2 |
-| `reports/` | Phase completion reports |
+| `docs/` | Operator runbook, nginx headers, architecture one-pager |
+| `reports/` | Phase completion reports + evidence freeze pack |
 
 ## Conventions
 
