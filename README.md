@@ -39,7 +39,7 @@ The widget is created by `scripts/sync_elevenlabs.py` (`ELEVENLABS_API_KEY`). Ag
 python3 -m pip install -r requirements-dev.txt
 php -S 127.0.0.1:8787 -t public public/router.php
 # other terminal:
-HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6
+HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7
 python3 scripts/verify_pack_lock.py
 ```
 

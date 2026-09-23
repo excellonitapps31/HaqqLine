@@ -38,7 +38,7 @@ final class HaqqLineApi
             $this->send(200, array(
                 'status' => 'ok',
                 'service' => 'haqqline',
-                'phase' => 6,
+                'phase' => 7,
                 'pack_id' => $this->config['pack_id'],
                 'pack_version' => isset($this->config['pack_version']) ? $this->config['pack_version'] : null,
                 'citation_id' => isset($this->config['citation_id']) ? $this->config['citation_id'] : null,
@@ -76,24 +76,89 @@ final class HaqqLineApi
         }
 
         $body = $this->jsonBody();
+        $node = $this->workflowNode();
+
+        if ($path === '/api/v1/tools/decide_case') {
+            $this->policyDeny('decide_case', $body, $node, array(
+                'ok' => false,
+                'reason' => 'decide_case_forbidden',
+                'detail' => 'There is no decide_case tool; outcomes are human-only.',
+            ));
+            return;
+        }
         if ($path === '/api/v1/tools/lookup_rera_band') {
+            if (!$this->policyAllow('lookup_rera_band', $body, $node)) {
+                return;
+            }
             $this->lookupRera($body);
             return;
         }
         if ($path === '/api/v1/tools/lookup_ejari') {
+            if (!$this->policyAllow('lookup_ejari', $body, $node)) {
+                return;
+            }
             $this->lookupEjari($body);
             return;
         }
         if ($path === '/api/v1/tools/submit_to_human_queue') {
+            if (!$this->policyAllow('submit_to_human_queue', $body, $node)) {
+                return;
+            }
             $this->submitQueue($body);
             return;
         }
         if ($path === '/api/v1/tools/escalate_human') {
+            if (!$this->policyAllow('escalate_human', $body, $node)) {
+                return;
+            }
             $this->escalate($body);
             return;
         }
 
         $this->send(404, array('error' => 'not_found'));
+    }
+
+    private function workflowNode(): ?string
+    {
+        $header = isset($_SERVER['HTTP_X_HAQQLINE_WORKFLOW_NODE'])
+            ? trim((string) $_SERVER['HTTP_X_HAQQLINE_WORKFLOW_NODE'])
+            : '';
+        return $header === '' ? null : $header;
+    }
+
+    /** @param array $body */
+    private function policyAllow(string $tool, array $body, ?string $node): bool
+    {
+        $result = HaqqLinePolicy::evaluate($tool, $body, $node);
+        if ($result['ok'] === true) {
+            return true;
+        }
+        $this->policyDeny($tool, $body, $node, $result);
+        return false;
+    }
+
+    /**
+     * @param array $body
+     * @param array $result
+     */
+    private function policyDeny(string $tool, array $body, ?string $node, array $result): void
+    {
+        $reason = isset($result['reason']) ? (string) $result['reason'] : 'policy_denied';
+        $payload = array(
+            'error' => $reason,
+            'policy_denied' => true,
+            'reason' => $reason,
+            'detail' => isset($result['detail']) ? $result['detail'] : null,
+            'tool' => $tool,
+            'workflow_node' => $node,
+        );
+        $code = ($reason === 'confirmation_required') ? 400 : 403;
+        $this->audit($tool, $code, array(
+            'policy_denied' => true,
+            'reason' => $reason,
+            'workflow_node' => $node,
+        ));
+        $this->send($code, $payload);
     }
 
     private function path(): string
@@ -249,12 +314,7 @@ final class HaqqLineApi
 
     private function submitQueue(array $body): void
     {
-        if (!isset($body['caller_confirmed']) || $body['caller_confirmed'] !== true) {
-            $payload = array('error' => 'confirmation_required');
-            $this->audit('submit_to_human_queue', 400, $payload);
-            $this->send(400, $payload);
-            return;
-        }
+        // Confirmation and credential checks already enforced by HaqqLinePolicy.
         $item = array(
             'id' => $this->nextId('RDC-SANDBOX'),
             'status' => 'pending_human',
@@ -418,7 +478,7 @@ final class HaqqLineApi
         header('Cache-Control: no-store');
         header('X-Robots-Tag: noindex');
         header('Access-Control-Allow-Origin: https://haqqline.excellonit.net');
-        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Api-Key');
+        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Api-Key, X-HaqqLine-Workflow-Node');
         header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
         if ($payload === null) {
             return;

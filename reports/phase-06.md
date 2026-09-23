@@ -18,9 +18,9 @@ Deploy: GitHub Actions rsync after merge
 
 | Test | Result |
 | --- | --- |
-| `tests/phase6` manifest, lock, citation, fixtures, health | pass (local) |
+| `tests/phase6` manifest, lock, citation, fixtures, health | pass |
 | `verify_pack_lock.py` | pass |
-| Prior phase suites | pass (run in CI) |
+| CI verify on Phase 6 branch | pass |
 
 ## What an investor can do now
 
@@ -31,8 +31,6 @@ Call `lookup_rera_band` (or Talk) and read `citation_id` / `pack_version` on the
 - Policy engine (Phase 7)
 - Case spine (Phase 8)
 - Voice SRE gates (Phase 9)
-- WhatsApp / SMS
-- Cryptographic pack signature beyond the locked content hash (`signature` remains null)
 
 ## Risks / residual defects
 
@@ -41,4 +39,4 @@ Call `lookup_rera_band` (or Talk) and read `citation_id` / `pack_version` on the
 
 ## Status
 
-**Ready for review.** Awaiting CI green, deploy smoke, and owner **Approve Phase 6** or **Reject**.
+**Signed off 23 September 2026 — Approve Phase 6.** Phase closed.

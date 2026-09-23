@@ -1,6 +1,6 @@
 # HaqqLine — Stage 3 enterprise build plan
 
-**Status:** Planned through Phase 9. **Phase 6 (pack governance) is in flight** after owner `Begin Phase N` on 23 September 2026. Phases 7–9 stay closed until Phase 6 is approved.  
+**Status:** Phase 6 signed off. **Phase 7 (policy engine) is in flight.** Phases 8–9 stay closed until Phase 7 is approved.  
 **Owner:** ExcellonIT  
 **Live host:** https://haqqline.excellonit.net (sandbox until an authority production cutover is separately signed)  
 **Product shape:** `stage-2/PRODUCT_SHAPE.md`  
@@ -259,4 +259,4 @@ reports/phase-NN.md → Owner: "Approve Phase N" | "Reject"
 merge + tag phase-NN → wait for next Begin instruction
 ```
 
-**Current instruction state:** Phase 6 is **open**. Phases 7–9 stay closed until Phase 6 is approved and the owner says `Begin Phase N` for the next one.
+**Current instruction state:** Phase 7 is **open**. Phases 8–9 stay closed until Phase 7 is approved and the owner says `Begin Phase N` (or **Next**) for the following phase.
