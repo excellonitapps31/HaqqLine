@@ -20,6 +20,17 @@
       "notes": "Sandbox concurrent inbound voice sessions (web Talk + optional DID). Not a carrier commitment."
     }
   },
+  "load": {
+    "api_rps_sandbox": {
+      "target": 10,
+      "notes": "Sandbox concurrent lookup_rera_band sample via scripts/load_test.py — not UAE production scale"
+    },
+    "success_rate_min": {
+      "target": 0.95,
+      "notes": "Minimum success rate for the sandbox load sample"
+    },
+    "artifact": "reports/phase-12-load.json"
+  },
   "eval_gate": {
     "repeat_count_min": 2,
     "pass_rate_min": 1.0,

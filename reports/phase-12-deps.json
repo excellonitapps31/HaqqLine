@@ -1,0 +1,29 @@
+{
+  "phase": 12,
+  "environment": "sandbox",
+  "runtime": {
+    "php": "stdlib only \u2014 no Composer, no framework",
+    "python_prod_scripts": "stdlib only (urllib, ssl, json)",
+    "python_dev": "requirements-dev.txt"
+  },
+  "direct_dev_dependencies": [
+    {
+      "name": "pytest",
+      "spec": "pytest>=8.3,<9",
+      "licence": "MIT",
+      "role": "test runner"
+    },
+    {
+      "name": "playwright",
+      "spec": "playwright>=1.47,<2",
+      "licence": "Apache-2.0",
+      "role": "browser automation (dev)"
+    }
+  ],
+  "notes": [
+    "No package.json / Node runtime in this repo.",
+    "No Composer lockfile; PHP is strict_types scripts under public/api/v1.",
+    "Licence map for direct pins is maintained in this script for offline CI."
+  ],
+  "ok": true
+}
