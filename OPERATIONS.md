@@ -24,6 +24,33 @@ Local equivalents are in `.env.example`.
 - Home page still contains the English and Arabic “not a government service” lines
 - `public/elevenlabs.json` on the host has an `agent_` id
 - `GET /twilio.json` returns `inbound_only: true`, `enable_sms: false`, and a failover string. Empty `phone_number` is expected until Twilio secrets are set.
+- `python3 scripts/verify_pack_lock.py` exits 0 (pack areas/ejari match `content_hash` in `public/api/v1/pack/config.json`)
+
+## Pack rollback (Phase 6)
+
+The signed pack is `pack_id` + `pack_version` + `content_hash` in `public/api/v1/pack/config.json`. Data files are `areas.json` and `ejari.json`.
+
+1. Check out the previous git tag (for example `phase-05` or the last good `phase-06` tip).
+2. Redeploy that tree via the normal Actions rsync (or push a revert on a phase branch).
+3. Confirm `GET /api/v1/health` shows the prior `pack_version` / `citation_id`, and `verify_pack_lock.py` passes.
+4. Re-run `scripts/sync_elevenlabs.py` from that commit so the agent prompt matches the pack citation.
+
+Do not edit `areas.json` / `ejari.json` without bumping `pack_version`, updating `citation_id` (`pack_id@version`), and refreshing `content_hash` via:
+
+```bash
+python3 - <<'PY'
+import hashlib, json
+from pathlib import Path
+p = Path('public/api/v1/pack')
+canon = json.dumps(
+    {'areas': json.loads((p/'areas.json').read_text()), 'ejari': json.loads((p/'ejari.json').read_text())},
+    sort_keys=True, separators=(',', ':'),
+)
+print('sha256:' + hashlib.sha256(canon.encode()).hexdigest())
+PY
+```
+
+Then run `python3 scripts/verify_pack_lock.py`.
 
 ## Data on the host
 

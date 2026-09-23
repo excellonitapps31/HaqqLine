@@ -1,11 +1,11 @@
 # HaqqLine — Stage 3 enterprise build plan
 
-**Status:** Planned. **No Stage 3 phase is open.**  
+**Status:** Planned through Phase 9. **Phase 6 (pack governance) is in flight** after owner `Begin Phase N` on 23 September 2026. Phases 7–9 stay closed until Phase 6 is approved.  
 **Owner:** ExcellonIT  
 **Live host:** https://haqqline.excellonit.net (sandbox until an authority production cutover is separately signed)  
 **Product shape:** `stage-2/PRODUCT_SHAPE.md`  
 **Programme:** `IMPLEMENTATION_PLAN.md`  
-**Prerequisite:** Phase 5 (Twilio Voice) signed off, or Stage 2 web path accepted as the deployment of record if the DID is blocked.
+**Prerequisite:** Phase 5 signed off (residual *inbound DID deferred*).
 
 This plan raises HaqqLine from an excellent sandbox proof to an **authority-shaped capability**: signed rule packs, a hard policy layer, a case spine officers can trust, and voice SRE with continuous eval gates. Message channels (WhatsApp, SMS) stay **after** that spine.
 
@@ -259,4 +259,4 @@ reports/phase-NN.md → Owner: "Approve Phase N" | "Reject"
 merge + tag phase-NN → wait for next Begin instruction
 ```
 
-**Current instruction state:** Stage 3 phases 6–9 are **closed**. Waiting for the owner to say which phase to begin.
+**Current instruction state:** Phase 6 is **open**. Phases 7–9 stay closed until Phase 6 is approved and the owner says `Begin Phase N` for the next one.

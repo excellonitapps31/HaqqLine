@@ -264,7 +264,7 @@ In place before Phase 1:
 
 **Intent:** the rule pack is the product of record. Every figure is attributable to a signed pack version.
 
-**Owner start:** closed until `Begin Phase 6`. Detail: `stage-3/BUILD_PLAN.md`.
+**Owner start:** **in flight** after `Begin Phase N` (23 September 2026). Detail: `stage-3/BUILD_PLAN.md`.
 
 **In scope**
 
@@ -589,8 +589,4 @@ WhatsApp and SMS stay last among **channels** so Meta approval and Twilio SMS ca
 
 ## 10. Where the programme is
 
-<<<<<<< HEAD
-Gate 0 is closed. Phases 1–4 are on `main`. **Phase 5 is signed off** with residual *inbound DID deferred* (web Talk path is the live Stage 2 deployment of record). Merge the Phase 5 branch to `main` and tag `phase-05`. Later phases wait for an explicit owner `Begin Phase N`.
-=======
-Gate 0 is closed. Phases 1–4 are on `main`. Phase 5 is Twilio Voice (Stage 2). Stage 3 Phases 6–9 are **planned and closed** until the owner instructs `Begin Phase N`. WhatsApp and SMS code wait for Phases 10 and 11.
->>>>>>> origin/cursor/stage-3-enterprise-plan-9d24
+Gate 0 is closed. Phases 1–4 are on `main`. **Phase 5 is signed off** with residual *inbound DID deferred*. **Phase 6 (pack governance) is open** on `cursor/phase-06-pack-governance-9d24`. Phases 7–9 stay closed until Phase 6 is approved. WhatsApp and SMS wait for Phases 10 and 11.

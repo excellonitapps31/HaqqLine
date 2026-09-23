@@ -38,8 +38,10 @@ final class HaqqLineApi
             $this->send(200, array(
                 'status' => 'ok',
                 'service' => 'haqqline',
-                'phase' => 5,
+                'phase' => 6,
                 'pack_id' => $this->config['pack_id'],
+                'pack_version' => isset($this->config['pack_version']) ? $this->config['pack_version'] : null,
+                'citation_id' => isset($this->config['citation_id']) ? $this->config['citation_id'] : null,
                 'environment' => 'sandbox',
             ));
             return;
@@ -173,6 +175,7 @@ final class HaqqLineApi
                 'area' => $area,
                 'disclaimer' => $this->config['disclaimer'],
             );
+            $payload = $this->withPackCitation($payload);
             $this->audit('lookup_rera_band', 404, $payload);
             $this->send(404, $payload);
             return;
@@ -188,6 +191,9 @@ final class HaqqLineApi
         $cap = round($current * (1 + $pct / 100), 2);
         $payload = array(
             'source' => $this->config['pack_id'],
+            'pack_id' => $this->config['pack_id'],
+            'pack_version' => isset($this->config['pack_version']) ? $this->config['pack_version'] : null,
+            'citation_id' => isset($this->config['citation_id']) ? $this->config['citation_id'] : $this->config['pack_id'],
             'area' => $area,
             'area_label' => $this->areas[$area]['label'],
             'index_aed' => $index,
@@ -196,7 +202,11 @@ final class HaqqLineApi
             'proposed_is_within_band' => $proposed <= $cap + 0.005,
             'disclaimer' => $this->config['disclaimer'],
         );
-        $this->audit('lookup_rera_band', 200, array('area' => $area, 'within' => $payload['proposed_is_within_band']));
+        $this->audit('lookup_rera_band', 200, array(
+            'area' => $area,
+            'within' => $payload['proposed_is_within_band'],
+            'citation_id' => $payload['citation_id'],
+        ));
         $this->send(200, $payload);
     }
 
@@ -214,6 +224,7 @@ final class HaqqLineApi
                 'invented' => false,
                 'disclaimer' => $this->config['disclaimer'],
             );
+            $payload = $this->withPackCitation($payload);
             $this->audit('lookup_ejari', 200, array('ejari_id' => $id, 'found' => false));
             $this->send(200, $payload);
             return;
@@ -231,6 +242,7 @@ final class HaqqLineApi
             'source' => $this->config['pack_id'],
             'disclaimer' => $this->config['disclaimer'],
         );
+        $payload = $this->withPackCitation($payload);
         $this->audit('lookup_ejari', 200, array('ejari_id' => $id, 'found' => true));
         $this->send(200, $payload);
     }
@@ -386,6 +398,17 @@ final class HaqqLineApi
             }
         }
         return $out;
+    }
+
+    /** @param array $payload */
+    private function withPackCitation(array $payload): array
+    {
+        $payload['pack_id'] = $this->config['pack_id'];
+        $payload['pack_version'] = isset($this->config['pack_version']) ? $this->config['pack_version'] : null;
+        $payload['citation_id'] = isset($this->config['citation_id'])
+            ? $this->config['citation_id']
+            : $this->config['pack_id'];
+        return $payload;
     }
 
     private function send(int $code, $payload): void
