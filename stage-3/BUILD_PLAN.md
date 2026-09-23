@@ -1,6 +1,6 @@
 # HaqqLine — Stage 3 enterprise build plan
 
-**Status:** Phase 6 signed off. **Phase 7 (policy engine) is in flight.** Phases 8–9 stay closed until Phase 7 is approved.  
+**Status:** Phases 6–7 signed off. **Phase 8 (case spine) closed** until owner `Begin Phase N`. Phase 9 stays closed until Phase 8 is approved.  
 **Owner:** ExcellonIT  
 **Live host:** https://haqqline.excellonit.net (sandbox until an authority production cutover is separately signed)  
 **Product shape:** `stage-2/PRODUCT_SHAPE.md`  
