@@ -30,7 +30,7 @@ If the purchased DID is blocked by KYC, stock, or credentials, the web path rema
 | Rule lookup, Ejari mock, confirm gate, audit, HMAC webhook | `public/api/v1/` | Live since Phase 2 |
 | Scenario playground | `public/play/` | Live since Phase 3 |
 | ConvAI widget, workflow, knowledge pack, agent tests | Talk on the host; `elevenlabs/` | Live since Phase 4. Agent `agent_5601m1xp22apfdcbwbb8h9y5zzqt` |
-| Inbound DID | `public/twilio.json`, `scripts/sync_twilio.py`, Call section, `twilio-sync` CI | Scaffolding complete. `phone_number` is still empty until secrets are set |
+| Inbound DID | `public/twilio.json`, `scripts/sync_twilio.py`, Call section, `twilio-sync` CI | Phase 5 signed off 23 September 2026 with residual *inbound DID deferred*. `phone_number` empty until secrets are intentional |
 
 Phases 1–4 are out of scope for rework in this window. A defect found while recording is fixed against the phase that owns it.
 
