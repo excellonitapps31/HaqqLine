@@ -259,4 +259,4 @@ reports/phase-NN.md → Owner: "Approve Phase N" | "Reject"
 merge + tag phase-NN → wait for next Begin instruction
 ```
 
-**Current instruction state:** Phase 7 is **open**. Phases 8–9 stay closed until Phase 7 is approved and the owner says `Begin Phase N` (or **Next**) for the following phase.
+**Current instruction state:** Phase 7 is **signed off**. Phase 8 stays closed until the owner says `Begin Phase N` (or **Next**).
