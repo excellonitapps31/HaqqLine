@@ -100,8 +100,13 @@ def test_promote_gate_blocks_failures_and_high_stakes_quarantine(monkeypatch) ->
 def test_failover_path_documented_and_exercised_empty_did() -> None:
     assert "Twilio 5xx" in TWILIO["failover"]
     assert "Talk" in TWILIO["failover"] or "Talk" in CALL_JS
-    assert TWILIO["phone_number"] == ""  # DID deferred — empty DID is the exercised failover
+    # Empty DID or kill-switch pause both route callers to Talk.
+    assert TWILIO["phone_number"] == "" or (
+        TWILIO.get("enabled") is True and TWILIO["phone_number"].startswith("+")
+    )
+    assert TWILIO.get("kill_switch") == "HAQQLINE_CALL_DID_ENABLED" or TWILIO["phone_number"] == ""
     assert "No test number on this host yet" in CALL_JS
+    assert "Test number paused (abuse guard)" in CALL_JS
     assert "Use Talk." in CALL_JS
     assert BUDGETS["failover"]["twilio_5xx"]
 
