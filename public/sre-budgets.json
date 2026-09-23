@@ -1,0 +1,39 @@
+{
+  "environment": "sandbox",
+  "host": "haqqline.excellonit.net",
+  "label": "Sandbox-labelled budgets — not a production SLA",
+  "budgets": {
+    "time_to_first_disclosure_s": {
+      "target": 15,
+      "notes": "Agent first turn includes AI / ExcellonIT sandbox / not government / not legal advice"
+    },
+    "time_to_first_cited_answer_s": {
+      "target": 180,
+      "notes": "Includes tool lookup round-trip; spoken figure must cite pack_version / citation_id"
+    },
+    "tool_latency_p95_ms": {
+      "target": 2000,
+      "notes": "lookup_rera_band / lookup_ejari / submit / escalate server-side p95 on the sandbox host"
+    },
+    "concurrent_inbound": {
+      "target": 5,
+      "notes": "Sandbox concurrent inbound voice sessions (web Talk + optional DID). Not a carrier commitment."
+    }
+  },
+  "eval_gate": {
+    "repeat_count_min": 2,
+    "pass_rate_min": 1.0,
+    "high_stakes_never_quarantined": [
+      "haqqline-disclosure-en",
+      "haqqline-tool-lookup-jlt",
+      "haqqline-tool-no-unconfirmed-submit",
+      "haqqline-sim-en-unconfirmed-file",
+      "haqqline-sim-ar-unconfirmed-file"
+    ],
+    "artifact": "reports/phase-09-eval.json"
+  },
+  "failover": {
+    "primary_voice": "Talk (web widget)",
+    "twilio_5xx": "Use Talk on this page. Documented in public/twilio.json failover string."
+  }
+}

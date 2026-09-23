@@ -447,6 +447,104 @@ def summarize_runs(result: dict, names: dict[str, str]) -> dict:
     return summary
 
 
+# High-stakes tests must never be quarantined (Phase 9 promote gate).
+HIGH_STAKES_TESTS = frozenset(
+    {
+        "haqqline-disclosure-en",
+        "haqqline-tool-lookup-jlt",
+        "haqqline-tool-no-unconfirmed-submit",
+        "haqqline-sim-en-unconfirmed-file",
+        "haqqline-sim-ar-unconfirmed-file",
+    }
+)
+
+
+def load_budgets() -> dict:
+    path = ROOT / "public/sre-budgets.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def quarantine_set() -> set[str]:
+    raw = os.environ.get("HAQQLINE_EVAL_QUARANTINE", "").strip()
+    if not raw:
+        return set()
+    return {part.strip() for part in raw.split(",") if part.strip()}
+
+
+def evaluate_promote_gate(summary: dict, quarantine: set[str] | None = None) -> dict:
+    """Return gate decision. High-stakes never quarantine; pass_rate_min from budgets."""
+    budgets = load_budgets()
+    gate_cfg = budgets.get("eval_gate") or {}
+    pass_rate_min = float(gate_cfg.get("pass_rate_min", 1.0))
+    high_stakes = set(gate_cfg.get("high_stakes_never_quarantined") or list(HIGH_STAKES_TESTS))
+    q = quarantine if quarantine is not None else quarantine_set()
+    illegal = sorted(q & high_stakes)
+    if illegal:
+        return {
+            "ok": False,
+            "reason": "high_stakes_quarantined",
+            "illegal_quarantine": illegal,
+            "pass_rate": None,
+            "pass_rate_min": pass_rate_min,
+            "blocking_failures": [],
+            "quarantined": sorted(q),
+        }
+    details = summary.get("details") or []
+    considered = [d for d in details if d.get("name") not in q]
+    if not considered:
+        return {
+            "ok": False,
+            "reason": "no_tests_considered",
+            "illegal_quarantine": [],
+            "pass_rate": 0.0,
+            "pass_rate_min": pass_rate_min,
+            "blocking_failures": [],
+            "quarantined": sorted(q),
+        }
+    passed = sum(1 for d in considered if d.get("status") == "passed")
+    total = len(considered)
+    pass_rate = passed / total if total else 0.0
+    non_pass = [d for d in considered if d.get("status") != "passed"]
+    ok = pass_rate >= pass_rate_min and not non_pass
+    return {
+        "ok": ok,
+        "reason": "passed" if ok else "below_threshold_or_failures",
+        "illegal_quarantine": [],
+        "pass_rate": round(pass_rate, 4),
+        "pass_rate_min": pass_rate_min,
+        "blocking_failures": [
+            {"name": d.get("name"), "status": d.get("status"), "reason": d.get("reason")} for d in non_pass
+        ],
+        "quarantined": sorted(q),
+        "high_stakes": sorted(high_stakes),
+        "considered": total,
+        "passed": passed,
+    }
+
+
+def write_phase09_eval(summary: dict, gate: dict) -> None:
+    budgets = load_budgets()
+    artifact = {
+        "phase": 9,
+        "finished_at": summary.get("finished_at"),
+        "repeat_count": summary.get("repeat_count"),
+        "budgets": budgets,
+        "summary": {
+            "invocation_id": summary.get("invocation_id"),
+            "agent_id": summary.get("agent_id"),
+            "version_id": summary.get("version_id"),
+            "passed": summary.get("passed"),
+            "failed": summary.get("failed"),
+            "pending": summary.get("pending"),
+            "total": summary.get("total"),
+            "details": summary.get("details"),
+        },
+        "gate": gate,
+    }
+    path = ROOT / "reports/phase-09-eval.json"
+    path.write_text(json.dumps(artifact, indent=2) + "\n", encoding="utf-8")
+
+
 def write_step_summary(summary: dict) -> None:
     path = os.environ.get("GITHUB_STEP_SUMMARY")
     if not path:
@@ -485,11 +583,19 @@ def main() -> None:
     invocation = attach_and_run(agent_id, list(test_names))
     result = wait_for_results(invocation, int(os.environ.get("HAQQLINE_TEST_WAIT_SECONDS", "1500")))
     summary = summarize_runs(result, test_names)
-    print(json.dumps({"agent_id": agent_id, "tools": tool_ids, "webhook_id": webhook_id, "summary": summary}, indent=2))
+    gate = evaluate_promote_gate(summary)
+    write_phase09_eval(summary, gate)
+    print(json.dumps({"agent_id": agent_id, "tools": tool_ids, "webhook_id": webhook_id, "summary": summary, "gate": gate}, indent=2))
     print(f"AGENT_TESTS_PASSED={summary['passed']}/{summary['total']}")
-    if summary["passed"] < summary["total"]:
-        # Partial failures stay a warning. The widget stays up.
-        print("warning: some agent tests did not pass", file=sys.stderr)
+    print(f"PROMOTE_GATE_OK={1 if gate['ok'] else 0}")
+    if not gate["ok"]:
+        print(
+            f"error: promote gate refused ({gate.get('reason')}); "
+            f"pass_rate={gate.get('pass_rate')} min={gate.get('pass_rate_min')}; "
+            f"blocking={gate.get('blocking_failures')}",
+            file=sys.stderr,
+        )
+        raise SystemExit(2)
 
 
 if __name__ == "__main__":

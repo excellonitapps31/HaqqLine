@@ -25,6 +25,7 @@ Local equivalents are in `.env.example`.
 - `public/elevenlabs.json` on the host has an `agent_` id
 - `GET /twilio.json` returns `inbound_only: true`, `enable_sms: false`, and a failover string. Empty `phone_number` is expected until Twilio secrets are set.
 - `python3 scripts/verify_pack_lock.py` exits 0 (pack areas/ejari match `content_hash` in `public/api/v1/pack/config.json`)
+- `GET /sre-budgets.json` returns sandbox-labelled latency / concurrency / eval-gate budgets (Phase 9)
 
 ## Pack rollback (Phase 6)
 
@@ -70,7 +71,9 @@ Then run `python3 scripts/verify_pack_lock.py`.
 | Webhook 503 | Secret file missing on the host. |
 | Lookup 429 | Rate limit in `public/api/v1/pack/config.json` (120/minute/IP). |
 
-Rollback of the site is a redeploy of the previous tag. Rollback of the agent is a sync from the last good commit. Git does not restore `api/data`.
+Rollback of the site is a redeploy of the previous tag. Rollback of the agent is a sync from the last good commit **only after** the Phase 9 promote gate passes (`reports/phase-09-eval.json`). Git does not restore `api/data`.
+
+Operator runbook (pack / agent / number failover, alerts): `docs/OPERATOR_RUNBOOK.md`.
 
 ## Not operated from this repo
 

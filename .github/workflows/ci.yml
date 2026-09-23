@@ -35,7 +35,7 @@ jobs:
       - name: Pack content lock
         run: python3 scripts/verify_pack_lock.py
       - name: Tests
-        run: pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7 tests/phase8
+        run: pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7 tests/phase8 tests/phase9
       - name: Playwright
         run: |
           python -m playwright install --with-deps chromium
@@ -157,32 +157,36 @@ jobs:
           python3 scripts/sync_elevenlabs.py
           sync_rc=$?
           set -e
-          rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
-            public/elevenlabs.json \
-            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/elevenlabs.json" || true
-          if [ -s "$HAQQLINE_WEBHOOK_SECRET_FILE" ]; then
-            ssh -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
-              "mkdir -p '${{ secrets.DEPLOY_PATH }}/api/data' && cat > '${{ secrets.DEPLOY_PATH }}/api/data/elevenlabs_webhook.secret' && chmod 640 '${{ secrets.DEPLOY_PATH }}/api/data/elevenlabs_webhook.secret'" \
-              < "$HAQQLINE_WEBHOOK_SECRET_FILE"
-          fi
-          if [ "$sync_rc" -ne 0 ]; then
+          # Phase 9: do not promote (rsync) agent config when the eval gate fails.
+          if [ "$sync_rc" -eq 0 ]; then
+            rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
+              public/elevenlabs.json \
+              "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/elevenlabs.json"
+            if [ -s "$HAQQLINE_WEBHOOK_SECRET_FILE" ]; then
+              ssh -p "${{ secrets.SSH_PORT }}" "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+                "mkdir -p '${{ secrets.DEPLOY_PATH }}/api/data' && cat > '${{ secrets.DEPLOY_PATH }}/api/data/elevenlabs_webhook.secret' && chmod 640 '${{ secrets.DEPLOY_PATH }}/api/data/elevenlabs_webhook.secret'" \
+                < "$HAQQLINE_WEBHOOK_SECRET_FILE"
+            fi
+            python3 - <<'PY'
+            import json, urllib.request
+            with urllib.request.urlopen("https://haqqline.excellonit.net/elevenlabs.json") as res:
+                cfg = json.loads(res.read().decode())
+            assert cfg.get("agent_id", "").startswith("agent_"), cfg
+            print("live agent", cfg["agent_id"])
+            PY
+          else
+            echo "Promote refused: sync/eval gate exit=$sync_rc (agent JSON not rsynced)."
             exit "$sync_rc"
           fi
-          python3 - <<'PY'
-          import json, urllib.request
-          with urllib.request.urlopen("https://haqqline.excellonit.net/elevenlabs.json") as res:
-              cfg = json.loads(res.read().decode())
-          assert cfg.get("agent_id", "").startswith("agent_"), cfg
-          print("live agent", cfg["agent_id"])
-          PY
       - name: Upload eval
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: phase-05-eval
+          name: phase-09-eval
           path: |
             reports/phase-04-eval.json
             reports/phase-05-eval.json
+            reports/phase-09-eval.json
           if-no-files-found: ignore
 
   twilio-sync:
