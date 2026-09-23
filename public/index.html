@@ -41,11 +41,11 @@
     <div data-pane="en">
       <h1>HaqqLine</h1>
       <p class="deck">A voice agent that checks a rental situation against published Dubai rules — and never decides the case.</p>
-      <p class="cta-row"><a class="cta" href="#talk">Talk</a> <a class="cta ghost-cta" href="#whatsapp">WhatsApp</a> <a class="cta ghost-cta" href="/play/">Try a case</a></p>
+      <p class="cta-row"><a class="cta" href="#talk">Talk</a> <a class="cta ghost-cta" href="#whatsapp">WhatsApp</a> <a class="cta ghost-cta" href="#sms">SMS</a> <a class="cta ghost-cta" href="/play/">Try a case</a></p>
       <div class="grid meta">
         <div>
           <dt>On this host</dt>
-          <dd>Talk in the browser, dial the sandbox test DID, or message WhatsApp when a sandbox number is connected below. SMS is not connected here yet.</dd>
+          <dd>Talk, Call, WhatsApp, and SMS receipts when connected. SMS is transactional only (case ids) — rights-check stays on Talk or WhatsApp.</dd>
         </div>
         <div>
           <dt>For review</dt>
@@ -57,11 +57,11 @@
     <div data-pane="ar" hidden>
       <h1>حقّ لاين</h1>
       <p class="deck">وكيل صوتي يطابق حالة الإيجار بالقواعد المنشورة في دبي — ولا يبتّ في النزاع.</p>
-      <p class="cta-row"><a class="cta" href="#talk">تحدّث</a> <a class="cta ghost-cta" href="#whatsapp">واتساب</a> <a class="cta ghost-cta" href="/play/">جرّب حالة</a></p>
+      <p class="cta-row"><a class="cta" href="#talk">تحدّث</a> <a class="cta ghost-cta" href="#whatsapp">واتساب</a> <a class="cta ghost-cta" href="#sms">رسائل</a> <a class="cta ghost-cta" href="/play/">جرّب حالة</a></p>
       <div class="grid meta">
         <div>
           <dt>على هذا الموقع</dt>
-          <dd>تحدّث من المتصفح أو اتصل برقم الاختبار أو راسل واتساب عند توفر رقم تجريبي أدناه. الرسائل النصية غير موصولة هنا بعد.</dd>
+          <dd>تحدّث واتصل وواتساب وإيصالات الرسائل النصية عند الاتصال. الرسائل للنطاق المرجعي فقط — التحقق يبقى عبر تحدّث أو واتساب.</dd>
         </div>
         <div>
           <dt>لمن يراجع</dt>
@@ -115,10 +115,25 @@
     <div id="whatsapp-slot" class="voice-widget" data-testid="whatsapp-slot" aria-live="polite"></div>
   </section>
 
+  <section id="sms" class="talk">
+    <div data-pane="en">
+      <h2>SMS (sandbox fallback)</h2>
+      <p class="deck">Secondary channel only. Sends case reference receipts when a filing is queued or escalated. No rights-check over SMS — continue on WhatsApp or Talk. Not a government SMS line.</p>
+      <p class="script"><span class="script-label">Commands</span>STATUS &lt;case_id&gt; · STOP · HELP</p>
+    </div>
+    <div data-pane="ar" hidden>
+      <h2>رسائل نصية (احتياطي تجريبي)</h2>
+      <p class="deck">قناة ثانوية فقط. ترسل أرقام المراجع عند الطابور أو التصعيد. لا تحقق حقوق عبر الرسائل — تابع على واتساب أو تحدّث. ليست خدمة حكومية.</p>
+      <p class="script"><span class="script-label">أوامر</span>STATUS &lt;case_id&gt; · STOP · HELP</p>
+    </div>
+    <div id="sms-slot" class="voice-widget" data-testid="sms-slot" aria-live="polite"></div>
+  </section>
+
   <footer class="foot">
     <a href="/play/">Play</a>
     <a href="#call">Call</a>
     <a href="#whatsapp">WhatsApp</a>
+    <a href="#sms">SMS</a>
     <a href="https://excellonit.net">excellonit.net</a>
     <a href="https://github.com/excellonitapps31/HaqqLine">Source</a>
     <a href="/api/v1/docs/index.html">API</a>
@@ -130,5 +145,6 @@
   <script src="/voice.js" defer></script>
   <script src="/call.js" defer></script>
   <script src="/whatsapp.js" defer></script>
+  <script src="/sms.js" defer></script>
 </body>
 </html>

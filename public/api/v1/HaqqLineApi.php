@@ -38,7 +38,7 @@ final class HaqqLineApi
             $this->send(200, array(
                 'status' => 'ok',
                 'service' => 'haqqline',
-                'phase' => 10,
+                'phase' => 11,
                 'pack_id' => $this->config['pack_id'],
                 'pack_version' => isset($this->config['pack_version']) ? $this->config['pack_version'] : null,
                 'citation_id' => isset($this->config['citation_id']) ? $this->config['citation_id'] : null,
@@ -49,6 +49,11 @@ final class HaqqLineApi
 
         if ($method === 'POST' && $path === '/api/v1/webhooks/elevenlabs') {
             $this->elevenLabsWebhook();
+            return;
+        }
+
+        if ($method === 'POST' && $path === '/api/v1/webhooks/twilio/sms') {
+            $this->twilioSmsWebhook();
             return;
         }
 
@@ -67,6 +72,11 @@ final class HaqqLineApi
 
         if ($method === 'GET' && $path === '/api/v1/alerts') {
             $this->send(200, array('entries' => $this->readJsonlTail($this->dataDir() . '/alerts.jsonl', 20)));
+            return;
+        }
+
+        if ($method === 'GET' && $path === '/api/v1/sms/outbox') {
+            $this->send(200, array('entries' => $this->readJsonlTail($this->dataDir() . '/sms-outbox.jsonl', 50)));
             return;
         }
 
@@ -202,6 +212,9 @@ final class HaqqLineApi
 
     private function rateLimit(): bool
     {
+        if (getenv('HAQQLINE_DISABLE_RATE_LIMIT') === '1') {
+            return true;
+        }
         $limit = (int) $this->config['rate_limit_per_minute'];
         $ip = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '0.0.0.0';
         $bucket = preg_replace('/[^a-zA-Z0-9._-]/', '_', $ip);
@@ -342,11 +355,15 @@ final class HaqqLineApi
             'created_at' => $case['created_at'],
         );
         $this->appendJsonl($this->dataDir() . '/queue.jsonl', $item);
+        $smsTo = $this->smsRecipient($body);
+        $sms = (new HaqqLineSms($this->root))->notifyEvent('filing_queued', $case, $smsTo);
         $this->audit('submit_to_human_queue', 200, array(
             'id' => $item['id'],
             'case_id' => $case['id'],
             'status' => 'pending_human',
+            'sms' => $sms,
         ));
+        $item['sms'] = $sms;
         $this->send(200, $item);
     }
 
@@ -369,8 +386,24 @@ final class HaqqLineApi
             'created_at' => $case['created_at'],
         );
         $this->appendJsonl($this->dataDir() . '/escalations.jsonl', $item);
-        $this->audit('escalate_human', 200, array('id' => $item['id'], 'case_id' => $case['id']));
+        $smsTo = $this->smsRecipient($body);
+        $sms = (new HaqqLineSms($this->root))->notifyEvent('escalated', $case, $smsTo);
+        $this->audit('escalate_human', 200, array('id' => $item['id'], 'case_id' => $case['id'], 'sms' => $sms));
+        $item['sms'] = $sms;
         $this->send(200, $item);
+    }
+
+    /** @param array $body */
+    private function smsRecipient(array $body): ?string
+    {
+        if (isset($body['sms_to']) && is_string($body['sms_to']) && trim($body['sms_to']) !== '') {
+            return trim($body['sms_to']);
+        }
+        if (isset($body['packet']) && is_array($body['packet']) && isset($body['packet']['phone'])) {
+            $p = trim((string) $body['packet']['phone']);
+            return $p !== '' ? $p : null;
+        }
+        return null;
     }
 
     private function permittedIncreasePct(float $current, float $index): int
@@ -389,6 +422,37 @@ final class HaqqLineApi
             return 15;
         }
         return 20;
+    }
+
+    private function twilioSmsWebhook(): void
+    {
+        parse_str($this->rawInput, $params);
+        if (!is_array($params) || $params === array()) {
+            $params = $_POST;
+        }
+        $token = getenv('TWILIO_AUTH_TOKEN') ?: '';
+        $sig = isset($_SERVER['HTTP_X_TWILIO_SIGNATURE']) ? (string) $_SERVER['HTTP_X_TWILIO_SIGNATURE'] : '';
+        $sms = new HaqqLineSms($this->root);
+        // When auth token is configured, require a valid signature. Scaffold/tests may omit token.
+        if ($token !== '') {
+            $proto = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+            $host = isset($_SERVER['HTTP_HOST']) ? (string) $_SERVER['HTTP_HOST'] : 'haqqline.excellonit.net';
+            $url = $proto . '://' . $host . '/api/v1/webhooks/twilio/sms';
+            if ($sig === '' || !$sms->verifyTwilioSignature($url, $params, $sig, $token)) {
+                $this->send(401, array('error' => 'invalid_twilio_signature'));
+                return;
+            }
+        }
+        $cases = new HaqqLineCaseStore($this->dataDir());
+        $twiml = $sms->handleInbound($params, $cases);
+        $this->audit('twilio_sms_inbound', 200, array(
+            'from' => isset($params['From']) ? $params['From'] : null,
+            'body' => isset($params['Body']) ? $params['Body'] : null,
+        ));
+        http_response_code(200);
+        header('Content-Type: text/xml; charset=utf-8');
+        header('Cache-Control: no-store');
+        echo $twiml;
     }
 
     private function elevenLabsWebhook(): void

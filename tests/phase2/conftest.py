@@ -26,9 +26,12 @@ def php_api_server():
         return
     port = _free_port()
     os.environ["HAQQLINE_API_BASE"] = f"http://127.0.0.1:{port}"
+    env = os.environ.copy()
+    env["HAQQLINE_DISABLE_RATE_LIMIT"] = "1"
     proc = subprocess.Popen(
         ["php", "-S", f"127.0.0.1:{port}", "-t", str(ROOT / "public"), str(ROOT / "public" / "router.php")],
         cwd=str(ROOT),
+        env=env,
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )

@@ -42,7 +42,8 @@ def test_whatsapp_section_is_sandbox_labelled() -> None:
     assert "wa.me" in JS
     assert HEALTH["phase"] >= 10
     assert HEALTH["channels"]["whatsapp"] is True
-    assert HEALTH["channels"]["sms"] is False
+    if HEALTH["phase"] < 11:
+        assert HEALTH["channels"]["sms"] is False
 
 
 def test_empty_whatsapp_falls_back_to_talk() -> None:

@@ -38,7 +38,10 @@ def test_health_is_strict_json_object() -> None:
         assert channels["whatsapp"] is True
     else:
         assert channels["whatsapp"] is False
-    assert channels["sms"] is False
+    if payload["phase"] >= 11:
+        assert channels["sms"] is True
+    else:
+        assert channels["sms"] is False
     json.dumps(payload)
 
 
