@@ -29,7 +29,7 @@ This repository is ExcellonIT’s HaqqLine sandbox: the public host, the sandbox
 
 ## Phase 1–5 and Stage 3
 
-HTTPS shell, sandbox APIs, playground, voice, Call/WhatsApp/SMS (channel residuals deferred), Phase 12 hardening, and Phase 13 evidence freeze — Phases 1–13 signed off. Detail: `IMPLEMENTATION_PLAN.md`.
+HTTPS shell, sandbox APIs, playground, voice, **active Call DID** (`+13159020932`, kill switch `HAQQLINE_CALL_DID_ENABLED`), WhatsApp/SMS scaffolding (WABA deferred; SMS compliance pending), Phase 12 hardening, and Phase 13 evidence freeze — Phases 1–13 signed off. Detail: `IMPLEMENTATION_PLAN.md`.
 
 ```bash
 python3 -m pip install -r requirements-dev.txt

@@ -8,20 +8,26 @@
       return res.json();
     })
     .then(function (cfg) {
-      var number = cfg.phone_number || "";
+      var enabled = cfg.enabled !== false;
+      var number = enabled ? cfg.phone_number || "" : "";
       var hours = cfg.hours || "";
       var failover = cfg.failover || "";
       if (!number) {
         mount.textContent = "";
+        var paused = cfg.enabled === false;
         var en = document.createElement("p");
         en.setAttribute("data-pane", "en");
         en.className = "did-meta";
-        en.textContent = "No test number on this host yet. Use Talk.";
+        en.textContent = paused
+          ? "Test number paused (abuse guard). Use Talk."
+          : "No test number on this host yet. Use Talk.";
         en.hidden = document.documentElement.lang === "ar";
         var ar = document.createElement("p");
         ar.setAttribute("data-pane", "ar");
         ar.className = "did-meta";
-        ar.textContent = "لا يوجد رقم اختبار على هذا الموقع بعد. استخدم «تحدّث».";
+        ar.textContent = paused
+          ? "رقم الاختبار متوقف (حماية من إساءة الاستخدام). استخدم «تحدّث»."
+          : "لا يوجد رقم اختبار على هذا الموقع بعد. استخدم «تحدّث».";
         ar.hidden = document.documentElement.lang !== "ar";
         mount.appendChild(en);
         mount.appendChild(ar);

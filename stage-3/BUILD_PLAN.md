@@ -1,11 +1,11 @@
 # HaqqLine — Stage 3 enterprise build plan
 
-**Status:** Phases 6–9 signed off (Stage 3 complete). Programme Phases 10–13 signed off (WABA deferred; Twilio SMS deferred). Evidence freeze complete.
+**Status:** Phases 6–9 signed off (Stage 3 complete). Programme Phases 10–13 signed off (WABA deferred; Twilio SMS deferred — Messaging compliance review). Voice sandbox DID active. Evidence freeze complete.
 **Owner:** ExcellonIT  
 **Live host:** https://haqqline.excellonit.net (sandbox until an authority production cutover is separately signed)  
 **Product shape:** `stage-2/PRODUCT_SHAPE.md`  
 **Programme:** `IMPLEMENTATION_PLAN.md`  
-**Prerequisite:** Phase 5 signed off (residual *inbound DID deferred*).
+**Prerequisite:** Phase 5 signed off; inbound Voice DID active (`+13159020932`, kill switch `HAQQLINE_CALL_DID_ENABLED`).
 
 This plan raises HaqqLine from an excellent sandbox proof to an **authority-shaped capability**: signed rule packs, a hard policy layer, a case spine officers can trust, and voice SRE with continuous eval gates. Message channels (WhatsApp, SMS) stay **after** that spine.
 

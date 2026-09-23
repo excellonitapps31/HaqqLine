@@ -33,11 +33,11 @@ Complete a confirmed filing with a phone on the packet and see a sandbox SMS rec
 
 ## Twilio SMS — deferred (accepted residual)
 
-Phase 5 DID / Twilio secrets remain deferred. Live carrier send needs `TWILIO_SMS_NUMBER` (or voice number) + Account SID/Auth Token and a green `sms-sync`.
+Voice DID `+13159020932` is active for Call (`enable_sms: false`). **Messaging / A2P compliance review is ongoing** on that number — do not enable SMS until it clears.
 
-**Residual defect (accepted at sign-off):** *Twilio SMS deferred* — outbox + webhook prove behaviour without the carrier.
+**Residual defect (accepted at sign-off; updated 23 September 2026):** *Twilio SMS deferred* — outbox + webhook prove behaviour; carrier SMS waits on compliance, then `sms-sync`.
 
-Clearing later: load Twilio secrets, configure Messaging webhook to `/api/v1/webhooks/twilio/sms`, green `sms-sync`, live receipt evidence. Defect return to Phase 11, not a new phase.
+Clearing later: compliance approved, set `TWILIO_SMS_NUMBER` (or reuse voice DID intentionally), Messaging webhook to `/api/v1/webhooks/twilio/sms`, green `sms-sync`, live receipt evidence. Defect return to Phase 11, not a new phase.
 
 ## Explicitly not built (next phases)
 

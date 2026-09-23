@@ -1,55 +1,44 @@
 # Phase 05 report — Twilio Voice
 
-Date: 23 September 2026  
-Git branch: `cursor/phase-05-scaffolding-9d24`  
+Date: 23 September 2026 (residual clear 23 September 2026)  
+Git branch: `cursor/wire-twilio-did-9d24`  
 Live URL(s): https://haqqline.excellonit.net/ · https://haqqline.excellonit.net/#call  
 Agent id: `agent_5601m1xp22apfdcbwbb8h9y5zzqt`  
-Deploy: GitHub Actions rsync + `scripts/sync_elevenlabs.py` + `scripts/sync_twilio.py` (when credentials are set)
+Deploy: GitHub Actions rsync + `scripts/sync_elevenlabs.py` + `scripts/sync_twilio.py`
 
 ## Built (complete)
 
 - Call section on the sandbox home page (`#call`), EN + AR, labelled as a sandbox test DID (not DLD / RERA / RDC).
-- `public/twilio.json` schema: empty `phone_number` until import; `inbound_only`, `enable_sms: false`, hours, failover to Talk.
-- `public/call.js` loads the number (or the Talk failover) without exposing Twilio secrets.
-- `scripts/sync_twilio.py`: Standard API key preferred, Account SID + auth token fallback; imports the DID into ElevenLabs with `enable_sms: false` and assigns the HaqqLine agent.
-- CI `twilio-sync` job: skips cleanly when `TWILIO_VOICE_NUMBER` is unset; imports and rsyncs when set.
+- **Active sandbox DID:** `+13159020932` published via `public/twilio.json` (`enabled: true`, `enable_sms: false`).
+- Abuse kill switch: `HAQQLINE_CALL_DID_ENABLED` (default on). Set `0` and re-run `scripts/sync_twilio.py` to unpublish the number and clear the Twilio Voice webhook.
+- `public/call.js` loads the number, or Talk / paused copy, without exposing Twilio secrets.
+- `scripts/sync_twilio.py`: imports the DID into ElevenLabs with `enable_sms: false`, assigns the HaqqLine agent; respects the kill switch.
+- CI `twilio-sync` job: imports and rsyncs when `TWILIO_VOICE_NUMBER` is set; honours `HAQQLINE_CALL_DID_ENABLED`.
 - Phase 5 multi-run agent evals: `HAQQLINE_TEST_REPEAT_COUNT` defaults to **3**. Sync writes `reports/phase-05-eval.json`.
-- Phase 5 unit tests: markup, empty DID → Talk, Twilio credential preference, E.164 gate, SMS off.
 
 ## Tests
 
 | Test | Result |
 | --- | --- |
-| `tests/phase5` markup + sync_twilio + multi-run unit tests | pass (CI verify green on this branch) |
-| Live Call section markup on host | pass (empty DID + failover copy) |
-| Multi-run agent suite (`repeat_count` ≥ 2) recorded pass rate | owed on next `elevenlabs-sync` after merge deploy |
-| Inbound EN gold path on purchased DID | deferred — residual below |
-| Inbound AR gold path on purchased DID | deferred — residual below |
-| Failover copy (Twilio 5xx → Talk) | pass |
+| `tests/phase5` markup + sync_twilio + kill-switch unit tests | pass |
+| Live Call section shows DID when enabled | owed after merge + green `twilio-sync` |
+| Multi-run agent suite (`repeat_count` ≥ 2) recorded pass rate | owed on green `elevenlabs-sync` |
+| Inbound EN/AR gold path on DID | owed after ElevenLabs import confirms Voice webhook |
+| Failover / pause copy (kill switch / Twilio 5xx → Talk) | pass (unit) |
 
 ## What an investor can do now
 
-Open https://haqqline.excellonit.net/#talk for web voice (EN/AR). Open `#call`: no test number yet; use Talk. Web path is the Stage 2 deployment of record while the DID is deferred.
+Open https://haqqline.excellonit.net/#talk for web voice (EN/AR). Open `#call` for the sandbox test DID (`+13159020932`) when `enabled: true`. Still an ExcellonIT sandbox — not a DLD / RERA / RDC line.
 
-## Twilio secrets — deferred (accepted residual)
+## Residual clear — inbound DID
 
-Owner decision 23 September 2026: do not load Twilio credentials yet (abuse-risk on the public sandbox).
+**Cleared 23 September 2026.** Twilio account lists `+13159020932` in-use with Voice. Secrets + kill switch are intentional. ElevenLabs import runs via `twilio-sync` when `ELEVENLABS_API_KEY` and Twilio secrets are present in Actions.
 
-**Residual defect (accepted at sign-off):** inbound DID deferred.
+## Still deferred
 
-Clearing the residual later requires GitHub Actions secrets (`TWILIO_VOICE_NUMBER` + API key or Account SID/token), a green `twilio-sync`, EN+AR inbound transcripts, and an update to this report. That is a defect return to Phase 5, not a new phase.
-
-## Explicitly not built (later)
-
-- Live Twilio DID import and inbound EN/AR evidence (residual)
-- Stage 3 enterprise spine — closed until owner `Begin Phase N`
-- WhatsApp / SMS
-
-## Risks / residual defects
-
-- **inbound DID deferred** (accepted).
-- Multi-run eval artifact lands after merge deploy + `elevenlabs-sync`.
+- **SMS on this DID:** Twilio number capability includes SMS, but **Messaging compliance review is ongoing**. `enable_sms` stays `false`; Phase 11 residual remains until compliance clears and `sms-sync` is intentional.
+- WABA (Phase 10) unchanged.
 
 ## Status
 
-**Signed off 23 September 2026 — Approve Phase 5 with residual “inbound DID deferred”.** Phase closed for programme gating. Merge this branch to `main` and tag `phase-05` after merge. Stage 3 may start only on a later `Begin Phase N`.
+**Phase 5 residual *inbound DID deferred* cleared.** Voice Call path is active with abuse kill switch. Tag / report update ships on this branch after CI green.

@@ -231,6 +231,7 @@ jobs:
           TWILIO_ACCOUNT_SID: ${{ secrets.TWILIO_ACCOUNT_SID }}
           TWILIO_AUTH_TOKEN: ${{ secrets.TWILIO_AUTH_TOKEN }}
           TWILIO_VOICE_NUMBER: ${{ secrets.TWILIO_VOICE_NUMBER }}
+          HAQQLINE_CALL_DID_ENABLED: ${{ secrets.HAQQLINE_CALL_DID_ENABLED }}
         run: |
           if [ -z "$TWILIO_VOICE_NUMBER" ]; then
             echo "TWILIO_VOICE_NUMBER is not set. Number import skipped; Call page keeps Talk failover."
@@ -245,17 +246,31 @@ jobs:
             PY
             exit 0
           fi
+          # Empty secret → default enabled (script treats unset as on). Explicit 0 pauses.
+          if [ -z "$HAQQLINE_CALL_DID_ENABLED" ]; then
+            export HAQQLINE_CALL_DID_ENABLED=1
+          fi
           python3 scripts/sync_twilio.py
           rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
             public/twilio.json \
             "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/twilio.json"
           python3 - <<'PY'
-          import json, urllib.request
+          import json, os, urllib.request
           with urllib.request.urlopen("https://haqqline.excellonit.net/twilio.json") as res:
               cfg = json.loads(res.read().decode())
-          assert cfg.get("phone_number", "").startswith("+"), cfg
+          enabled = os.environ.get("HAQQLINE_CALL_DID_ENABLED", "1").strip().lower() not in (
+              "0", "false", "off", "no", "disabled", "paused"
+          )
           assert cfg.get("enable_sms") is False, cfg
-          print("live did", cfg["phone_number"])
+          assert cfg.get("kill_switch") == "HAQQLINE_CALL_DID_ENABLED", cfg
+          if enabled:
+              assert cfg.get("enabled") is True, cfg
+              assert cfg.get("phone_number", "").startswith("+"), cfg
+              print("live did", cfg["phone_number"])
+          else:
+              assert cfg.get("enabled") is False, cfg
+              assert not cfg.get("phone_number"), cfg
+              print("did paused via HAQQLINE_CALL_DID_ENABLED")
           PY
 
   whatsapp-sync:

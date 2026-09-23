@@ -73,10 +73,44 @@ def test_write_public_keeps_sms_off(tmp_path: Path, monkeypatch: pytest.MonkeyPa
         encoding="utf-8",
     )
     monkeypatch.setattr(sync, "ROOT", tmp_path)
-    sync.write_public("+971500000000", {"phone_number_id": "pn_test"})
+    sync.write_public("+971500000000", {"phone_number_id": "pn_test"}, enabled=True)
     cfg = json.loads((public / "twilio.json").read_text(encoding="utf-8"))
     assert cfg["phone_number"] == "+971500000000"
+    assert cfg["enabled"] is True
     assert cfg["inbound_only"] is True
     assert cfg["enable_sms"] is False
     assert cfg["agent_id"].startswith("agent_")
     assert "Twilio 5xx" in cfg["failover"]
+    assert cfg["kill_switch"] == "HAQQLINE_CALL_DID_ENABLED"
+
+
+def test_call_did_enabled_toggle(monkeypatch: pytest.MonkeyPatch) -> None:
+    sync = load_sync()
+    monkeypatch.delenv("HAQQLINE_CALL_DID_ENABLED", raising=False)
+    assert sync.call_did_enabled() is True
+    monkeypatch.setenv("HAQQLINE_CALL_DID_ENABLED", "0")
+    assert sync.call_did_enabled() is False
+    monkeypatch.setenv("HAQQLINE_CALL_DID_ENABLED", "false")
+    assert sync.call_did_enabled() is False
+    monkeypatch.setenv("HAQQLINE_CALL_DID_ENABLED", "1")
+    assert sync.call_did_enabled() is True
+    monkeypatch.setenv("HAQQLINE_CALL_DID_ENABLED", "maybe")
+    with pytest.raises(SystemExit):
+        sync.call_did_enabled()
+
+
+def test_write_public_paused_hides_number(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    sync = load_sync()
+    public = tmp_path / "public"
+    public.mkdir()
+    (public / "elevenlabs.json").write_text(
+        json.dumps({"agent_id": "agent_5601m1xp22apfdcbwbb8h9y5zzqt"}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(sync, "ROOT", tmp_path)
+    sync.write_public("+13159020932", {"phone_number_id": "pn_x"}, enabled=False)
+    cfg = json.loads((public / "twilio.json").read_text(encoding="utf-8"))
+    assert cfg["phone_number"] == ""
+    assert cfg["enabled"] is False
+    assert "HAQQLINE_CALL_DID_ENABLED=0" in cfg["paused_reason"]
+    assert cfg["phone_number_id"] == ""

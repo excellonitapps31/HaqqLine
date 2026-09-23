@@ -34,10 +34,11 @@ Phase 9 makes multi-run eval a **promote gate**:
 
 | Condition | Operator action |
 | --- | --- |
-| Empty `phone_number` in `/twilio.json` | Expected while DID is deferred. Callers use **Talk**. |
+| `enabled: false` / empty `phone_number` in `/twilio.json` | Kill switch or unset secrets. Callers use **Talk**. To pause: `HAQQLINE_CALL_DID_ENABLED=0` + re-run `sync_twilio.py`. |
+| Live sandbox DID (`+13159020932` when enabled) | Inbound Voice only; sandbox disclaimer. SMS off until Messaging compliance clears. |
 | Twilio / carrier 5xx or DID does not ring | Instruct callers to use **Talk**. |
 | WhatsApp not connected (`/whatsapp.json`) | Use **Talk**. Residual *WABA deferred*. |
-| SMS not connected (`/sms.json`) | Receipts stay in outbox; callers use WhatsApp/Talk. Residual *Twilio SMS deferred*. |
+| SMS not connected (`/sms.json`) | Receipts stay in outbox; callers use WhatsApp/Talk. Residual *Twilio SMS deferred* (compliance review). |
 
 Do not invent a government hotline or WhatsApp number.
 
