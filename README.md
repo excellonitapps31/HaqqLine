@@ -29,7 +29,7 @@ This repository is ExcellonIT’s HaqqLine sandbox: the public host, the sandbox
 
 ## Phase 1–5 and Stage 3
 
-HTTPS shell, sandbox APIs, playground, voice, Call (DID deferred), WhatsApp (WABA deferred), and Phase 11 SMS scaffolding (Twilio SMS deferred). Detail: `IMPLEMENTATION_PLAN.md`. Phase 11 is in flight after owner start.
+HTTPS shell, sandbox APIs, playground, voice, Call (DID deferred), WhatsApp (WABA deferred), and SMS scaffolding (Twilio SMS deferred). Detail: `IMPLEMENTATION_PLAN.md`. Phases 1–11 signed off; Phase 12 waits for owner start.
 
 The widget is created by `scripts/sync_elevenlabs.py`. Twilio DID: `scripts/sync_twilio.py`. WhatsApp: `scripts/sync_whatsapp.py`. SMS config: `scripts/sync_sms.py` (`TWILIO_SMS_NUMBER` or voice number). Until SMS is connected, `#sms` points to WhatsApp/Talk; receipts still land in the sandbox outbox when a phone is on the filing packet.
 
