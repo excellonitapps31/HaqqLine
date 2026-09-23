@@ -101,8 +101,12 @@ Promotion is the phase branch, green CI, smoke of the live URL, `reports/phase-0
 | Twilio number not purchased, or extra KYC on the chosen country | DID missing on 14 October | Web path is the deployment of record. A verified caller ID is not a substitute. |
 | Model-graded simulations vary between runs | A single 13/13 can drop on a re-run | Multi-run pass rate in the Phase 5 report, and a re-run on the recording day |
 | Arabic path never heard by a native listener | AR evidence is weaker than EN | One listen-through before the recording day |
-| Scope pulled in from WhatsApp or SMS | Voice evidence slips | Those channels stay Phase 6 and Phase 7 |
+| Scope pulled in from WhatsApp or SMS | Voice evidence slips | Those channels stay Phase 10 and Phase 11 |
 
 ## 8. After 14 October
 
-Phase 5 is signed off with residual *inbound DID deferred*. WhatsApp (official WABA only), then SMS, then hardening — each starts only after an explicit owner start once the programme sequence allows. Gaps in Stage 2 evidence (multi-run artifact after merge, DID when secrets are intentional) are Phase 5 residuals, not a reason to open later channels early.
+## 8. After 14 October
+
+Phase 5 is signed off with residual *inbound DID deferred*. **Stage 3** (`stage-3/BUILD_PLAN.md`): pack governance → policy engine → case spine → voice SRE (Phases 6–9). Phase 6 is open after owner start. Each later phase waits for `Begin Phase N`, then build, deploy, test, report, and **Approve Phase N**.
+
+Only after Stage 3 sign-off: WhatsApp (Phase 10), SMS (Phase 11), hardening (Phase 12), evidence freeze (Phase 13). Phase 5 residuals (DID when secrets are intentional; multi-run artifact after merge) stay Phase 5 defects, not a reason to skip Stage 3 gates.
