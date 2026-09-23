@@ -31,11 +31,12 @@ jobs:
           php -l public/api/v1/HaqqLineApi.php
           php -l public/api/v1/HaqqLinePolicy.php
           php -l public/api/v1/HaqqLineCaseStore.php
+          php -l public/api/v1/HaqqLineSms.php
           php -l public/router.php
       - name: Pack content lock
         run: python3 scripts/verify_pack_lock.py
       - name: Tests
-        run: pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7 tests/phase8 tests/phase9 tests/phase10
+        run: pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7 tests/phase8 tests/phase9 tests/phase10 tests/phase11
       - name: Playwright
         run: |
           python -m playwright install --with-deps chromium
@@ -294,6 +295,57 @@ jobs:
           assert cfg.get("phone_number", "").startswith("+"), cfg
           assert cfg.get("wa_me", "").startswith("https://wa.me/"), cfg
           print("live whatsapp", cfg["phone_number"])
+          PY
+
+  sms-sync:
+    needs: [deploy]
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/phase/'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install rsync
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq rsync
+      - uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Trust host key
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+          ssh-keyscan -p "${{ secrets.SSH_PORT }}" -H "${{ secrets.SSH_HOST }}" >> ~/.ssh/known_hosts
+      - name: Publish SMS sandbox config
+        env:
+          TWILIO_SMS_NUMBER: ${{ secrets.TWILIO_SMS_NUMBER }}
+          TWILIO_VOICE_NUMBER: ${{ secrets.TWILIO_VOICE_NUMBER }}
+        run: |
+          if [ -z "$TWILIO_SMS_NUMBER" ] && [ -z "$TWILIO_VOICE_NUMBER" ]; then
+            echo "Twilio SMS number not set. Scaffolding kept; WhatsApp/Talk failover."
+            HAQQLINE_SMS_SCAFFOLD_ONLY=1 python3 scripts/sync_sms.py
+            python3 - <<'PY'
+            import json, urllib.request
+            with urllib.request.urlopen("https://haqqline.excellonit.net/sms.json") as res:
+                cfg = json.loads(res.read().decode())
+            assert cfg.get("connected") is False, cfg
+            assert cfg.get("no_rights_check") is True, cfg
+            assert "STOP" in (cfg.get("stop_policy") or ""), cfg
+            print("scaffolding sms.json ok")
+            PY
+            exit 0
+          fi
+          python3 scripts/sync_sms.py
+          rsync -avz -e "ssh -p ${{ secrets.SSH_PORT }} -o StrictHostKeyChecking=yes" \
+            public/sms.json \
+            "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.DEPLOY_PATH }}/sms.json"
+          python3 - <<'PY'
+          import json, urllib.request
+          with urllib.request.urlopen("https://haqqline.excellonit.net/sms.json") as res:
+              cfg = json.loads(res.read().decode())
+          assert cfg.get("connected") is True, cfg
+          assert cfg.get("phone_number", "").startswith("+"), cfg
+          print("live sms", cfg["phone_number"])
           PY
 
   playwright-live:

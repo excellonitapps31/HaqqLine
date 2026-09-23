@@ -25,7 +25,8 @@ def test_test_did_is_labelled_sandbox() -> None:
     assert "Twilio secrets" not in JS
     assert HEALTH["phase"] >= 5
     assert HEALTH["channels"]["phone"] is True
-    assert HEALTH["channels"]["sms"] is False
+    if HEALTH["phase"] < 11:
+        assert HEALTH["channels"]["sms"] is False
 
 
 def test_number_not_hardcoded_as_government_line() -> None:

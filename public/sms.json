@@ -1,0 +1,14 @@
+{
+  "connected": false,
+  "phone_number": "",
+  "label": "HaqqLine sandbox SMS",
+  "role": "secondary_transactional",
+  "primary_channel": "whatsapp",
+  "events": ["filing_queued", "escalated"],
+  "inbound_commands": ["STATUS <case_id>", "STOP", "HELP"],
+  "no_rights_check": true,
+  "sandbox_disclaimer": "ExcellonIT sandbox SMS — not a government service. Not DLD, RERA, or RDC. Not legal advice.",
+  "stop_policy": "Reply STOP to opt out. HELP for help. Rights-check stays on Talk or WhatsApp.",
+  "failover": "If SMS is not connected yet, use WhatsApp or Talk on this page.",
+  "hours": "Sandbox SMS receipts — when connected. Not a government hotline."
+}

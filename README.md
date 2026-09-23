@@ -29,15 +29,15 @@ This repository is ExcellonIT’s HaqqLine sandbox: the public host, the sandbox
 
 ## Phase 1–5 and Stage 3
 
-HTTPS shell, sandbox APIs, playground, ElevenLabs web voice, Call scaffolding (Twilio DID deferred), Stage 3 spine (Phases 6–9), and Phase 10 WhatsApp scaffolding (WABA deferred). Detail: `IMPLEMENTATION_PLAN.md` and `stage-3/BUILD_PLAN.md`. Phases 1–10 signed off; Phase 11 waits for owner start.
+HTTPS shell, sandbox APIs, playground, voice, Call (DID deferred), WhatsApp (WABA deferred), and Phase 11 SMS scaffolding (Twilio SMS deferred). Detail: `IMPLEMENTATION_PLAN.md`. Phase 11 is in flight after owner start.
 
-The widget is created by `scripts/sync_elevenlabs.py` (`ELEVENLABS_API_KEY`). Agent syncs use a multi-run eval (`HAQQLINE_TEST_REPEAT_COUNT`, default 3) and write `reports/phase-05-eval.json` / `reports/phase-09-eval.json` (promote gate). Twilio DID: `scripts/sync_twilio.py`. WhatsApp assign: `scripts/sync_whatsapp.py` after Meta Embedded Signup (`WHATSAPP_PHONE_NUMBER_ID` or `WHATSAPP_E164`). Secrets live in GitHub Actions and a local `.env`, not in git. Until WhatsApp is connected, `#whatsapp` tells the visitor to use Talk.
+The widget is created by `scripts/sync_elevenlabs.py`. Twilio DID: `scripts/sync_twilio.py`. WhatsApp: `scripts/sync_whatsapp.py`. SMS config: `scripts/sync_sms.py` (`TWILIO_SMS_NUMBER` or voice number). Until SMS is connected, `#sms` points to WhatsApp/Talk; receipts still land in the sandbox outbox when a phone is on the filing packet.
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
 php -S 127.0.0.1:8787 -t public public/router.php
 # other terminal:
-HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7 tests/phase8 tests/phase9 tests/phase10
+HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7 tests/phase8 tests/phase9 tests/phase10 tests/phase11
 python3 scripts/verify_pack_lock.py
 ```
 

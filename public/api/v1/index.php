@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/HaqqLinePolicy.php';
 require __DIR__ . '/HaqqLineCaseStore.php';
+require __DIR__ . '/HaqqLineSms.php';
 require __DIR__ . '/HaqqLineApi.php';
 
 $api = new HaqqLineApi(__DIR__);
