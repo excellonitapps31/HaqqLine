@@ -35,7 +35,7 @@ Complete a confirmed filing with a phone on the packet and see a sandbox SMS rec
 
 Phase 5 DID / Twilio secrets remain deferred. Live carrier send needs `TWILIO_SMS_NUMBER` (or voice number) + Account SID/Auth Token and a green `sms-sync`.
 
-**Residual defect (accepted at sign-off candidate):** *Twilio SMS deferred* — outbox + webhook prove behaviour without the carrier.
+**Residual defect (accepted at sign-off):** *Twilio SMS deferred* — outbox + webhook prove behaviour without the carrier.
 
 Clearing later: load Twilio secrets, configure Messaging webhook to `/api/v1/webhooks/twilio/sms`, green `sms-sync`, live receipt evidence. Defect return to Phase 11, not a new phase.
 
@@ -53,4 +53,4 @@ Clearing later: load Twilio secrets, configure Messaging webhook to `/api/v1/web
 
 ## Status
 
-**Awaiting Approve Phase 11.** Phase 12 stays closed until then.
+**Signed off 23 September 2026 — Approve Phase 11 with residual “Twilio SMS deferred”.** Phase closed. Tag `phase-11` on `main` after this sign-off merges. Phase 12 stays closed until owner `Begin Phase N` / **Next**.

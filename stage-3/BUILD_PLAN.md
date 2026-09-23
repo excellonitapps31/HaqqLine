@@ -1,6 +1,6 @@
 # HaqqLine — Stage 3 enterprise build plan
 
-**Status:** Phases 6–9 signed off (Stage 3 complete). Programme Phase 10 signed off (WABA deferred). **Phase 11 (SMS) in flight** (`Begin Phase 11` 23 September 2026). Phase 12 stays closed until Phase 11 is approved.  
+**Status:** Phases 6–9 signed off (Stage 3 complete). Programme Phases 10–11 signed off (WABA deferred; Twilio SMS deferred). Phase 12 stays closed until owner `Begin Phase N`.
 **Owner:** ExcellonIT  
 **Live host:** https://haqqline.excellonit.net (sandbox until an authority production cutover is separately signed)  
 **Product shape:** `stage-2/PRODUCT_SHAPE.md`  
@@ -259,4 +259,4 @@ reports/phase-NN.md → Owner: "Approve Phase N" | "Reject"
 merge + tag phase-NN → wait for next Begin instruction
 ```
 
-**Current instruction state:** Phase 11 is **in flight** (`Begin Phase 11`). Awaiting owner `Approve Phase 11` or `Reject`. Phase 12 stays closed.
+**Current instruction state:** Phase 11 is **signed off** (residual *Twilio SMS deferred*). Phase 12 stays closed until the owner says `Begin Phase N` (or **Next**).
