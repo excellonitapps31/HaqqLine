@@ -105,4 +105,4 @@ Promotion is the phase branch, green CI, smoke of the live URL, `reports/phase-0
 
 ## 8. After 14 October
 
-WhatsApp (official WABA only), then SMS for receipts and status, then hardening and the runbook drill. Each starts after Phase 5 sign-off. Gaps in the evidence pack are defects in this window.
+Phase 5 is signed off with residual *inbound DID deferred*. WhatsApp (official WABA only), then SMS, then hardening — each starts only after an explicit owner start once the programme sequence allows. Gaps in Stage 2 evidence (multi-run artifact after merge, DID when secrets are intentional) are Phase 5 residuals, not a reason to open later channels early.
