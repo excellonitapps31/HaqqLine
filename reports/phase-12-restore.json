@@ -1,0 +1,31 @@
+{
+  "phase": 12,
+  "environment": "sandbox",
+  "label": "Sandbox restore drill \u2014 not a UAE production RPO/RTO commitment",
+  "ok": true,
+  "elapsed_ms": 10.4,
+  "archive_bytes": 12648,
+  "files": {
+    "cases.jsonl": 145,
+    "audit.jsonl": 611,
+    "alerts.jsonl": 45,
+    "queue.jsonl": 106,
+    "escalations.jsonl": 12,
+    "conversations.jsonl": 19,
+    "sms-outbox.jsonl": 6,
+    "sms-inbound.jsonl": 8,
+    "sms-optout.jsonl": 4
+  },
+  "restored": {
+    "cases.jsonl": 145,
+    "audit.jsonl": 611,
+    "alerts.jsonl": 45,
+    "queue.jsonl": 106,
+    "escalations.jsonl": 12,
+    "conversations.jsonl": 19,
+    "sms-outbox.jsonl": 6,
+    "sms-inbound.jsonl": 8,
+    "sms-optout.jsonl": 4
+  },
+  "notes": "Drill copies JSONL under public/api/data into a temp restore tree; live host wipe remains operator-controlled."
+}

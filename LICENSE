@@ -1,0 +1,12 @@
+Copyright (c) ExcellonIT
+
+HaqqLine sandbox source in this repository is provided for demonstration and
+review. It is not a government service and is not affiliated with DLD, RERA, or
+the Rental Disputes Center.
+
+Permission is granted to view and fork this repository for evaluation. Production
+use of the HaqqLine name, agent configuration, or pack materials for a live
+authority deployment requires a separate written agreement with ExcellonIT.
+
+Third-party packages used for development testing remain under their own licences
+(see `reports/phase-12-deps.json` after `python3 scripts/deps_licence_scan.py`).
