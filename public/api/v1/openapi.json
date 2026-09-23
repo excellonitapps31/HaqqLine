@@ -25,6 +25,20 @@
         "properties": {
           "disclaimer": { "type": "string" }
         }
+      },
+      "PackCitation": {
+        "type": "object",
+        "required": ["pack_id", "pack_version", "citation_id"],
+        "properties": {
+          "pack_id": { "type": "string", "examples": ["sandbox_decree_43_2013_table_v1"] },
+          "pack_version": { "type": "string", "examples": ["1.0.0"] },
+          "citation_id": {
+            "type": "string",
+            "description": "Speak this id when stating a figure (pack_id@version).",
+            "examples": ["sandbox_decree_43_2013_table_v1@1.0.0"]
+          },
+          "source": { "type": "string", "description": "Legacy alias of pack_id" }
+        }
       }
     }
   },
@@ -69,9 +83,11 @@
           }
         },
         "responses": {
-          "200": { "description": "Band cited from the signed-off pack" },
+          "200": {
+            "description": "Band cited from the signed-off pack (includes pack_version and citation_id)"
+          },
           "401": { "description": "Unauthorized" },
-          "404": { "description": "Unknown area — escalate; no invented index" }
+          "404": { "description": "Unknown area — escalate; no invented index; still cites pack version when known" }
         }
       }
     },

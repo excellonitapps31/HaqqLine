@@ -40,7 +40,7 @@ Open https://haqqline.excellonit.net/, allow the microphone, click Talk, complet
 - The 7 September sync read test results before they finished and recorded 0. `scripts/sync_elevenlabs.py` now waits for the invocation to finish and writes passed/total to the job summary and the `phase-04-eval` artifact.
 - 22 September 2026: agent tool calls reached the API without the demo key (HTTP 401), because ElevenLabs now reads `request_headers`, not `headers`. Fixed the same day. The suite went from 6/13 to 11/13.
 - The two Arabic failures were fixed the same day. The prompt and workflow now call `lookup_rera_band` before any band statement, treat an over-band result as information rather than an escalation, and reply in the caller's language. The Arabic unknown-area scenario now states that the simulated caller speaks only Arabic; before that, the simulated caller spoke English. Result: 13/13.
-- Simulation tests are model-graded. A single run is evidence, not a guarantee; a multi-run pass rate is still owed in Phase 5.
+- Simulation tests are model-graded. A single run is evidence, not a guarantee. Phase 5 scaffolding sets `repeat_count` default 3; the recorded multi-run rate lands in `reports/phase-05-eval.json` on the next sync.
 - Webhook HMAC secret lives only on the host (`api/data/elevenlabs_webhook.secret`), not in git.
 
 ## Status

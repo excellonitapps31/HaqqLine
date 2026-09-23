@@ -27,17 +27,20 @@ This repository is ExcellonIT’s HaqqLine sandbox: the public host, the sandbox
 | CI/CD | GitHub Actions: verify, rsync over SSH, live smoke, agent sync, number sync |
 | Host | Ubuntu 24.04 VPS managed by HestiaCP: nginx and PHP 8.5-FPM. Let’s Encrypt TLS issued by HestiaCP, HTTPS forced, HSTS on. |
 
-## Phase 1–5
+## Phase 1–5 and Stage 3
 
-HTTPS shell, sandbox APIs, playground, ElevenLabs web voice, and an inbound Twilio test DID (secrets required). WhatsApp and SMS are later phases.
+## Phase 1–5 and Stage 3
 
-The widget is created by `scripts/sync_elevenlabs.py` (`ELEVENLABS_API_KEY`). The test number is imported by `scripts/sync_twilio.py` (`TWILIO_API_KEY_SID` + `TWILIO_API_KEY_SECRET` preferred, or Account SID + Auth Token; plus `TWILIO_VOICE_NUMBER`). Secrets live in GitHub Actions and a local `.env`, not in git.
+HTTPS shell, sandbox APIs, playground, ElevenLabs web voice, and Phase 5 Call scaffolding (Twilio DID deferred). Stage 3 raises the bar (pack governance, policy engine, case spine, voice SRE) before WhatsApp and SMS. Detail: `stage-3/BUILD_PLAN.md`. Phase 6 is in flight after owner start.
+
+The widget is created by `scripts/sync_elevenlabs.py` (`ELEVENLABS_API_KEY`). Agent syncs use a multi-run eval (`HAQQLINE_TEST_REPEAT_COUNT`, default 3) and write `reports/phase-05-eval.json`. The test number is imported by `scripts/sync_twilio.py` (`TWILIO_API_KEY_SID` + `TWILIO_API_KEY_SECRET` preferred, or Account SID + Auth Token; plus `TWILIO_VOICE_NUMBER`). Secrets live in GitHub Actions and a local `.env`, not in git. Until the number is imported, `#call` tells the visitor to use Talk.
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
 php -S 127.0.0.1:8787 -t public public/router.php
 # other terminal:
-HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5
+HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6
+python3 scripts/verify_pack_lock.py
 ```
 
 ## Layout
@@ -46,10 +49,12 @@ HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/
 | --- | --- |
 | `public/` | Files served at haqqline.excellonit.net |
 | `public/play/` | Scenario playground |
+| `public/api/v1/pack/` | Signed pack (`config.json` manifest + areas/ejari); lock via `scripts/verify_pack_lock.py` |
 | `tests/` | Phase tests, including Playwright for the playground |
 | `IMPLEMENTATION_PLAN.md` | Delivery sequence |
 | `stage-2/BUILD_PLAN.md` | 30 September – 14 October window |
 | `stage-2/PRODUCT_SHAPE.md` | What is in the product, and what is not |
+| `stage-3/BUILD_PLAN.md` | Enterprise spine (Phases 6–9); owner start only |
 | `stage-1/` | Idea Canvas (`ElevenLabs_Idea_Canvas.docx`), `SOURCES.md`, and the architecture banner for the walkthrough video |
 | `OPERATIONS.md` | Deploy, smoke, and failure checks |
 | `SECURITY.md` | Sandbox limits and where secrets live |
@@ -59,6 +64,6 @@ HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/
 
 ## Conventions
 
-- One phase at a time. Each phase is built on `phase/NN-…` and merged to `main` after sign-off.
+- One phase at a time. Each phase is built on `phase/NN-…` and merged to `main` after sign-off. Stage 3+ also needs a written `Begin Phase N` before coding.
 - No secrets in git. Deploy uses GitHub Actions secrets over SSH.
 - Host of record: the HestiaCP VPS behind `haqqline.excellonit.net`. Deploys run as a dedicated SSH user that can write only the HaqqLine document root.

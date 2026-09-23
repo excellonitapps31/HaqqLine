@@ -28,8 +28,10 @@ jobs:
           php -l public/api/v1/index.php
           php -l public/api/v1/HaqqLineApi.php
           php -l public/router.php
+      - name: Pack content lock
+        run: python3 scripts/verify_pack_lock.py
       - name: Tests
-        run: pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5
+        run: pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6
       - name: Playwright
         run: |
           python -m playwright install --with-deps chromium
@@ -107,6 +109,10 @@ jobs:
           echo "$html" | grep -q "Talk"
           echo "$html" | grep -q "convai-widget-embed"
           echo "$html" | grep -q "sandbox test DID"
+          echo "$html" | grep -q 'id="call"'
+          echo "$html" | grep -q "/call.js"
+          curl -fsS https://haqqline.excellonit.net/twilio.json | grep -q '"inbound_only"'
+          curl -fsS https://haqqline.excellonit.net/twilio.json | grep -q '"enable_sms"'
           echo home_ok
 
   elevenlabs-sync:
@@ -134,6 +140,7 @@ jobs:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           ELEVENLABS_WEBHOOK_SECRET: ${{ secrets.ELEVENLABS_WEBHOOK_SECRET }}
           HAQQLINE_WEBHOOK_SECRET_FILE: /tmp/elevenlabs_webhook.secret
+          HAQQLINE_TEST_REPEAT_COUNT: "3"
         run: |
           if [ -z "$ELEVENLABS_API_KEY" ]; then
             echo "ELEVENLABS_API_KEY is not set."
@@ -168,8 +175,10 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: phase-04-eval
-          path: reports/phase-04-eval.json
+          name: phase-05-eval
+          path: |
+            reports/phase-04-eval.json
+            reports/phase-05-eval.json
           if-no-files-found: ignore
 
   twilio-sync:
@@ -201,7 +210,16 @@ jobs:
           TWILIO_VOICE_NUMBER: ${{ secrets.TWILIO_VOICE_NUMBER }}
         run: |
           if [ -z "$TWILIO_VOICE_NUMBER" ]; then
-            echo "TWILIO_VOICE_NUMBER is not set. Number import skipped."
+            echo "TWILIO_VOICE_NUMBER is not set. Number import skipped; Call page keeps Talk failover."
+            python3 - <<'PY'
+            import json, urllib.request
+            with urllib.request.urlopen("https://haqqline.excellonit.net/twilio.json") as res:
+                cfg = json.loads(res.read().decode())
+            assert cfg.get("inbound_only") is True, cfg
+            assert cfg.get("enable_sms") is False, cfg
+            assert "Twilio 5xx" in (cfg.get("failover") or ""), cfg
+            print("scaffolding twilio.json ok; phone_number empty=", not cfg.get("phone_number"))
+            PY
             exit 0
           fi
           python3 scripts/sync_twilio.py
@@ -213,6 +231,7 @@ jobs:
           with urllib.request.urlopen("https://haqqline.excellonit.net/twilio.json") as res:
               cfg = json.loads(res.read().decode())
           assert cfg.get("phone_number", "").startswith("+"), cfg
+          assert cfg.get("enable_sms") is False, cfg
           print("live did", cfg["phone_number"])
           PY
 

@@ -1,6 +1,12 @@
 {
   "demo_api_key": "haqqline_sandbox_preview",
   "pack_id": "sandbox_decree_43_2013_table_v1",
+  "pack_version": "1.0.0",
+  "effective_from": "2026-09-01",
+  "effective_to": null,
+  "citation_id": "sandbox_decree_43_2013_table_v1@1.0.0",
+  "content_hash": "sha256:9ab14ddc2d63800a246d40c4c345cc6e3a3c6fc936890bf6b85c6b3f22dd1dd4",
+  "signature": null,
   "rate_limit_per_minute": 120,
   "disclaimer": "Information from a signed-off published rule pack in a sandbox. Not legal advice. Not a determination."
 }

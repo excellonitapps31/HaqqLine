@@ -30,7 +30,7 @@ If the purchased DID is blocked by KYC, stock, or credentials, the web path rema
 | Rule lookup, Ejari mock, confirm gate, audit, HMAC webhook | `public/api/v1/` | Live since Phase 2 |
 | Scenario playground | `public/play/` | Live since Phase 3 |
 | ConvAI widget, workflow, knowledge pack, agent tests | Talk on the host; `elevenlabs/` | Live since Phase 4. Agent `agent_5601m1xp22apfdcbwbb8h9y5zzqt` |
-| Inbound DID | `public/twilio.json`, `scripts/sync_twilio.py` | Page and import script are in the tree. `phone_number` is still empty |
+| Inbound DID | `public/twilio.json`, `scripts/sync_twilio.py`, Call section, `twilio-sync` CI | Phase 5 signed off 23 September 2026 with residual *inbound DID deferred*. `phone_number` empty until secrets are intentional |
 
 Phases 1–4 are out of scope for rework in this window. A defect found while recording is fixed against the phase that owns it.
 
@@ -44,7 +44,7 @@ Exit: `public/twilio.json` has an E.164 number, the Call section on the host sho
 
 ### Evaluation evidence
 
-`elevenlabs/tests.json` defines disclosure, the JLT lookup, the unconfirmed-submit absence, and the EN/AR simulations. Every sync waits for the run to finish and records passed/total. The 22 September 2026 run passed 13 of 13, English and Arabic. Phase 5 adds a multi-run figure (`repeat_count` above 1) so the rate is not a single sample.
+`elevenlabs/tests.json` defines disclosure, the JLT lookup, the unconfirmed-submit absence, and the EN/AR simulations. Every sync waits for the run to finish and records passed/total. The 22 September 2026 run passed 13 of 13, English and Arabic. Phase 5 sets `HAQQLINE_TEST_REPEAT_COUNT` default **3** so the rate is not a single sample; sync writes `reports/phase-05-eval.json`.
 
 Exit: `reports/phase-05.md` states passed/total and quotes the unconfirmed-submit test result verbatim. A skipped disclosure fails the run.
 
@@ -101,8 +101,12 @@ Promotion is the phase branch, green CI, smoke of the live URL, `reports/phase-0
 | Twilio number not purchased, or extra KYC on the chosen country | DID missing on 14 October | Web path is the deployment of record. A verified caller ID is not a substitute. |
 | Model-graded simulations vary between runs | A single 13/13 can drop on a re-run | Multi-run pass rate in the Phase 5 report, and a re-run on the recording day |
 | Arabic path never heard by a native listener | AR evidence is weaker than EN | One listen-through before the recording day |
-| Scope pulled in from WhatsApp or SMS | Voice evidence slips | Those channels stay Phase 6 and Phase 7 |
+| Scope pulled in from WhatsApp or SMS | Voice evidence slips | Those channels stay Phase 10 and Phase 11 |
 
 ## 8. After 14 October
 
-WhatsApp (official WABA only), then SMS for receipts and status, then hardening and the runbook drill. Each starts after Phase 5 sign-off. Gaps in the evidence pack are defects in this window.
+## 8. After 14 October
+
+Phase 5 is signed off with residual *inbound DID deferred*. **Stage 3** (`stage-3/BUILD_PLAN.md`): pack governance → policy engine → case spine → voice SRE (Phases 6–9). Phase 6 is open after owner start. Each later phase waits for `Begin Phase N`, then build, deploy, test, report, and **Approve Phase N**.
+
+Only after Stage 3 sign-off: WhatsApp (Phase 10), SMS (Phase 11), hardening (Phase 12), evidence freeze (Phase 13). Phase 5 residuals (DID when secrets are intentional; multi-run artifact after merge) stay Phase 5 defects, not a reason to skip Stage 3 gates.
