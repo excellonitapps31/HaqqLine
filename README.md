@@ -29,7 +29,7 @@ This repository is ExcellonIT’s HaqqLine sandbox: the public host, the sandbox
 
 ## Phase 1–5 and Stage 3
 
-HTTPS shell, sandbox APIs, playground, ElevenLabs web voice, and Phase 5 Call scaffolding (Twilio DID deferred). Stage 3 raises the bar (pack governance, policy engine, case spine, voice SRE) before WhatsApp and SMS. Detail: `stage-3/BUILD_PLAN.md`. Phase 9 (voice SRE) is in flight after owner start.
+HTTPS shell, sandbox APIs, playground, ElevenLabs web voice, and Phase 5 Call scaffolding (Twilio DID deferred). Stage 3 raises the bar (pack governance, policy engine, case spine, voice SRE) before WhatsApp and SMS. Detail: `stage-3/BUILD_PLAN.md`. Phases 6–9 signed off; Stage 3 complete. Phases 10+ wait for owner start.
 
 The widget is created by `scripts/sync_elevenlabs.py` (`ELEVENLABS_API_KEY`). Agent syncs use a multi-run eval (`HAQQLINE_TEST_REPEAT_COUNT`, default 3) and write `reports/phase-05-eval.json` / `reports/phase-09-eval.json` (promote gate). The test number is imported by `scripts/sync_twilio.py` (`TWILIO_API_KEY_SID` + `TWILIO_API_KEY_SECRET` preferred, or Account SID + Auth Token; plus `TWILIO_VOICE_NUMBER`). Secrets live in GitHub Actions and a local `.env`, not in git. Until the number is imported, `#call` tells the visitor to use Talk.
 
