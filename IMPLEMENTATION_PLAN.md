@@ -1,12 +1,12 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Phase 4 complete (`phase-04`). Phase 5 in flight after merge (`phase/05-twilio`).  
+**Status:** Phase 4 complete (`phase-04`). Phase 5 (Twilio Voice) remains the open Stage 2 track until signed off. **Stage 3 (enterprise spine) is planned in `stage-3/BUILD_PLAN.md` and closed until the owner says `Begin Phase N`.**  
 **Owner:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
 **Rule:** one phase in flight. A phase is built, deployed, tested, reported, and signed off in writing before the next phase starts. Two phases never share a change set, branch, or deploy.
 
-This plan is the delivery sequence. `stage-2/BUILD_PLAN.md` covers the 30 September – 14 October window inside it, under the same gates.
+This plan is the delivery sequence. `stage-2/BUILD_PLAN.md` covers the 30 September – 14 October window. `stage-3/BUILD_PLAN.md` covers the enterprise spine (Phases 6–9) after Phase 5.
 
 ---
 
@@ -15,11 +15,13 @@ This plan is the delivery sequence. `stage-2/BUILD_PLAN.md` covers the 30 Septem
 1. **One phase at a time.** Phase N+1 stays closed while Phase N is open. Later-phase features stay in their own phase.
 2. **Complete increments.** A phase is releasable on its own: versioned, deployed to `haqqline.excellonit.net` (or a path it already serves), documented, and reversible by git tag. Hardening owed by a phase ships in that phase.
 3. **Tests gate merge.** CI must be green. Phase-specific tests listed below must pass. If a test cannot be automated, a signed manual test log is attached to the phase report. A failure blocks deploy and sign-off.
-4. **Sign-off, then the next phase.** Each phase ends with `reports/phase-NN.md`. Sign-off is **Approve Phase N** or **Reject** with defects. A reject stays on that phase.
+4. **Sign-off, then the next phase.** Each phase ends with `reports/phase-NN.md`. Sign-off is **Approve Phase N** or **Reject** with defects. A reject stays on that phase. **Stage 3 and later phases also require an explicit owner start instruction (`Begin Phase N`) before any code.** Planning alone is not permission to build.
 5. **Git is the system of record.** No production changes from a laptop outside CI. No `--no-verify`. No force-push to `main`.
 6. **Demo is not government production.** Every page, call, WhatsApp thread, and SMS states this is an ExcellonIT **sandbox**. Synthetic data only. No live DLD/RERA credentials.
-7. **WhatsApp is the primary message channel; SMS is secondary.** They are **separate phases**. Voice (web, then Twilio) lands first so the agent exists before any message channel is wired.
-8. **Twilio.** The account is ExcellonIT’s. Twilio voice starts only after a **Standard API Key** (SID starting `SK` + secret) is in the secret store, a **purchased** number has Voice (SMS when that phase starts), and 2FA is on in the Twilio console. Account SID + Auth Token is a fallback only.
+7. **Enterprise spine before message channels.** Pack governance, policy engine, case spine, and voice SRE (Phases 6–9) land before WhatsApp and SMS so every channel shares one brain and one enforce layer.
+8. **WhatsApp is the primary message channel; SMS is secondary.** They are **separate phases** (10 and 11). Voice (web, then Twilio) lands first so the agent exists before any message channel is wired.
+9. **Twilio.** The account is ExcellonIT’s. Twilio voice starts only after a **Standard API Key** (SID starting `SK` + secret) is in the secret store, a **purchased** number has Voice (SMS when that phase starts), and 2FA is on in the Twilio console. Account SID + Auth Token is a fallback only.
+10. **No extra demo infrastructure in Stage 3+.** No second playground, no citizen App Store app, no JustNow module. The product stays agent + tools + channel embeds.
 
 ---
 
@@ -34,8 +36,12 @@ HaqqLine remains an **institutional voice-and-message agent**, not a citizen App
 | ElevenLabs agent | Workflows, EN+AR voice, RAG, evals | 4 |
 | Web voice widget | Playable on the subdomain | 4 |
 | Twilio Voice | Inbound test DID | 5 |
-| WhatsApp Business via ElevenLabs | **Primary** automated messaging (text / voice notes) | 6 |
-| Twilio SMS | Automated fallback and transactional notices | 7 |
+| Signed rule packs | Pack version, hash/signature, citation fields, band fixtures | 6 |
+| Policy engine | Server-side tool allowlists and deny codes | 7 |
+| Case spine | Case status machine, immutable audit, conversation linkage | 8 |
+| Voice SRE + eval gates | Latency budgets, continuous multi-run gates, failover, operator runbook draft | 9 |
+| WhatsApp Business via ElevenLabs | **Primary** automated messaging (text / voice notes) | 10 |
+| Twilio SMS | Automated fallback and transactional notices | 11 |
 
 JustNow is out of scope for every phase.
 
@@ -89,7 +95,7 @@ In place before Phase 1:
 - [x] Compute: cPanel for Phases 1–4, HestiaCP VPS from 21 September 2026
 - [x] ElevenLabs workspace
 - [ ] Twilio account: API Key SID + secret (preferred), purchased Voice number; SMS on that number or a second number, documented
-- [ ] Meta WhatsApp Business / WABA not required until Phase 6 — Meta verification can run as paperwork only, with no code
+- [ ] Meta WhatsApp Business / WABA not required until Phase 10 — Meta verification can run as paperwork only, with no code
 - [ ] Arabic listen-through by a named person before any later voice sign-off that adds copy
 
 ---
@@ -155,7 +161,7 @@ In place before Phase 1:
 - Confirmation gate: unconfirmed submit → 4xx; confirmed → `pending_human`  
 - Unknown area → escalate flag, **no invented index**  
 - Auth: no key → 401  
-- Load smoke: documented RPS for demo (not UAE production scale yet — that is Phase 8)  
+- Load smoke: documented RPS for demo (not UAE production scale yet — that is Phase 12)  
 
 **Live-ready means:** `/api/v1/docs` on the subdomain works for an investor with the demo key. No local-only Python script.
 
@@ -254,9 +260,127 @@ In place before Phase 1:
 
 ---
 
-### Phase 6 — WhatsApp (primary automated messaging)
+### Phase 6 — Pack governance (signed citations)
 
-**Intent:** same agent, WhatsApp Business as the **primary** digital message channel (text, voice notes per ElevenLabs WhatsApp). Official ElevenLabs WhatsApp import — not an unofficial gateway.
+**Intent:** the rule pack is the product of record. Every figure is attributable to a signed pack version.
+
+**Owner start:** closed until `Begin Phase 6`. Detail: `stage-3/BUILD_PLAN.md`.
+
+**In scope**
+
+- Pack manifest: version, effective dates, content hash, optional signature  
+- API citation fields the agent must speak  
+- CI hash lock + band regression fixtures  
+- Documented pack rollback via git tag  
+
+**Out of scope**
+
+- Live DLD/RERA feeds, WhatsApp, SMS, new demo playgrounds  
+
+**Tests**
+
+- Lookup returns pack version / citation  
+- Hash mismatch fails verify  
+- Band fixtures; unknown area still `invented: false`  
+
+**Live-ready means:** a spoken figure maps to a named signed pack version.
+
+**Report:** `reports/phase-06.md`
+
+---
+
+### Phase 7 — Policy engine
+
+**Intent:** LLM proposes; server-side policy decides what is executable.
+
+**Owner start:** closed until `Begin Phase 7` (after Phase 6 approve). Detail: `stage-3/BUILD_PLAN.md`.
+
+**In scope**
+
+- Tool / workflow allowlists  
+- Deny reason codes in OpenAPI and audit  
+- Hard backstop for confirm gate, no PIN/OTP, no `decide_case`  
+
+**Out of scope**
+
+- New channels, officer UI, replacing ElevenLabs workflows  
+
+**Tests**
+
+- Illegal tool use → policy deny + audit  
+- Unconfirmed submit still blocked  
+- Schema rejects credential-collection fields  
+
+**Live-ready means:** a prompt regression cannot quietly file or invent an index.
+
+**Report:** `reports/phase-07.md`
+
+---
+
+### Phase 8 — Case spine and immutable audit
+
+**Intent:** filings and escalations are trackable cases, not only demo JSONL tails.
+
+**Owner start:** closed until `Begin Phase 8` (after Phase 7 approve). Detail: `stage-3/BUILD_PLAN.md`.
+
+**In scope**
+
+- Case id + status machine (`pending_human` → `in_review` → `closed` | `returned`)  
+- Durable store behind existing tool URLs  
+- Immutable audit; webhook conversation linkage  
+- Authenticated case/audit read APIs  
+
+**Out of scope**
+
+- Full officer CRM product UI, live authority queue credentials, WhatsApp, SMS  
+
+**Tests**
+
+- Confirmed submit creates `pending_human` case  
+- Illegal status transitions rejected  
+- Concurrent append-only audit holds  
+- Webhook links conversation to case  
+
+**Live-ready means:** case id → audit → conversation without ElevenLabs dashboards.
+
+**Report:** `reports/phase-08.md`
+
+---
+
+### Phase 9 — Voice SRE and continuous eval gates
+
+**Intent:** voice quality and reliability are release gates.
+
+**Owner start:** closed until `Begin Phase 9` (after Phase 8 approve). Detail: `stage-3/BUILD_PLAN.md`.
+
+**In scope**
+
+- Latency / concurrency budgets (sandbox-labelled)  
+- Multi-run eval as promote gate; high-stakes tool tests never quarantined  
+- Twilio failure → Talk (or documented human path)  
+- Minimal actionable alerts; Arabic listen-through; operator runbook draft  
+
+**Out of scope**
+
+- UAE multi-region production cutover, new packs, WhatsApp, SMS  
+
+**Tests**
+
+- Published multi-run threshold met  
+- Unconfirmed-submit tool test green  
+- Timed primary path; failover exercised or signed manual log  
+
+**Live-ready means:** a bad agent sync can be refused with evidence.
+
+**Report:** `reports/phase-09.md`
+
+---
+
+### Phase 10 — WhatsApp (primary automated messaging)
+
+**Intent:** same agent, WhatsApp Business as the **primary** digital message channel (text, voice notes per ElevenLabs WhatsApp). Official ElevenLabs WhatsApp import — not an unofficial gateway. Reuses Phases 6–9 pack, policy, and case spine.
+
+**Owner start:** closed until `Begin Phase 10` (after Phase 9 approve).
 
 **Entry criteria (before any code):**
 
@@ -268,35 +392,37 @@ In place before Phase 1:
 **In scope**
 
 - Connect WABA to the **same** HaqqLine agent  
-- Inbound WhatsApp conversations: disclosure, rule check via existing tools, filing confirm gate  
+- Inbound WhatsApp conversations: disclosure, rule check via existing tools, filing confirm gate, policy denies still hold  
 - Demo page: “Message the sandbox on WhatsApp” with QR / wa.me (sandbox labelled)  
 - Human handoff path already in the agent (`escalate_human`)  
-- Logging of WhatsApp conversation ids into audit  
+- Logging of WhatsApp conversation ids into the case / audit spine  
 
 **Out of scope**
 
 - SMS  
 - Marketing blasts  
-- Voice-on-WhatsApp calls. Inbound messages are the acceptance test. Messages only, unless a later Phase 6b is signed off on its own.
+- Voice-on-WhatsApp calls. Inbound messages are the acceptance test. Messages only, unless a later Phase 10b is signed off on its own.
 
 **Tests**
 
 - Inbound EN and AR WhatsApp: gold rent-increase + blocked unconfirmed filing  
 - Disclosure present in the first agent turn  
-- Tool-call confirm gate still holds on this channel  
+- Tool-call confirm gate and policy engine still hold on this channel  
 - Opt-out / stop handling per Meta + ElevenLabs policy (documented test)  
 
 **Live-ready means:** an investor can WhatsApp the sandbox number from the demo page and finish a scenario.
 
-**Report:** `reports/phase-06.md`
+**Report:** `reports/phase-10.md`
 
-WhatsApp is Phase 6. It is outside the Stage 1 canvas scope.
+WhatsApp is Phase 10. It is outside the Stage 1 canvas scope.
 
 ---
 
-### Phase 7 — SMS (automated, secondary)
+### Phase 11 — SMS (automated, secondary)
 
-**Intent:** Twilio SMS for transactional automation: reference numbers, queue acknowledgements, “continue on WhatsApp” when SMS is all the device has. **Not** a second agent brain. WhatsApp stays primary.
+**Intent:** Twilio SMS for transactional automation: reference numbers, queue acknowledgements, “continue on WhatsApp” when SMS is all the device has. **Not** a second agent brain. WhatsApp stays primary. Same case ids as Phase 8.
+
+**Owner start:** closed until `Begin Phase 11` (after Phase 10 approve).
 
 **In scope**
 
@@ -321,21 +447,23 @@ WhatsApp is Phase 6. It is outside the Stage 1 canvas scope.
 
 **Live-ready means:** completing a web or WhatsApp filing produces an SMS receipt in the demo.
 
-**Report:** `reports/phase-07.md`
+**Report:** `reports/phase-11.md`
 
 ---
 
-### Phase 8 — Hardening, scale evidence, investor runbook
+### Phase 12 — Hardening, scale evidence, operator runbook
 
-**Intent:** production-shaped demo: rate limits, backups, error budgets, load, runbook. Still sandbox data.
+**Intent:** production-shaped sandbox: rate limits, backups, error budgets, load, operator runbook drill. Still synthetic data unless a separate production Gate exists.
+
+**Owner start:** closed until `Begin Phase 12` (after Phase 11 approve).
 
 **In scope**
 
 - Rate limits and WAF/CDN in front of the subdomain  
 - Structured logs, traces, alerts on 5xx and tool failures  
-- Backup/restore drill of demo DB  
+- Backup/restore drill of the case / audit store  
 - Load test numbers for concurrent widget and API calls, labelled as sandbox figures  
-- Investor runbook: 15-minute script (web, voice, WhatsApp, SMS)  
+- Operator runbook dry-run (pack rollback, agent rollback, number failover) by someone other than the builder  
 - Dependency list and licence scan  
 
 **Out of scope**
@@ -344,25 +472,26 @@ WhatsApp is Phase 6. It is outside the Stage 1 canvas scope.
 
 **Tests**
 
-- Load test meets the published number
-- Restore drill timed and logged
-- Runbook dry-run by someone other than the person who built the phase  
+- Load test meets the published number  
+- Restore drill timed and logged  
+- Runbook dry-run signed in the phase report  
 
-**Report:** `reports/phase-08.md`
+**Report:** `reports/phase-12.md`
 
 ---
 
-### Phase 9 — Challenge evidence pack (only if still in the Ignyte window)
+### Phase 13 — Challenge / programme evidence freeze (if applicable)
 
-**Intent:** Stage 2 artefacts from **already live** Phases 4–5 (and 6 if approved): recordings, transcripts, analysis, architecture one-pager, README, pass rates. **No new features.**
+**Intent:** Stage 2–3 artefacts from **already live** phases: recordings, transcripts, analysis, architecture one-pager, README, pass rates. **No new features.**
+
+**Owner start:** closed until `Begin Phase 13`.
 
 **In scope:** export and freeze evidence.  
-**Out of scope:** any behaviour change. If a test fails, that is a **defect return to the phase that owns it**, not a Phase 9 patch.
+**Out of scope:** any behaviour change. If a test fails, that is a **defect return to the phase that owns it**, not a Phase 13 patch.
 
-**Report:** `reports/phase-09.md`
+**Report:** `reports/phase-13.md`
 
 ---
-
 ## 6. Out of this programme (needs a new plan)
 
 - JustNow integration  
@@ -407,7 +536,7 @@ Deploy method:
 Signed off / returned with defects
 ```
 
-Sign-off that starts the next phase: `Approve Phase NN`. Anything else keeps work on Phase NN.
+Sign-off that starts the next phase: `Approve Phase NN`. Stage 3+ also needs `Begin Phase NN` before coding. Anything else keeps work on the current phase.
 
 ---
 
@@ -426,18 +555,23 @@ Phase 3  investor playground (forms)
    ↓
 Phase 4  ElevenLabs + web voice
    ↓
-Phase 5  Twilio Voice
+Phase 5  Twilio Voice                    ← Stage 2 window
    ↓
-Phase 6  WhatsApp (primary messaging)
+Phase 6  Pack governance                 ┐
+Phase 7  Policy engine                   │ Stage 3 enterprise spine
+Phase 8  Case spine + immutable audit    │ (owner Begin Phase N only)
+Phase 9  Voice SRE + continuous eval     ┘
    ↓
-Phase 7  SMS (secondary automation)
+Phase 10 WhatsApp (primary messaging)
    ↓
-Phase 8  hardening + runbook
+Phase 11 SMS (secondary automation)
    ↓
-Phase 9  challenge evidence freeze (if applicable)
+Phase 12 Hardening + operator runbook
+   ↓
+Phase 13 Evidence freeze (if applicable)
 ```
 
-WhatsApp and SMS are last among **channels** so Meta approval and Twilio SMS can lag without blocking voice. Paperwork for WABA may start after Gate 0; **code** for WhatsApp starts only at Phase 6.
+WhatsApp and SMS stay last among **channels** so Meta approval and Twilio SMS can lag without blocking the spine. Paperwork for WABA may start after Gate 0; **code** for WhatsApp starts only at Phase 10.
 
 ---
 
@@ -447,11 +581,12 @@ WhatsApp and SMS are last among **channels** so Meta approval and Twilio SMS can
 | --- | --- |
 | Stage 1 is the Idea Canvas | `stage-1/ElevenLabs_Idea_Canvas.docx` |
 | Stage 2 is the hosted page or a test number | Phase 4, then Phase 5. Both stay gated. |
+| Stage 3 is the enterprise spine | Phases 6–9 in `stage-3/BUILD_PLAN.md`. Owner `Begin Phase N` only. |
 | Not a live government deployment | Sandbox banner and synthetic data on `haqqline.excellonit.net` |
-| WhatsApp is a later channel | Phase 6, after voice |
+| WhatsApp is a later channel | Phase 10, after the spine |
 
 ---
 
 ## 10. Where the programme is
 
-Gate 0 is closed. Phases 1–4 are on `main`. Phase 5 is Twilio Voice. WhatsApp and SMS code wait for Phases 6 and 7.
+Gate 0 is closed. Phases 1–4 are on `main`. Phase 5 is Twilio Voice (Stage 2). Stage 3 Phases 6–9 are **planned and closed** until the owner instructs `Begin Phase N`. WhatsApp and SMS code wait for Phases 10 and 11.
