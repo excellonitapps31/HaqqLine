@@ -29,7 +29,7 @@ This repository is ExcellonIT’s HaqqLine sandbox: the public host, the sandbox
 
 ## Phase 1–5 and Stage 3
 
-HTTPS shell, sandbox APIs, playground, ElevenLabs web voice, Call scaffolding (Twilio DID deferred), and Stage 3 spine (Phases 6–9 signed off). Phase 10 WhatsApp scaffolding is in flight after owner start. Detail: `IMPLEMENTATION_PLAN.md` and `stage-3/BUILD_PLAN.md`.
+HTTPS shell, sandbox APIs, playground, ElevenLabs web voice, Call scaffolding (Twilio DID deferred), Stage 3 spine (Phases 6–9), and Phase 10 WhatsApp scaffolding (WABA deferred). Detail: `IMPLEMENTATION_PLAN.md` and `stage-3/BUILD_PLAN.md`. Phases 1–10 signed off; Phase 11 waits for owner start.
 
 The widget is created by `scripts/sync_elevenlabs.py` (`ELEVENLABS_API_KEY`). Agent syncs use a multi-run eval (`HAQQLINE_TEST_REPEAT_COUNT`, default 3) and write `reports/phase-05-eval.json` / `reports/phase-09-eval.json` (promote gate). Twilio DID: `scripts/sync_twilio.py`. WhatsApp assign: `scripts/sync_whatsapp.py` after Meta Embedded Signup (`WHATSAPP_PHONE_NUMBER_ID` or `WHATSAPP_E164`). Secrets live in GitHub Actions and a local `.env`, not in git. Until WhatsApp is connected, `#whatsapp` tells the visitor to use Talk.
 

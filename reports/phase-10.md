@@ -34,7 +34,7 @@ Open `#whatsapp`: see sandbox WhatsApp section and Talk failover until a WABA nu
 
 Entry criteria (Meta WABA approved, number not elsewhere, payment if templates, session-start template approved) and live ElevenLabs import are **not** loaded yet.
 
-**Residual defect (accepted at sign-off candidate):** *WABA deferred* — same pattern as Phase 5 inbound DID.
+**Residual defect (accepted at sign-off):** *WABA deferred* — same pattern as Phase 5 inbound DID.
 
 Clearing the residual later requires: Meta Embedded Signup into ElevenLabs, GitHub secrets `WHATSAPP_PHONE_NUMBER_ID` or `WHATSAPP_E164`, green `whatsapp-sync`, inbound EN+AR gold WhatsApp transcripts, and an update to this report. That is a defect return to Phase 10, not a new phase.
 
@@ -52,4 +52,4 @@ Clearing the residual later requires: Meta Embedded Signup into ElevenLabs, GitH
 
 ## Status
 
-**Awaiting Approve Phase 10.** Phase 11 stays closed until then.
+**Signed off 23 September 2026 — Approve Phase 10 with residual “WABA deferred”.** Phase closed. Merge this branch to `main` and tag `phase-10` after merge. Phase 11 stays closed until owner `Begin Phase N` / **Next**.
