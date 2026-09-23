@@ -22,40 +22,48 @@ Deploy: GitHub Actions rsync + `scripts/sync_elevenlabs.py` + `scripts/sync_twil
 | --- | --- |
 | `tests/phase5` markup + sync_twilio + multi-run unit tests | pass (CI verify green on this branch) |
 | Live Call section markup on host | pass (empty DID + failover copy) |
-| Multi-run agent suite (`repeat_count` ≥ 2) recorded pass rate | **owed** — runs on next `elevenlabs-sync` after this branch deploys (`phase/**` or `main`) |
-| Inbound EN gold path on purchased DID | **blocked** — `phone_number` empty |
-| Inbound AR gold path on purchased DID | **blocked** — `phone_number` empty |
+| Multi-run agent suite (`repeat_count` ≥ 2) recorded pass rate | **owed** on next `elevenlabs-sync` after this branch deploys |
+| Inbound EN gold path on purchased DID | **deferred** — Twilio secrets not loaded by owner decision |
+| Inbound AR gold path on purchased DID | **deferred** — same |
 | Failover copy (Twilio 5xx → Talk) | pass (on page + in `twilio.json`) |
 
 ## What an investor can do now
 
-Open https://haqqline.excellonit.net/#call. Until a test DID is imported, the section says to use Talk (web voice still works). After secrets are set and `twilio-sync` succeeds, the Call section shows the E.164 number.
+Open https://haqqline.excellonit.net/#talk for web voice (EN/AR). Open `#call`: the page states there is no test number yet and to use Talk. That is intentional while Twilio credentials stay out of the agent/CI secret surface.
 
-## Owner actions to close Phase 5
+## Twilio secrets — deferred (owner decision, 23 September 2026)
 
-1. **Merge** this Phase 5 scaffolding PR (or promote the branch) so deploy + `elevenlabs-sync` land multi-run evidence.
-2. **Add GitHub Actions secrets** (preferred Standard API key):
-   - `TWILIO_VOICE_NUMBER` — purchased Voice DID, E.164 (`+…`), not a DLD/RERA/RDC line
-   - `TWILIO_API_KEY_SID` — starts with `SK`
-   - `TWILIO_API_KEY_SECRET`
-   - Fallback if no API key: `TWILIO_ACCOUNT_SID` + `TWILIO_AUTH_TOKEN`
-   - `ELEVENLABS_API_KEY` must already be present (prior syncs succeeded on `main`)
-3. Confirm `twilio-sync` wrote a `+` number into live `/twilio.json`.
-4. Log one English and one Arabic inbound (or Talk if DID still blocked by KYC — note in this report). Attach transcript links.
-5. Reply **Approve Phase 5** when the table above is green, or **Reject** with defects.
+Twilio API credentials and a live Voice DID grant powerful control of the demo telephony path. The owner has **held off** adding them for now to limit abuse risk on the public sandbox. Import and inbound DID evidence are **not** requested in this iteration.
 
-Per `stage-2/BUILD_PLAN.md`: if the DID is blocked by KYC/stock/credentials, the **web path** remains the Stage 2 deployment of record, but a filled test DID is still the Phase 5 exit criterion.
+When the owner later chooses to enable telephony:
+
+1. Add GitHub Actions secrets only (not agent chat): `TWILIO_VOICE_NUMBER`, plus `TWILIO_API_KEY_SID` + `TWILIO_API_KEY_SECRET` (preferred) or Account SID + Auth Token.
+2. Let `twilio-sync` on `main` / `phase/**` write the E.164 into `public/twilio.json`.
+3. Log one EN and one AR inbound; attach transcript links here; then clear this residual.
+
+Until then, `twilio-sync` must keep skipping when `TWILIO_VOICE_NUMBER` is unset (already the behaviour).
+
+Per `stage-2/BUILD_PLAN.md`: the **web path** is the Stage 2 deployment of record while the DID is unavailable; a filled test DID remains the full Phase 5 exit criterion and is recorded as a residual defect if Phase 5 is approved without it.
+
+## Owner actions now
+
+1. **Merge** this Phase 5 scaffolding PR so the Call empty-state, tests, and multi-run defaults land on `main`.
+2. Reply either:
+   - **Approve Phase 5** with residual defect *“inbound DID deferred — Twilio secrets not loaded”*, or
+   - **Keep Phase 5 open** until DID import is intentional later.
+3. Do **not** begin Stage 3 until that reply is written.
 
 ## Explicitly not built (later)
 
-- Stage 3 enterprise spine (Phases 6–9) — planned, closed until `Begin Phase N`
-- WhatsApp (Phase 10), SMS (Phase 11)
+- Live Twilio DID import and inbound EN/AR evidence (deferred)
+- Stage 3 enterprise spine — planned, closed until `Begin Phase N` after Phase 5 disposition
+- WhatsApp / SMS
 
 ## Risks / residual defects
 
-- No purchased Voice DID in the secret store yet.
-- Multi-run increases ElevenLabs agent-test wall time; job timeout remains 45 minutes.
+- **Inbound test DID not live.** Empty `phone_number` by design until secrets are added later.
+- Multi-run eval artifact lands after merge deploy + `elevenlabs-sync`.
 
 ## Status
 
-**Scaffolding complete. Not signed off.** Waiting on owner: merge + Twilio secrets + inbound EN/AR evidence (or documented DID block). Stage 3 stays closed until Phase 5 is approved.
+**Scaffolding complete. Twilio secrets deferred by owner.** Awaiting merge + written **Approve Phase 5** (with residual) or **Keep Phase 5 open**.
