@@ -42,4 +42,4 @@ Trust that a prompt regression cannot quietly file without confirmation or inven
 
 ## Status
 
-**Ready for review.** Awaiting CI and owner **Approve Phase 7** or **Reject**.
+**Signed off 23 September 2026 — Approve Phase 7.** Phase closed. Merge this branch to `main` and tag `phase-07` after merge. Phase 8 stays closed until owner `Begin Phase N` / **Next**.
