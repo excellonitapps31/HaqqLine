@@ -38,7 +38,7 @@ final class HaqqLineApi
             $this->send(200, array(
                 'status' => 'ok',
                 'service' => 'haqqline',
-                'phase' => 7,
+                'phase' => 8,
                 'pack_id' => $this->config['pack_id'],
                 'pack_version' => isset($this->config['pack_version']) ? $this->config['pack_version'] : null,
                 'citation_id' => isset($this->config['citation_id']) ? $this->config['citation_id'] : null,
@@ -67,6 +67,10 @@ final class HaqqLineApi
 
         if ($method === 'GET' && $path === '/api/v1/conversations') {
             $this->send(200, array('entries' => $this->readJsonlTail($this->dataDir() . '/conversations.jsonl', 10)));
+            return;
+        }
+
+        if ($this->routeCases($method, $path)) {
             return;
         }
 
@@ -315,28 +319,52 @@ final class HaqqLineApi
     private function submitQueue(array $body): void
     {
         // Confirmation and credential checks already enforced by HaqqLinePolicy.
-        $item = array(
-            'id' => $this->nextId('RDC-SANDBOX'),
-            'status' => 'pending_human',
+        $cases = new HaqqLineCaseStore($this->dataDir());
+        $case = $cases->create('filing', array(
+            'pack_id' => $this->config['pack_id'],
+            'pack_version' => isset($this->config['pack_version']) ? $this->config['pack_version'] : null,
+            'citation_id' => isset($this->config['citation_id']) ? $this->config['citation_id'] : null,
             'packet' => isset($body['packet']) && is_array($body['packet']) ? $body['packet'] : array(),
-            'created_at' => gmdate('c'),
+            'conversation_id' => isset($body['conversation_id']) ? (string) $body['conversation_id'] : null,
+        ));
+        $item = array(
+            'id' => $case['id'],
+            'status' => $case['status'],
+            'type' => 'filing',
+            'packet' => $case['packet'],
+            'pack_version' => $case['pack_version'],
+            'citation_id' => $case['citation_id'],
+            'created_at' => $case['created_at'],
         );
         $this->appendJsonl($this->dataDir() . '/queue.jsonl', $item);
-        $this->audit('submit_to_human_queue', 200, array('id' => $item['id'], 'status' => 'pending_human'));
+        $this->audit('submit_to_human_queue', 200, array(
+            'id' => $item['id'],
+            'case_id' => $case['id'],
+            'status' => 'pending_human',
+        ));
         $this->send(200, $item);
     }
 
     private function escalate(array $body): void
     {
         $reason = isset($body['reason']) ? (string) $body['reason'] : 'unspecified';
-        $item = array(
-            'id' => $this->nextId('ESC-SANDBOX'),
-            'status' => 'pending_human',
+        $cases = new HaqqLineCaseStore($this->dataDir());
+        $case = $cases->create('escalation', array(
+            'pack_id' => $this->config['pack_id'],
+            'pack_version' => isset($this->config['pack_version']) ? $this->config['pack_version'] : null,
+            'citation_id' => isset($this->config['citation_id']) ? $this->config['citation_id'] : null,
             'reason' => $reason,
-            'created_at' => gmdate('c'),
+            'conversation_id' => isset($body['conversation_id']) ? (string) $body['conversation_id'] : null,
+        ));
+        $item = array(
+            'id' => $case['id'],
+            'status' => $case['status'],
+            'type' => 'escalation',
+            'reason' => $reason,
+            'created_at' => $case['created_at'],
         );
         $this->appendJsonl($this->dataDir() . '/escalations.jsonl', $item);
-        $this->audit('escalate_human', 200, array('id' => $item['id']));
+        $this->audit('escalate_human', 200, array('id' => $item['id'], 'case_id' => $case['id']));
         $this->send(200, $item);
     }
 
@@ -388,11 +416,119 @@ final class HaqqLineApi
             'received_at' => gmdate('c'),
         );
         $this->appendJsonl($this->dataDir() . '/conversations.jsonl', $stored);
+        $cases = new HaqqLineCaseStore($this->dataDir());
+        $linked = array();
+        if ($conversationId !== '') {
+            $linked = $cases->linkConversation($conversationId, null);
+        }
         $this->audit('post_call_transcription', 200, array(
             'conversation_id' => $stored['id'],
             'type' => $type,
+            'case_id' => isset($linked['id']) ? $linked['id'] : null,
         ));
-        $this->send(200, array('received' => true, 'id' => $stored['id']));
+        $this->send(200, array(
+            'received' => true,
+            'id' => $stored['id'],
+            'case_id' => isset($linked['id']) ? $linked['id'] : null,
+        ));
+    }
+
+    /** Route GET/PATCH /api/v1/cases/{id}[/audit]. */
+    private function routeCases(string $method, string $path): bool
+    {
+        if (strpos($path, '/api/v1/cases/') !== 0) {
+            return false;
+        }
+        $rest = substr($path, strlen('/api/v1/cases/'));
+        if (!preg_match('#^([^/]+)(/audit)?$#', $rest, $m)) {
+            $this->send(404, array('error' => 'not_found'));
+            return true;
+        }
+        $id = $m[1];
+        $wantAudit = isset($m[2]) && $m[2] === '/audit';
+        $cases = new HaqqLineCaseStore($this->dataDir());
+
+        if ($method === 'GET' && $wantAudit) {
+            $case = $cases->get($id);
+            if ($case === null) {
+                $this->send(404, array('error' => 'not_found'));
+                return true;
+            }
+            $this->send(200, array(
+                'case_id' => $id,
+                'entries' => $this->readAuditForCase($id),
+                'events' => $cases->eventsFor($id),
+            ));
+            return true;
+        }
+
+        if ($method === 'GET' && !$wantAudit) {
+            $case = $cases->get($id);
+            if ($case === null) {
+                $this->send(404, array('error' => 'not_found'));
+                return true;
+            }
+            $this->send(200, $case);
+            return true;
+        }
+
+        if ($method === 'PATCH' && !$wantAudit) {
+            $body = $this->jsonBody();
+            $to = isset($body['status']) ? (string) $body['status'] : '';
+            if ($to === '') {
+                $this->send(400, array('error' => 'status_required'));
+                return true;
+            }
+            $result = $cases->transition($id, $to);
+            if ($result['error'] === 'not_found') {
+                $this->send(404, array('error' => 'not_found'));
+                return true;
+            }
+            if ($result['error'] === 'illegal_transition') {
+                $this->send(409, array(
+                    'error' => 'illegal_transition',
+                    'detail' => 'Status transition is not allowed',
+                ));
+                return true;
+            }
+            $this->audit('case_status_change', 200, array(
+                'case_id' => $id,
+                'status' => $to,
+            ));
+            $this->send(200, $result['case']);
+            return true;
+        }
+
+        $this->send(405, array('error' => 'method_not_allowed'));
+        return true;
+    }
+
+    /** @return array<int, array> */
+    private function readAuditForCase(string $caseId): array
+    {
+        $file = $this->dataDir() . '/audit.jsonl';
+        if (!is_file($file)) {
+            return array();
+        }
+        $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        if ($lines === false) {
+            return array();
+        }
+        $out = array();
+        foreach ($lines as $line) {
+            $row = json_decode($line, true);
+            if (!is_array($row)) {
+                continue;
+            }
+            $result = isset($row['result']) && is_array($row['result']) ? $row['result'] : array();
+            if (
+                (isset($result['case_id']) && $result['case_id'] === $caseId)
+                || (isset($result['id']) && $result['id'] === $caseId)
+            ) {
+                $out[] = $row;
+            }
+        }
+        return $out;
     }
 
     private function webhookSecret(): string

@@ -28,11 +28,12 @@ jobs:
           php -l public/api/v1/index.php
           php -l public/api/v1/HaqqLineApi.php
           php -l public/api/v1/HaqqLinePolicy.php
+          php -l public/api/v1/HaqqLineCaseStore.php
           php -l public/router.php
       - name: Pack content lock
         run: python3 scripts/verify_pack_lock.py
       - name: Tests
-        run: pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7
+        run: pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7 tests/phase8
       - name: Playwright
         run: |
           python -m playwright install --with-deps chromium
