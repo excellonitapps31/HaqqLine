@@ -26,7 +26,10 @@ def test_bilingual_shell_and_honest_scope() -> None:
     assert 'data-lang-switch="ar"' in HTML
     assert 'document.documentElement.dir' in JS
     assert '"rtl"' in JS
-    assert "WhatsApp and SMS are not connected here yet." in HTML
+    assert "SMS is not connected here yet." in HTML
+    assert "WhatsApp" in HTML
+    assert 'id="whatsapp"' in HTML
+    assert 'src="/whatsapp.js"' in HTML
     assert "Talk" in HTML
     assert "sandbox test DID" in HTML
     assert 'id="call"' in HTML

@@ -49,6 +49,7 @@ final class HaqqLineCaseStore
             'pack_version' => isset($extra['pack_version']) ? $extra['pack_version'] : null,
             'citation_id' => isset($extra['citation_id']) ? $extra['citation_id'] : null,
             'conversation_id' => isset($extra['conversation_id']) ? $extra['conversation_id'] : null,
+            'channel' => isset($extra['channel']) ? $extra['channel'] : null,
             'packet' => isset($extra['packet']) && is_array($extra['packet']) ? $extra['packet'] : null,
             'reason' => isset($extra['reason']) ? $extra['reason'] : null,
             'created_at' => $now,
@@ -97,7 +98,7 @@ final class HaqqLineCaseStore
      * Attach a conversation id to an existing case, or create an escalation case.
      * @return array
      */
-    public function linkConversation(string $conversationId, ?string $caseId = null): array
+    public function linkConversation(string $conversationId, ?string $caseId = null, ?string $channel = null): array
     {
         $fh = $this->openExclusive();
         try {
@@ -107,6 +108,9 @@ final class HaqqLineCaseStore
                     return array();
                 }
                 $snap['conversation_id'] = $conversationId;
+                if ($channel !== null && $channel !== '') {
+                    $snap['channel'] = $channel;
+                }
                 $snap['updated_at'] = gmdate('c');
                 $snap['event'] = 'conversation_linked';
                 $this->appendEventLocked($fh, $snap);
@@ -126,6 +130,9 @@ final class HaqqLineCaseStore
             }
             if ($candidate !== null) {
                 $candidate['conversation_id'] = $conversationId;
+                if ($channel !== null && $channel !== '') {
+                    $candidate['channel'] = $channel;
+                }
                 $candidate['updated_at'] = gmdate('c');
                 $candidate['event'] = 'conversation_linked';
                 $this->appendEventLocked($fh, $candidate);
@@ -140,6 +147,7 @@ final class HaqqLineCaseStore
                 'pack_version' => null,
                 'citation_id' => null,
                 'conversation_id' => $conversationId,
+                'channel' => $channel,
                 'packet' => null,
                 'reason' => 'post_call_without_prior_case',
                 'created_at' => $now,
@@ -186,6 +194,7 @@ final class HaqqLineCaseStore
             'pack_version' => isset($case['pack_version']) ? $case['pack_version'] : null,
             'citation_id' => isset($case['citation_id']) ? $case['citation_id'] : null,
             'conversation_id' => isset($case['conversation_id']) ? $case['conversation_id'] : null,
+            'channel' => isset($case['channel']) ? $case['channel'] : null,
             'packet' => isset($case['packet']) ? $case['packet'] : null,
             'reason' => isset($case['reason']) ? $case['reason'] : null,
             'created_at' => $case['created_at'],
@@ -283,6 +292,9 @@ final class HaqqLineCaseStore
             }
             if (array_key_exists('conversation_id', $row)) {
                 $prev['conversation_id'] = $row['conversation_id'];
+            }
+            if (array_key_exists('channel', $row)) {
+                $prev['channel'] = $row['channel'];
             }
             if (isset($row['updated_at'])) {
                 $prev['updated_at'] = $row['updated_at'];

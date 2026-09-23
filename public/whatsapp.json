@@ -1,0 +1,16 @@
+{
+  "connected": false,
+  "phone_number": "",
+  "phone_number_id": "",
+  "business_account_id": "",
+  "wa_me": "",
+  "label": "HaqqLine sandbox WhatsApp",
+  "inbound_messages": true,
+  "outbound_templates": false,
+  "voice_calls": false,
+  "same_agent": true,
+  "sandbox_disclaimer": "ExcellonIT sandbox — not a government service. Not DLD, RERA, or RDC. Not legal advice.",
+  "stop_policy": "Reply STOP to opt out of further sandbox WhatsApp messages per Meta policy. HELP for help. Human handoff uses escalate_human.",
+  "failover": "If WhatsApp is not connected yet, use Talk on this page.",
+  "hours": "Sandbox WhatsApp — any hour when connected. Not a government hotline."
+}

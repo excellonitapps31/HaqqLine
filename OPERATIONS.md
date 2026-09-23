@@ -24,6 +24,7 @@ Local equivalents are in `.env.example`.
 - Home page still contains the English and Arabic “not a government service” lines
 - `public/elevenlabs.json` on the host has an `agent_` id
 - `GET /twilio.json` returns `inbound_only: true`, `enable_sms: false`, and a failover string. Empty `phone_number` is expected until Twilio secrets are set.
+- `GET /whatsapp.json` returns sandbox WhatsApp status (`connected`, STOP policy, failover → Talk). Empty number is expected until WABA is imported in ElevenLabs and `whatsapp-sync` runs.
 - `python3 scripts/verify_pack_lock.py` exits 0 (pack areas/ejari match `content_hash` in `public/api/v1/pack/config.json`)
 - `GET /sre-budgets.json` returns sandbox-labelled latency / concurrency / eval-gate budgets (Phase 9)
 
@@ -77,4 +78,4 @@ Operator runbook (pack / agent / number failover, alerts): `docs/OPERATOR_RUNBOO
 
 ## Not operated from this repo
 
-WhatsApp, SMS, live DLD or RERA credentials, and outbound dialling. Those are later phases in `IMPLEMENTATION_PLAN.md`.
+Live DLD or RERA credentials, and outbound dialling. WhatsApp WABA import is Meta Embedded Signup in the ElevenLabs dashboard, then `scripts/sync_whatsapp.py` (see Phase 10). SMS is Phase 11.
