@@ -41,11 +41,11 @@
     <div data-pane="en">
       <h1>HaqqLine</h1>
       <p class="deck">A voice agent that checks a rental situation against published Dubai rules — and never decides the case.</p>
-      <p class="cta-row"><a class="cta" href="#talk">Talk</a> <a class="cta ghost-cta" href="/play/">Try a case</a></p>
+      <p class="cta-row"><a class="cta" href="#talk">Talk</a> <a class="cta ghost-cta" href="#whatsapp">WhatsApp</a> <a class="cta ghost-cta" href="/play/">Try a case</a></p>
       <div class="grid meta">
         <div>
           <dt>On this host</dt>
-          <dd>Talk in the browser, or dial the sandbox test DID listed below. WhatsApp and SMS are not connected here yet.</dd>
+          <dd>Talk in the browser, dial the sandbox test DID, or message WhatsApp when a sandbox number is connected below. SMS is not connected here yet.</dd>
         </div>
         <div>
           <dt>For review</dt>
@@ -57,11 +57,11 @@
     <div data-pane="ar" hidden>
       <h1>حقّ لاين</h1>
       <p class="deck">وكيل صوتي يطابق حالة الإيجار بالقواعد المنشورة في دبي — ولا يبتّ في النزاع.</p>
-      <p class="cta-row"><a class="cta" href="#talk">تحدّث</a> <a class="cta ghost-cta" href="/play/">جرّب حالة</a></p>
+      <p class="cta-row"><a class="cta" href="#talk">تحدّث</a> <a class="cta ghost-cta" href="#whatsapp">واتساب</a> <a class="cta ghost-cta" href="/play/">جرّب حالة</a></p>
       <div class="grid meta">
         <div>
           <dt>على هذا الموقع</dt>
-          <dd>تحدّث من المتصفح أو اتصل برقم الاختبار أدناه. واتساب والرسائل النصية غير موصولين هنا بعد.</dd>
+          <dd>تحدّث من المتصفح أو اتصل برقم الاختبار أو راسل واتساب عند توفر رقم تجريبي أدناه. الرسائل النصية غير موصولة هنا بعد.</dd>
         </div>
         <div>
           <dt>لمن يراجع</dt>
@@ -99,9 +99,26 @@
     <div id="test-did" class="voice-widget" data-testid="test-did" aria-live="polite"></div>
   </section>
 
+  <section id="whatsapp" class="talk">
+    <div data-pane="en">
+      <h2>WhatsApp (sandbox)</h2>
+      <p class="deck">Same HaqqLine agent, tools, pack, and policy as Talk. Inbound messages only in this phase. Not a government WhatsApp. Official WABA via ElevenLabs — no unofficial gateway.</p>
+      <p class="script"><span class="script-label">Message this</span>JLT. Current rent 80,000. Proposed rent 80,000. What does the published band allow?</p>
+      <p class="script"><span class="script-label">Then</span>Ask to file without confirming — the confirm gate and policy must block it.</p>
+    </div>
+    <div data-pane="ar" hidden>
+      <h2>واتساب (تجريبي)</h2>
+      <p class="deck">نفس وكيل حقّ لاين والأدوات والحزمة والسياسة. رسائل واردة فقط في هذه المرحلة. ليس واتساباً حكومياً. عبر ElevenLabs الرسمي فقط.</p>
+      <p class="script"><span class="script-label">راسل بهذا</span>أبراج بحيرات جميرا. الإيجار الحالي 80,000. الإيجار المقترح 80,000. ماذا يسمح به الجدول المنشور؟</p>
+      <p class="script"><span class="script-label">ثم</span>اطلب تقديم بلاغ دون تأكيد — يجب أن تمنع بوابة التأكيد والسياسة ذلك.</p>
+    </div>
+    <div id="whatsapp-slot" class="voice-widget" data-testid="whatsapp-slot" aria-live="polite"></div>
+  </section>
+
   <footer class="foot">
     <a href="/play/">Play</a>
     <a href="#call">Call</a>
+    <a href="#whatsapp">WhatsApp</a>
     <a href="https://excellonit.net">excellonit.net</a>
     <a href="https://github.com/excellonitapps31/HaqqLine">Source</a>
     <a href="/api/v1/docs/index.html">API</a>
@@ -112,5 +129,6 @@
   <script src="/app.js" defer></script>
   <script src="/voice.js" defer></script>
   <script src="/call.js" defer></script>
+  <script src="/whatsapp.js" defer></script>
 </body>
 </html>

@@ -38,7 +38,7 @@ final class HaqqLineApi
             $this->send(200, array(
                 'status' => 'ok',
                 'service' => 'haqqline',
-                'phase' => 9,
+                'phase' => 10,
                 'pack_id' => $this->config['pack_id'],
                 'pack_version' => isset($this->config['pack_version']) ? $this->config['pack_version'] : null,
                 'citation_id' => isset($this->config['citation_id']) ? $this->config['citation_id'] : null,
@@ -411,9 +411,11 @@ final class HaqqLineApi
         $type = isset($event['type']) ? (string) $event['type'] : '';
         $data = isset($event['data']) && is_array($event['data']) ? $event['data'] : array();
         $conversationId = isset($data['conversation_id']) ? (string) $data['conversation_id'] : '';
+        $channel = $this->detectChannel($event, $data);
         $stored = array(
             'id' => $conversationId !== '' ? $conversationId : $this->nextId('CALL'),
             'type' => $type,
+            'channel' => $channel,
             'agent_id' => isset($data['agent_id']) ? $data['agent_id'] : null,
             'status' => isset($data['status']) ? $data['status'] : null,
             'transcript' => isset($data['transcript']) ? $data['transcript'] : array(),
@@ -424,18 +426,47 @@ final class HaqqLineApi
         $cases = new HaqqLineCaseStore($this->dataDir());
         $linked = array();
         if ($conversationId !== '') {
-            $linked = $cases->linkConversation($conversationId, null);
+            $linked = $cases->linkConversation($conversationId, null, $channel);
         }
         $this->audit('post_call_transcription', 200, array(
             'conversation_id' => $stored['id'],
             'type' => $type,
+            'channel' => $channel,
             'case_id' => isset($linked['id']) ? $linked['id'] : null,
         ));
         $this->send(200, array(
             'received' => true,
             'id' => $stored['id'],
             'case_id' => isset($linked['id']) ? $linked['id'] : null,
+            'channel' => $channel,
         ));
+    }
+
+    /**
+     * @param array $event
+     * @param array $data
+     */
+    private function detectChannel(array $event, array $data): string
+    {
+        $candidates = array(
+            isset($data['channel']) ? $data['channel'] : null,
+            isset($data['source']) ? $data['source'] : null,
+            isset($event['channel']) ? $event['channel'] : null,
+            isset($data['conversation_initiation_source']) ? $data['conversation_initiation_source'] : null,
+        );
+        foreach ($candidates as $raw) {
+            if (!is_string($raw) || $raw === '') {
+                continue;
+            }
+            $n = strtolower($raw);
+            if (strpos($n, 'whatsapp') !== false || $n === 'wa') {
+                return 'whatsapp';
+            }
+            if (strpos($n, 'twilio') !== false || strpos($n, 'phone') !== false || $n === 'sip') {
+                return 'phone';
+            }
+        }
+        return 'voice';
     }
 
     /** Route GET/PATCH /api/v1/cases/{id}[/audit]. */

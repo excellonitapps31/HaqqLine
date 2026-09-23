@@ -53,4 +53,4 @@ Refuse a bad agent sync because the promote gate failed — and show `phase-09-e
 
 ## Status
 
-**Awaiting Approve Phase 9.** Phases 10+ stay closed until then.
+**Signed off 23 September 2026 — Approve Phase 9.** Phase closed. Stage 3 complete. Phase 10 may start on owner `Begin Phase N`.

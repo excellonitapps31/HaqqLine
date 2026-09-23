@@ -29,15 +29,15 @@ This repository is ExcellonIT’s HaqqLine sandbox: the public host, the sandbox
 
 ## Phase 1–5 and Stage 3
 
-HTTPS shell, sandbox APIs, playground, ElevenLabs web voice, and Phase 5 Call scaffolding (Twilio DID deferred). Stage 3 raises the bar (pack governance, policy engine, case spine, voice SRE) before WhatsApp and SMS. Detail: `stage-3/BUILD_PLAN.md`. Phase 9 (voice SRE) is in flight after owner start.
+HTTPS shell, sandbox APIs, playground, ElevenLabs web voice, Call scaffolding (Twilio DID deferred), and Stage 3 spine (Phases 6–9 signed off). Phase 10 WhatsApp scaffolding is in flight after owner start. Detail: `IMPLEMENTATION_PLAN.md` and `stage-3/BUILD_PLAN.md`.
 
-The widget is created by `scripts/sync_elevenlabs.py` (`ELEVENLABS_API_KEY`). Agent syncs use a multi-run eval (`HAQQLINE_TEST_REPEAT_COUNT`, default 3) and write `reports/phase-05-eval.json` / `reports/phase-09-eval.json` (promote gate). The test number is imported by `scripts/sync_twilio.py` (`TWILIO_API_KEY_SID` + `TWILIO_API_KEY_SECRET` preferred, or Account SID + Auth Token; plus `TWILIO_VOICE_NUMBER`). Secrets live in GitHub Actions and a local `.env`, not in git. Until the number is imported, `#call` tells the visitor to use Talk.
+The widget is created by `scripts/sync_elevenlabs.py` (`ELEVENLABS_API_KEY`). Agent syncs use a multi-run eval (`HAQQLINE_TEST_REPEAT_COUNT`, default 3) and write `reports/phase-05-eval.json` / `reports/phase-09-eval.json` (promote gate). Twilio DID: `scripts/sync_twilio.py`. WhatsApp assign: `scripts/sync_whatsapp.py` after Meta Embedded Signup (`WHATSAPP_PHONE_NUMBER_ID` or `WHATSAPP_E164`). Secrets live in GitHub Actions and a local `.env`, not in git. Until WhatsApp is connected, `#whatsapp` tells the visitor to use Talk.
 
 ```bash
 python3 -m pip install -r requirements-dev.txt
 php -S 127.0.0.1:8787 -t public public/router.php
 # other terminal:
-HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7 tests/phase8 tests/phase9
+HAQQLINE_API_BASE=http://127.0.0.1:8787 python3 -m pytest -q tests/phase1 tests/phase2 tests/phase3/test_play_markup.py tests/phase4 tests/phase5 tests/phase6 tests/phase7 tests/phase8 tests/phase9 tests/phase10
 python3 scripts/verify_pack_lock.py
 ```
 
