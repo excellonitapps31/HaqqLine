@@ -30,6 +30,7 @@ Names and empty values are in `.env.example`. Filled values go in `.env` locally
 - Unknown areas and unknown Ejari ids are not filled in. The Ejari miss is `found: false`, `invented: false`.
 - No tool collects a PIN, password, or one-time code.
 - Post-call webhooks are HMAC-SHA256, rejected when the timestamp is more than 30 minutes off.
+- Tool calls pass through `HaqqLinePolicy`: confirmation gate, workflow-node allowlists (when `X-HaqqLine-Workflow-Node` is set), no PIN/password/OTP fields, no `decide_case`. Denies are audited.
 
 ## Host
 

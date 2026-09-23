@@ -39,6 +39,29 @@
           },
           "source": { "type": "string", "description": "Legacy alias of pack_id" }
         }
+      },
+      "PolicyDenied": {
+        "type": "object",
+        "required": ["error", "policy_denied", "reason"],
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Same as reason (legacy field).",
+            "enum": [
+              "confirmation_required",
+              "tool_not_allowed_for_node",
+              "forbidden_credential_field",
+              "decide_case_forbidden",
+              "invent_index_forbidden",
+              "unknown_workflow_node"
+            ]
+          },
+          "policy_denied": { "type": "boolean", "const": true },
+          "reason": { "type": "string" },
+          "detail": { "type": "string", "nullable": true },
+          "tool": { "type": "string" },
+          "workflow_node": { "type": "string", "nullable": true }
+        }
       }
     }
   },
@@ -116,7 +139,16 @@
     "/api/v1/tools/submit_to_human_queue": {
       "post": {
         "tags": ["tools"],
-        "summary": "Queue a filing for a human. Status is always pending_human.",
+        "summary": "Queue a filing for a human. Status is always pending_human. Policy requires caller_confirmed: true.",
+        "parameters": [
+          {
+            "name": "X-HaqqLine-Workflow-Node",
+            "in": "header",
+            "required": false,
+            "schema": { "type": "string", "enum": ["Intake", "RuleMatch", "Filing", "Escalate"] },
+            "description": "Optional workflow node. When set, tools outside that node's allowlist are policy_denied."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -133,8 +165,27 @@
         },
         "responses": {
           "200": { "description": "Queued" },
-          "400": { "description": "confirmation_required" },
+          "400": {
+            "description": "policy_denied — confirmation_required",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PolicyDenied" } } }
+          },
+          "403": {
+            "description": "policy_denied — node allowlist or forbidden fields",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PolicyDenied" } } }
+          },
           "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/v1/tools/decide_case": {
+      "post": {
+        "tags": ["tools"],
+        "summary": "Not implemented. Always policy_denied (decide_case_forbidden).",
+        "responses": {
+          "403": {
+            "description": "policy_denied — decide_case_forbidden",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PolicyDenied" } } }
+          }
         }
       }
     },
