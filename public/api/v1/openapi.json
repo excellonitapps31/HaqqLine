@@ -208,6 +208,64 @@
           "401": { "description": "Unauthorized" }
         }
       }
+    },
+    "/api/v1/cases/{id}": {
+      "get": {
+        "tags": ["system"],
+        "summary": "Fetch a case by id",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Case snapshot" },
+          "404": { "description": "Unknown case" },
+          "401": { "description": "Unauthorized" }
+        }
+      },
+      "patch": {
+        "tags": ["system"],
+        "summary": "Transition case status (pending_human → in_review → closed|returned)",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["status"],
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "enum": ["pending_human", "in_review", "closed", "returned"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Updated case" },
+          "409": { "description": "illegal_transition" },
+          "404": { "description": "Unknown case" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
+    },
+    "/api/v1/cases/{id}/audit": {
+      "get": {
+        "tags": ["system"],
+        "summary": "Audit entries and case events for a case id",
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "entries + events" },
+          "404": { "description": "Unknown case" },
+          "401": { "description": "Unauthorized" }
+        }
+      }
     }
   }
 }
