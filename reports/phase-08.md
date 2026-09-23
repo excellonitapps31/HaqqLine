@@ -44,4 +44,4 @@ Follow case id → audit → conversation without opening ElevenLabs dashboards.
 
 ## Status
 
-**Awaiting Approve Phase 8.** Phase 9 stays closed until then.
+**Signed off 23 September 2026 — Approve Phase 8.** Phase closed. Merge this branch to `main` and tag `phase-08` after merge. Phase 9 stays closed until owner `Begin Phase N` / **Next**.
