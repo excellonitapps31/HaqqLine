@@ -50,8 +50,9 @@ jobs:
           kill $PHP_PID 2>/dev/null || true
       - name: Playwright
         run: |
+          rm -f public/api/data/rate-*.json
           python -m playwright install --with-deps chromium
-          pytest -q tests/phase3/test_playground.py
+          HAQQLINE_DISABLE_RATE_LIMIT=1 pytest -q tests/phase3/test_playground.py
 
   deploy:
     needs: verify

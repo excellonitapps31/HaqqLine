@@ -145,6 +145,8 @@ def test_rate_limit_enforced_when_enabled() -> None:
                 break
         assert 429 in statuses
     finally:
+        for p in (ROOT / "public/api/data").glob("rate-*.json"):
+            p.unlink(missing_ok=True)
         proc.terminate()
         proc.wait(timeout=5)
 
