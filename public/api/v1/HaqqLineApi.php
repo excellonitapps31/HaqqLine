@@ -38,7 +38,7 @@ final class HaqqLineApi
             $this->send(200, array(
                 'status' => 'ok',
                 'service' => 'haqqline',
-                'phase' => 11,
+                'phase' => 12,
                 'pack_id' => $this->config['pack_id'],
                 'pack_version' => isset($this->config['pack_version']) ? $this->config['pack_version'] : null,
                 'citation_id' => isset($this->config['citation_id']) ? $this->config['citation_id'] : null,

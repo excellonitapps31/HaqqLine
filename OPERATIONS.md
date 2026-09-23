@@ -26,7 +26,8 @@ Local equivalents are in `.env.example`.
 - `GET /twilio.json` returns `inbound_only: true`, `enable_sms: false`, and a failover string. Empty `phone_number` is expected until Twilio secrets are set.
 - `GET /whatsapp.json` returns sandbox WhatsApp status (`connected`, STOP policy, failover → Talk). Empty number is expected until WABA is imported in ElevenLabs and `whatsapp-sync` runs.
 - `python3 scripts/verify_pack_lock.py` exits 0 (pack areas/ejari match `content_hash` in `public/api/v1/pack/config.json`)
-- `GET /sre-budgets.json` returns sandbox-labelled latency / concurrency / eval-gate budgets (Phase 9)
+- `GET /sre-budgets.json` returns sandbox-labelled latency / concurrency / eval-gate / load budgets
+- Phase 12: `python3 scripts/backup_restore_drill.py`, `python3 scripts/deps_licence_scan.py`, and `scripts/load_test.py` write reports under `reports/phase-12-*.json`
 
 ## Pack rollback (Phase 6)
 
@@ -74,7 +75,7 @@ Then run `python3 scripts/verify_pack_lock.py`.
 
 Rollback of the site is a redeploy of the previous tag. Rollback of the agent is a sync from the last good commit **only after** the Phase 9 promote gate passes (`reports/phase-09-eval.json`). Git does not restore `api/data`.
 
-Operator runbook (pack / agent / number failover, alerts): `docs/OPERATOR_RUNBOOK.md`.
+Operator runbook (pack / agent / number failover, restore drill, load budgets, edge notes): `docs/OPERATOR_RUNBOOK.md`. Nginx/WAF stand-in: `docs/NGINX_SECURITY_HEADERS.md`.
 
 ## Not operated from this repo
 
