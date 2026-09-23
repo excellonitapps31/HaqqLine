@@ -1,6 +1,6 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Phase 4 complete (`phase-04`). Phase 5 in flight after merge (`phase/05-twilio`).  
+**Status:** Phase 4 complete (`phase-04`). Phase 5 scaffolding complete on the Call page, sync scripts, CI, and multi-run evals; sign-off waits on a purchased Twilio Voice DID and inbound EN/AR evidence (`reports/phase-05.md`).  
 **Owner:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
