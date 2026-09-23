@@ -38,7 +38,7 @@ final class HaqqLineApi
             $this->send(200, array(
                 'status' => 'ok',
                 'service' => 'haqqline',
-                'phase' => 8,
+                'phase' => 9,
                 'pack_id' => $this->config['pack_id'],
                 'pack_version' => isset($this->config['pack_version']) ? $this->config['pack_version'] : null,
                 'citation_id' => isset($this->config['citation_id']) ? $this->config['citation_id'] : null,
@@ -62,6 +62,11 @@ final class HaqqLineApi
 
         if ($method === 'GET' && $path === '/api/v1/audit') {
             $this->send(200, array('entries' => $this->readAuditTail(20)));
+            return;
+        }
+
+        if ($method === 'GET' && $path === '/api/v1/alerts') {
+            $this->send(200, array('entries' => $this->readJsonlTail($this->dataDir() . '/alerts.jsonl', 20)));
             return;
         }
 
@@ -609,6 +614,13 @@ final class HaqqLineApi
 
     private function send(int $code, $payload): void
     {
+        if ($code >= 500) {
+            $this->alert('http_5xx', array(
+                'status' => $code,
+                'path' => $this->path(),
+                'error' => is_array($payload) && isset($payload['error']) ? $payload['error'] : null,
+            ));
+        }
         http_response_code($code);
         header('Content-Type: application/json; charset=utf-8');
         header('Cache-Control: no-store');
@@ -632,27 +644,30 @@ final class HaqqLineApi
             'timestamp' => gmdate('c'),
         );
         $this->appendJsonl($this->dataDir() . '/audit.jsonl', $entry);
+        if ($status >= 500 || (isset($result['policy_denied']) && $result['policy_denied'] === true)) {
+            $this->alert('tool_failure', array(
+                'tool' => $tool,
+                'status' => $status,
+                'reason' => isset($result['reason']) ? $result['reason'] : (isset($result['error']) ? $result['error'] : null),
+            ));
+        }
+    }
+
+    /** Minimal actionable alert stream (Phase 9). Append-only; not a vanity observability stack. */
+    private function alert(string $kind, array $detail): void
+    {
+        $entry = array(
+            'id' => $this->nextId('ALRT'),
+            'kind' => $kind,
+            'detail' => $detail,
+            'timestamp' => gmdate('c'),
+        );
+        $this->appendJsonl($this->dataDir() . '/alerts.jsonl', $entry);
     }
 
     private function readAuditTail(int $limit): array
     {
-        $file = $this->dataDir() . '/audit.jsonl';
-        if (!is_file($file)) {
-            return array();
-        }
-        $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        if ($lines === false) {
-            return array();
-        }
-        $slice = array_slice($lines, -1 * $limit);
-        $out = array();
-        foreach ($slice as $line) {
-            $row = json_decode($line, true);
-            if (is_array($row)) {
-                $out[] = $row;
-            }
-        }
-        return $out;
+        return $this->readJsonlTail($this->dataDir() . '/audit.jsonl', $limit);
     }
 
     private function appendJsonl(string $file, array $row): void

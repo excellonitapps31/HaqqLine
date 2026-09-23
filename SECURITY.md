@@ -32,6 +32,7 @@ Names and empty values are in `.env.example`. Filled values go in `.env` locally
 - Post-call webhooks are HMAC-SHA256, rejected when the timestamp is more than 30 minutes off.
 - Tool calls pass through `HaqqLinePolicy`: confirmation gate, workflow-node allowlists (when `X-HaqqLine-Workflow-Node` is set), no PIN/password/OTP fields, no `decide_case`. Denies are audited.
 - Cases and audit under `public/api/data/` are append-only JSONL (`cases.jsonl`, `audit.jsonl`). Retention for the sandbox: wipeable on host reset; keep at least 30 days of audit in any later production cutover. Do not rewrite historical audit lines.
+- Phase 9 alerts (`alerts.jsonl`): append-only on HTTP 5xx and tool policy denials / 5xx. Readable via authenticated `GET /api/v1/alerts`. Not a public paging channel.
 
 ## Host
 

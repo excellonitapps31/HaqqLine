@@ -28,6 +28,7 @@ $apiPrefixes = array(
     '/api/v1/tools',
     '/api/v1/health',
     '/api/v1/audit',
+    '/api/v1/alerts',
     '/api/v1/cases',
     '/api/v1/conversations',
     '/api/v1/webhooks',

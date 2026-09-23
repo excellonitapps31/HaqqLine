@@ -1,6 +1,6 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Phases 1–8 signed off (Phase 5 residual *inbound DID deferred*). **Phase 8 signed off 23 September 2026** (`reports/phase-08.md`). Phase 9 stays closed until owner `Begin Phase N`.  
+**Status:** Phases 1–8 signed off (Phase 5 residual *inbound DID deferred*). **Phase 9 (voice SRE) in flight** — `Begin Phase 9` 23 September 2026; report `reports/phase-09.md` awaiting Approve. Phases 10+ stay closed.  
 **Owner:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
@@ -351,7 +351,7 @@ In place before Phase 1:
 
 **Intent:** voice quality and reliability are release gates.
 
-**Owner start:** closed until `Begin Phase 9` (after Phase 8 approve). Detail: `stage-3/BUILD_PLAN.md`.
+**Owner start:** **open** — `Begin Phase 9` 23 September 2026. Detail: `stage-3/BUILD_PLAN.md`.
 
 **In scope**
 
@@ -589,4 +589,4 @@ WhatsApp and SMS stay last among **channels** so Meta approval and Twilio SMS ca
 
 ## 10. Where the programme is
 
-Gate 0 is closed. Phases 1–8 signed off (Phase 5 residual *inbound DID deferred*). Phase 9 (voice SRE) stays closed until owner `Begin Phase N`. WhatsApp and SMS wait for Phases 10 and 11.
+Gate 0 is closed. Phases 1–8 signed off (Phase 5 residual *inbound DID deferred*). Phase 9 (voice SRE) is in flight awaiting Approve. WhatsApp and SMS wait for Phases 10 and 11.

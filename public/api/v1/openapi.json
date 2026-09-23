@@ -85,6 +85,16 @@
         }
       }
     },
+    "/api/v1/alerts": {
+      "get": {
+        "tags": ["system"],
+        "summary": "Recent actionable alerts (5xx and tool policy failures)",
+        "responses": {
+          "200": { "description": "Tail of alerts.jsonl" },
+          "401": { "description": "Missing or wrong key" }
+        }
+      }
+    },
     "/api/v1/tools/lookup_rera_band": {
       "post": {
         "tags": ["tools"],
