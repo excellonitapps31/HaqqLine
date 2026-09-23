@@ -1,6 +1,6 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Phase 4 complete (`phase-04`). Phase 5 scaffolding complete on the Call page, sync scripts, CI, and multi-run evals; sign-off waits on a purchased Twilio Voice DID and inbound EN/AR evidence (`reports/phase-05.md`).  
+**Status:** Phase 4 complete (`phase-04`). Phase 5 scaffolding complete (`reports/phase-05.md`); **sign-off waits on Twilio DID secrets + inbound EN/AR evidence**. Do not open Stage 3 or later phases until Phase 5 is approved.  
 **Owner:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
@@ -454,4 +454,4 @@ WhatsApp and SMS are last among **channels** so Meta approval and Twilio SMS can
 
 ## 10. Where the programme is
 
-Gate 0 is closed. Phases 1–4 are on `main`. Phase 5 is Twilio Voice. WhatsApp and SMS code wait for Phases 6 and 7.
+Gate 0 is closed. Phases 1–4 are on `main`. Phase 5 scaffolding is ready for merge; **Approve Phase 5** waits on Twilio DID import and inbound EN/AR evidence (see `reports/phase-05.md`). Later channels stay closed until that approval.
