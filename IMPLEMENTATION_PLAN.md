@@ -1,6 +1,6 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Phase 4 complete (`phase-04`). Phase 5 signed off with residual *inbound DID deferred*. **Phase 6 signed off 23 September 2026.** **Phase 7 (policy engine) in flight.**  
+**Status:** Phases 1–6 signed off (Phase 5 residual *inbound DID deferred*). **Phase 7 signed off 23 September 2026** (`reports/phase-07.md`). Phase 8 stays closed until owner `Begin Phase N`.  
 **Owner:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
