@@ -1,6 +1,6 @@
 # HaqqLine — Phased DevOps implementation plan
 
-**Status:** Phases 1–10 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*). **Phase 11 (SMS) in flight** — `Begin Phase 11` 23 September 2026; report `reports/phase-11.md` awaiting Approve (residual *Twilio SMS deferred* expected until secrets). Phase 12 stays closed.  
+**Status:** Phases 1–11 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*; Phase 11 residual *Twilio SMS deferred*). **Phase 11 signed off 23 September 2026** (`reports/phase-11.md`). Phase 12 stays closed until owner `Begin Phase N`.  
 **Owner:** ExcellonIT  
 **Product:** HaqqLine  
 **Investor demo host:** `https://haqqline.excellonit.net`  
@@ -422,7 +422,7 @@ WhatsApp is Phase 10. It is outside the Stage 1 canvas scope.
 
 **Intent:** Twilio SMS for transactional automation: reference numbers, queue acknowledgements, “continue on WhatsApp” when SMS is all the device has. **Not** a second agent brain. WhatsApp stays primary. Same case ids as Phase 8.
 
-**Owner start:** **open** — `Begin Phase 11` 23 September 2026.
+**Owner start:** **signed off 23 September 2026** (`reports/phase-11.md`) with residual *Twilio SMS deferred*. Was in flight on `cursor/phase-11-sms-9d24`.
 
 **In scope**
 
@@ -589,4 +589,4 @@ WhatsApp and SMS stay last among **channels** so Meta approval and Twilio SMS ca
 
 ## 10. Where the programme is
 
-Gate 0 is closed. Phases 1–10 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*). Phase 11 (SMS) is in flight awaiting Approve. Phase 12 stays closed.
+Gate 0 is closed. Phases 1–11 signed off (Phase 5 residual *inbound DID deferred*; Phase 10 residual *WABA deferred*; Phase 11 residual *Twilio SMS deferred*). Phase 12 stays closed until owner `Begin Phase N`.

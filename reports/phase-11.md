@@ -53,4 +53,4 @@ Clearing later: load Twilio secrets, configure Messaging webhook to `/api/v1/web
 
 ## Status
 
-**Awaiting Approve Phase 11.** Phase 12 stays closed until then.
+**Signed off 23 September 2026 — Approve Phase 11 with residual “Twilio SMS deferred”.** Phase closed. Tag `phase-11` on `main` after this sign-off merges. Phase 12 stays closed until owner `Begin Phase N` / **Next**.

@@ -259,4 +259,4 @@ reports/phase-NN.md → Owner: "Approve Phase N" | "Reject"
 merge + tag phase-NN → wait for next Begin instruction
 ```
 
-**Current instruction state:** Phase 11 is **in flight** (`Begin Phase 11`). Awaiting owner `Approve Phase 11` or `Reject`. Phase 12 stays closed.
+**Current instruction state:** Phase 11 is **signed off** (residual *Twilio SMS deferred*). Phase 12 stays closed until the owner says `Begin Phase N` (or **Next**).
